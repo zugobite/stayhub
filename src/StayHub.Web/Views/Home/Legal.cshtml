@@ -12,11 +12,11 @@
     </div>
 
     <div class="sh-legal-body">
-        @foreach (var section in Model.Sections)
+        @foreach (var block in Model.Sections)
         {
             <section class="sh-legal-section">
-                <h2>@section.Heading</h2>
-                <p>@section.Body</p>
+                <h2>@block.Heading</h2>
+                <p>@block.Body</p>
             </section>
         }
     </div>
