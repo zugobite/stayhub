@@ -61,20 +61,6 @@
             <nav class="d-flex align-items-center gap-2">
                 @if (SignInManager.IsSignedIn(User))
                 {
-                    @if (User.IsInRole(Roles.Guest))
-                    {
-                        <a class="sh-navlink d-none d-xl-inline" asp-controller="HostApplications" asp-action="Status">Application Status</a>
-                        <a class="sh-navlink d-none d-md-inline" asp-controller="HostApplications" asp-action="Apply">Become a Host</a>
-                    }
-                    else if (User.IsInRole(Roles.Host))
-                    {
-                        <a class="sh-navlink d-none d-md-inline" asp-controller="Host" asp-action="Dashboard">Host dashboard</a>
-                    }
-                    else if (User.IsInRole(Roles.Admin) || User.IsInRole(Roles.SuperAdmin))
-                    {
-                        <a class="sh-navlink d-none d-md-inline" asp-controller="Admin" asp-action="Dashboard">Admin dashboard</a>
-                    }
-
                     <a class="sh-navlink sh-navicon" asp-controller="Notifications" asp-action="Index" title="Notifications" aria-label="Notifications">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                             <path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" />
@@ -105,6 +91,16 @@
                             {
                                 <li><a class="dropdown-item" asp-controller="Bookings" asp-action="Index">My Trips</a></li>
                                 <li><a class="dropdown-item" asp-controller="Wishlist" asp-action="Index">Wishlist</a></li>
+                                <li><a class="dropdown-item" asp-controller="HostApplications" asp-action="Apply">Become a Host</a></li>
+                                <li><a class="dropdown-item" asp-controller="HostApplications" asp-action="Status">Application Status</a></li>
+                            }
+                            else if (User.IsInRole(Roles.Host))
+                            {
+                                <li><a class="dropdown-item" asp-controller="Host" asp-action="Dashboard">Host dashboard</a></li>
+                            }
+                            else if (User.IsInRole(Roles.Admin) || User.IsInRole(Roles.SuperAdmin))
+                            {
+                                <li><a class="dropdown-item" asp-controller="Admin" asp-action="Dashboard">Admin dashboard</a></li>
                             }
                             <li><a class="dropdown-item" asp-controller="Messages" asp-action="Index">Inbox</a></li>
                             <li><a class="dropdown-item" asp-controller="Notifications" asp-action="Index">Notifications</a></li>
@@ -141,6 +137,16 @@
     </main>
 
     <footer class="sh-footer">
+        <div class="sh-footer-promo">
+            <div class="container sh-footer-promo-inner">
+                <p class="sh-footer-promo-copy">Find a stay, or open your doors.</p>
+                <div class="sh-footer-promo-actions">
+                    <a class="sh-btn sh-btn-ghost" asp-controller="Properties" asp-action="Index">Browse stays</a>
+                    <a class="sh-btn sh-btn-sun" asp-controller="HostApplications" asp-action="Apply">Become a host</a>
+                </div>
+            </div>
+        </div>
+
         <div class="sh-footer-main">
             <div class="container">
                 <div class="sh-footer-grid">
@@ -149,14 +155,20 @@
                             <img class="sh-brand-mark" src="~/images/brand/stayhub-mark-light.svg" alt="" aria-hidden="true" />
                             <span class="fuzzy-bubbles-bold">StayHub</span>
                         </a>
-                        <p class="sh-footer-tagline">Stays across South Africa</p>
-                        <a class="sh-btn sh-btn-sun" asp-controller="HostApplications" asp-action="Apply">Become a Host</a>
+                        <p class="sh-footer-tagline">Coastal stays and city hideaways across South Africa - from the Mother City shoreline to quiet inland weekends.</p>
+                        <p class="sh-footer-meta">
+                            <span>Cape Town · South Africa</span>
+                            <span>Prices in ZAR</span>
+                        </p>
                     </div>
 
                     <nav class="sh-footer-col" aria-label="Explore">
                         <span class="sh-footer-heading">Explore</span>
                         <a asp-controller="Home" asp-action="Index">Home</a>
                         <a asp-controller="Properties" asp-action="Index">Browse Properties</a>
+                        <a asp-controller="Properties" asp-action="Index" asp-route-province="@Province.WesternCape">Western Cape</a>
+                        <a asp-controller="Properties" asp-action="Index" asp-route-province="@Province.KwaZuluNatal">KwaZulu-Natal</a>
+                        <a asp-controller="Properties" asp-action="Index" asp-route-province="@Province.Gauteng">Gauteng</a>
                     </nav>
 
                     <nav class="sh-footer-col" aria-label="Hosting">
@@ -167,18 +179,45 @@
 
                     <nav class="sh-footer-col" aria-label="Guest">
                         <span class="sh-footer-heading">Guest</span>
-                        <a asp-controller="Account" asp-action="Login">Log In</a>
-                        <a asp-controller="Account" asp-action="Register">Sign Up</a>
+                        @if (!SignInManager.IsSignedIn(User))
+                        {
+                            <a asp-controller="Account" asp-action="Register">Sign Up</a>
+                            <a asp-controller="Account" asp-action="Login">Log In</a>
+                        }
                         <a asp-controller="Bookings" asp-action="Index">My Trips</a>
                         <a asp-controller="Wishlist" asp-action="Index">Wishlist</a>
                     </nav>
+
+                    <div class="sh-footer-newsletter">
+                        <span class="sh-footer-heading">Newsletter</span>
+                        <p class="sh-footer-newsletter-copy">
+                            Occasional stay tips and new listings across South Africa.
+                        </p>
+                        <form class="sh-footer-newsletter-form"
+                              asp-controller="Home"
+                              asp-action="Subscribe"
+                              method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="returnUrl" value="@(Context.Request.Path + Context.Request.QueryString)" />
+                            <label class="visually-hidden" for="footer-newsletter-email">Email</label>
+                            <input id="footer-newsletter-email"
+                                   class="sh-footer-newsletter-input"
+                                   name="Email"
+                                   type="email"
+                                   required
+                                   maxlength="256"
+                                   placeholder="you@email.com"
+                                   autocomplete="email" />
+                            <button type="submit" class="sh-btn sh-btn-sun sh-btn-sm">Subscribe</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
 
         <div class="sh-footer-bar">
             <div class="container sh-footer-bar-inner">
-                <span>&copy; @DateTime.Now.Year StayHub &middot; Programming 742 Assignment 1</span>
+                <span>&copy; @DateTime.Now.Year StayHub</span>
                 <span>Prices shown in South African Rand (ZAR)</span>
             </div>
         </div>

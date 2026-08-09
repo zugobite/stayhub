@@ -139,6 +139,10 @@ public class EditPropertyViewModel : HostApplicationViewModel
     /// <summary>Gets or sets the listing identifier.</summary>
     public int Id { get; set; }
 
+    /// <summary>Gets or sets the province.</summary>
+    [Display(Name = "Province")]
+    public Province Province { get; set; }
+
     /// <summary>Gets or sets a value indicating whether the listing is published.</summary>
     [Display(Name = "Listing is active")]
     public bool IsActive { get; set; }

@@ -6,6 +6,7 @@ using StayHub.Core.Constants;
 using StayHub.Core.Enums;
 using StayHub.Core.Interfaces;
 using StayHub.Core.Models;
+using StayHub.Web.Services;
 using StayHub.Web.ViewModels;
 
 namespace StayHub.Web.Controllers;
@@ -23,6 +24,7 @@ public class HostController : Controller
     private readonly ICheckInRepository _checkIns;
     private readonly INotificationRepository _notifications;
     private readonly IActivityLogRepository _activityLog;
+    private readonly IFileStorageService _files;
     private readonly UserManager<ApplicationUser> _userManager;
 
     /// <summary>
@@ -34,6 +36,7 @@ public class HostController : Controller
     /// <param name="checkIns">The check-in repository.</param>
     /// <param name="notifications">The notification repository.</param>
     /// <param name="activityLog">The audit trail repository.</param>
+    /// <param name="files">The upload storage service.</param>
     /// <param name="userManager">The Identity user manager.</param>
     public HostController(
         IPropertyRepository properties,
@@ -42,6 +45,7 @@ public class HostController : Controller
         ICheckInRepository checkIns,
         INotificationRepository notifications,
         IActivityLogRepository activityLog,
+        IFileStorageService files,
         UserManager<ApplicationUser> userManager)
     {
         _properties = properties;
@@ -50,6 +54,7 @@ public class HostController : Controller
         _checkIns = checkIns;
         _notifications = notifications;
         _activityLog = activityLog;
+        _files = files;
         _userManager = userManager;
     }
 
@@ -97,6 +102,87 @@ public class HostController : Controller
     {
         var userId = _userManager.GetUserId(User)!;
         return View(await _properties.GetByHostAsync(userId));
+    }
+
+    /// <summary>
+    /// Renders the listing editor for one of the host's properties.
+    /// </summary>
+    /// <param name="id">The listing identifier.</param>
+    /// <returns>The editor page, or 404 when the listing is not the host's.</returns>
+    [HttpGet]
+    public async Task<IActionResult> Edit(int id)
+    {
+        var userId = _userManager.GetUserId(User)!;
+        var property = await _properties.GetByIdAsync(id);
+
+        if (property is null || property.HostId != userId)
+            return NotFound();
+
+        return View(ToEditModel(property));
+    }
+
+    /// <summary>
+    /// Saves changes to one of the host's listings, optionally appending new photos.
+    /// </summary>
+    /// <param name="model">The submitted editor form.</param>
+    /// <returns>A redirect to the properties page on success; the form otherwise.</returns>
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(EditPropertyViewModel model)
+    {
+        var userId = _userManager.GetUserId(User)!;
+        var property = await _properties.GetByIdAsync(model.Id);
+
+        if (property is null || property.HostId != userId)
+            return NotFound();
+
+        var usableImages = model.Images.Where(_files.IsValid).ToList();
+
+        if (!ModelState.IsValid)
+        {
+            model.ExistingImages = property.Images;
+            return View(model);
+        }
+
+        property.Title = model.Title;
+        property.Description = model.Description;
+        property.PricePerNight = model.PricePerNight;
+        property.CleaningFee = model.CleaningFee;
+        property.Address = model.Address;
+        property.City = model.City;
+        property.Province = model.Province;
+        property.PropertyType = model.PropertyType;
+        property.MaxGuests = model.MaxGuests;
+        property.Bedrooms = model.Bedrooms;
+        property.Beds = model.Beds;
+        property.Bathrooms = model.Bathrooms;
+
+        if (model.IsActive)
+            property.Activate();
+        else
+            property.Deactivate();
+
+        var hasCover = property.Images.Any(i => i.IsCover);
+        foreach (var image in usableImages)
+        {
+            property.Images.Add(new PropertyImage
+            {
+                ImageUrl = await _files.SaveAsync(image, "properties"),
+                IsCover = !hasCover
+            });
+            hasCover = true;
+        }
+
+        await _properties.UpdateAsync(property);
+
+        await _activityLog.LogAsync(
+            userId,
+            "PropertyUpdated",
+            ActivityType.PropertyUpdated,
+            $"Listing '{property.Title}' (#{property.Id}) was updated.");
+
+        TempData["Success"] = "Listing updated.";
+        return RedirectToAction(nameof(Properties));
     }
 
     /// <summary>
@@ -338,12 +424,31 @@ public class HostController : Controller
             booking.GuestId,
             approve ? "Booking Approved" : "Booking Rejected",
             approve
-                ? $"Your booking at '{booking.Property.Title}' has been approved. You can now complete check-in."
+                ? $"Your booking at '{booking.Property.Title}' has been approved. Pay for the stay, then complete check-in."
                 : $"Your booking request for '{booking.Property.Title}' was not accepted.",
             approve ? NotificationType.BookingApproved : NotificationType.BookingRejected,
-            approve ? $"/CheckIn/Start/{booking.Id}" : "/Bookings");
+            approve ? "/Bookings" : "/Bookings");
 
         TempData["Success"] = approve ? "Booking approved." : "Booking rejected.";
         return RedirectToAction(nameof(BookingRequests));
     }
+
+    private static EditPropertyViewModel ToEditModel(HostProperty property) => new()
+    {
+        Id = property.Id,
+        Title = property.Title,
+        Description = property.Description,
+        PricePerNight = property.PricePerNight,
+        CleaningFee = property.CleaningFee,
+        Address = property.Address,
+        City = property.City,
+        Province = property.Province,
+        PropertyType = property.PropertyType,
+        MaxGuests = property.MaxGuests,
+        Bedrooms = property.Bedrooms,
+        Beds = property.Beds,
+        Bathrooms = property.Bathrooms,
+        IsActive = property.IsActive,
+        ExistingImages = property.Images
+    };
 }

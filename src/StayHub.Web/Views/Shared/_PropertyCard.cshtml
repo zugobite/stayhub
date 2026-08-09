@@ -8,6 +8,23 @@
     var reviewCount = Model.Reviews?.Count ?? 0;
     var rating = reviewCount == 0 ? 0 : Model.Reviews!.Average(r => r.Rating);
     var wishlisted = ViewData["Wishlisted"] as bool? ?? false;
+    var actions = new List<ActionMenuItem>
+    {
+        new("View details", Href: Url.Action("View", "Properties", new { id = Model.Id }))
+    };
+
+    if (User.Identity?.IsAuthenticated == true)
+    {
+        actions.Add(new ActionMenuItem(
+            wishlisted ? "Remove from wishlist" : "Save to wishlist",
+            Controller: "Wishlist",
+            Action: "Toggle",
+            HiddenFields: new Dictionary<string, string>
+            {
+                ["propertyId"] = Model.Id.ToString(),
+                ["returnUrl"] = $"{Context.Request.Path}{Context.Request.QueryString}"
+            }));
+    }
 }
 
 <article class="sh-card">
@@ -26,6 +43,7 @@
                 </button>
             </form>
         }
+        <partial name="_ActionMenu" model="actions" />
         @if (Model.Images.Count > 1)
         {
             <span class="sh-card-count">@Model.Images.Count photos</span>

@@ -22,8 +22,8 @@ public static class DataSeeder
     private const string DemoPassword = "Password123!";
 
     /// <summary>
-    /// Seeds reference and demonstration data. Each block is skipped when its
-    /// data is already present, so the method is safe to run on every startup.
+    /// Seeds reference and demonstration data. Demo account profiles are kept in
+    /// sync on every startup; listings and related rows seed only when absent.
     /// </summary>
     /// <param name="services">The application service provider.</param>
     public static async Task SeedAsync(IServiceProvider services)
@@ -33,19 +33,19 @@ public static class DataSeeder
 
         await SeedAmenitiesAsync(context);
 
-        if (await context.Properties.AnyAsync())
-            return;
-
+        // Demo accounts are synced on every startup so name/bio changes (e.g. host
+        // rename) apply without dropping the database. Listings still seed only once.
         var admin = await CreateUserAsync(userManager, "admin@stayhub.co.za", "Sarah", "Mitchell", Roles.Admin);
         var guest = await CreateUserAsync(userManager, "guest@stayhub.co.za", "David", "Botha", Roles.Guest,
             location: "Pretoria, Gauteng");
         var guest2 = await CreateUserAsync(userManager, "naledi@stayhub.co.za", "Naledi", "Khumalo", Roles.Guest,
             location: "Durban, KwaZulu-Natal");
 
-        var thandi = await CreateUserAsync(userManager, "host@stayhub.co.za", "Thandi", "Nkosi", Roles.Host,
+        var zascia = await CreateUserAsync(userManager, "host@stayhub.co.za", "Zascia", "Hugo", Roles.Host,
             location: "Cape Town, Western Cape",
-            bio: "Born and raised in the Mother City. I have been letting out my flat near the Waterfront since " +
-                 "2019 and love pointing guests towards the hikes and bakeries the tour buses miss.",
+            bio: "Cape Town-based host who looks after a handful of stays around the Mother City. " +
+                 "I am always happy to share local tips - quiet coffee spots, coastal walks, and the " +
+                 "bakeries the tour buses miss.",
             monthsOnPlatform: 41);
 
         var pieter = await CreateUserAsync(userManager, "pieter@stayhub.co.za", "Pieter", "van der Merwe", Roles.Host,
@@ -72,8 +72,13 @@ public static class DataSeeder
                  "and rent them out once the dust settles.",
             monthsOnPlatform: 11);
 
+        await SyncLegacyHostNameInReviewsAsync(context);
+
+        if (await context.Properties.AnyAsync())
+            return;
+
         if (admin is null || guest is null || guest2 is null
-            || thandi is null || pieter is null || ayesha is null || sipho is null || lerato is null)
+            || zascia is null || pieter is null || ayesha is null || sipho is null || lerato is null)
         {
             return;
         }
@@ -87,7 +92,7 @@ public static class DataSeeder
                 "A bright, modern apartment a short walk from the V&A Waterfront. Sleeps four, with fast WiFi " +
                 "and a fully equipped kitchen.",
                 3100m, 350m, "42 Long Street", "Cape Town", Province.WesternCape, PropertyType.Apartment,
-                4, 2, 3, 1, thandi.Id, 30),
+                4, 2, 3, 1, zascia.Id, 30),
                 new[] { "/images/seed/apartment-1.svg", "/images/seed/apartment-2.svg" },
                 new[] { "WiFi", "Kitchen", "Washer", "Dryer" }),
 
@@ -103,7 +108,7 @@ public static class DataSeeder
                 "Glass-fronted villa above Camps Bay beach. Heated pool, eight beds, and the whole Atlantic " +
                 "seaboard laid out below the deck.",
                 8900m, 900m, "17 Theresa Avenue", "Cape Town", Province.WesternCape, PropertyType.Villa,
-                8, 4, 5, 3, thandi.Id, 26),
+                8, 4, 5, 3, zascia.Id, 26),
                 new[] { "/images/seed/villa-pool.svg", "/images/seed/apartment-2.svg" },
                 new[] { "WiFi", "Kitchen", "Pool", "Air Conditioning", "Free Parking", "Washer" }),
 
@@ -190,7 +195,7 @@ public static class DataSeeder
                 "Timber house on the lagoon edge with a jetty and a kayak. The Heads are a short drive, the " +
                 "oysters are closer.",
                 3850m, 450m, "9 Belvidere Road", "Knysna", Province.WesternCape, PropertyType.House,
-                6, 3, 4, 2, thandi.Id, 6),
+                6, 3, 4, 2, zascia.Id, 6),
                 new[] { "/images/seed/beach-house.svg" },
                 new[] { "WiFi", "Kitchen", "Heating", "Free Parking", "Washer" }),
 
@@ -230,7 +235,7 @@ public static class DataSeeder
 
         context.HostApplications.Add(new HostApplication
         {
-            ApplicationUserId = thandi.Id,
+            ApplicationUserId = zascia.Id,
             PropertyId = apartment.Id,
             Status = ApplicationStatus.Approved,
             AppliedAt = DateTime.UtcNow.AddDays(-31),
@@ -252,7 +257,7 @@ public static class DataSeeder
 
         context.Notifications.Add(new Notification
         {
-            UserId = thandi.Id,
+            UserId = zascia.Id,
             Title = "Host Application Approved",
             Body = "Congratulations! Your host application for 'Lovely City Apartment' has been approved.",
             Type = NotificationType.HostApplicationApproved,
@@ -262,7 +267,7 @@ public static class DataSeeder
 
         context.ActivityLogs.Add(new ActivityLog
         {
-            UserId = thandi.Id,
+            UserId = zascia.Id,
             Action = "HostApplicationSubmitted",
             ActivityType = ActivityType.ApplicationSubmitted,
             Details = "Lovely City Apartment",
@@ -331,7 +336,7 @@ public static class DataSeeder
             (0, guestId, 5, "Spotless, and exactly as described. The walk to the Waterfront takes ten minutes.", 12),
             (0, secondGuestId, 4, "Great flat, though the street gets a little noisy on a Friday.", 8),
             (2, secondGuestId, 5, "The view genuinely stops you in your tracks. Worth every rand.", 10),
-            (2, guestId, 5, "Pool was heated as promised in July. Thandi answered every message within minutes.", 5),
+            (2, guestId, 5, "Pool was heated as promised in July. Zascia answered every message within minutes.", 5),
             (3, guestId, 4, "Lovely house and a great location. Could do with a few more kitchen things.", 9),
             (4, secondGuestId, 5, "Woke up to hippo noise from the river. Sipho's game drive advice was spot on.", 7),
             (5, guestId, 4, "Very peaceful, and the wood stove made it. Bring warm clothes in winter.", 6),
@@ -380,6 +385,25 @@ public static class DataSeeder
     }
 
     /// <summary>
+    /// Rewrites seed reviews that still name the previous demo host so existing
+    /// databases pick up the rename without a full reseed.
+    /// </summary>
+    private static async Task SyncLegacyHostNameInReviewsAsync(StayHubDbContext context)
+    {
+        var stale = await context.Reviews
+            .Where(r => r.Comment.Contains("Thandi"))
+            .ToListAsync();
+
+        if (stale.Count == 0)
+            return;
+
+        foreach (var review in stale)
+            review.Comment = review.Comment.Replace("Thandi", "Zascia");
+
+        await context.SaveChangesAsync();
+    }
+
+    /// <summary>
     /// Creates a demonstration account in the given role, or returns the existing one.
     /// </summary>
     /// <param name="userManager">The Identity user manager.</param>
@@ -403,7 +427,15 @@ public static class DataSeeder
     {
         var existing = await userManager.FindByEmailAsync(email);
         if (existing is not null)
+        {
+            // Keep demo profiles in sync when seed names or bios change.
+            existing.FirstName = firstName;
+            existing.LastName = lastName;
+            existing.Bio = bio;
+            existing.Location = location;
+            await userManager.UpdateAsync(existing);
             return existing;
+        }
 
         var user = new ApplicationUser
         {

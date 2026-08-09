@@ -133,3 +133,28 @@ public record EmptyState(
     string ActionText = "",
     string ActionController = "",
     string ActionAction = "");
+
+/// <summary>
+/// A single entry in a listing or table-row actions dropdown.
+/// </summary>
+/// <param name="Label">Text shown in the menu.</param>
+/// <param name="Href">Link target. Use for navigation actions.</param>
+/// <param name="Controller">Controller for form posts.</param>
+/// <param name="Action">Action for form posts.</param>
+/// <param name="HiddenFields">Hidden inputs submitted with form actions.</param>
+/// <param name="ConfirmMessage">When set, the branded confirm dialog is shown before submit.</param>
+/// <param name="ConfirmTitle">Optional confirm dialog title.</param>
+/// <param name="ConfirmAction">Optional confirm button label.</param>
+/// <param name="Danger">Styles the item as destructive.</param>
+/// <param name="OpenInNewTab">Opens link actions in a new tab.</param>
+public record ActionMenuItem(
+    string Label,
+    string? Href = null,
+    string? Controller = null,
+    string? Action = null,
+    IReadOnlyDictionary<string, string>? HiddenFields = null,
+    string? ConfirmMessage = null,
+    string? ConfirmTitle = null,
+    string? ConfirmAction = null,
+    bool Danger = false,
+    bool OpenInNewTab = false);

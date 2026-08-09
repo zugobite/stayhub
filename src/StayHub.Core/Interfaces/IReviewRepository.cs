@@ -27,4 +27,12 @@ public interface IReviewRepository
     /// <param name="review">The review to create.</param>
     /// <returns>The generated identifier.</returns>
     Task<int> CreateAsync(Review review);
+
+    /// <summary>
+    /// Determines whether the guest has already reviewed the listing.
+    /// </summary>
+    /// <param name="propertyId">The listing identifier.</param>
+    /// <param name="reviewerId">The guest's user identifier.</param>
+    /// <returns><c>true</c> when a review already exists.</returns>
+    Task<bool> ExistsAsync(int propertyId, string reviewerId);
 }

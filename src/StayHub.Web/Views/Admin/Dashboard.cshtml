@@ -63,7 +63,7 @@
                                         <td>@application.Property?.Title</td>
                                         <td>@application.AppliedAt.ToString("d MMM yyyy")</td>
                                         <td><span class="sh-pill sh-pill-@application.Status.ToString().ToLowerInvariant()">@application.Status</span></td>
-                                        <td class="text-end"><a class="sh-btn sh-btn-sm sh-btn-ghost" asp-action="ReviewApplication" asp-route-id="@application.Id">Review</a></td>
+                                        <td class="text-end"><partial name="_ActionMenu" model='new List<ActionMenuItem> { new("Review", Href: Url.Action("ReviewApplication", new { id = application.Id })) }' /></td>
                                     </tr>
                                 }
                             </tbody>
@@ -92,7 +92,7 @@
                         {
                             <div class="table-responsive">
                                 <table class="table sh-table align-middle">
-                                    <thead><tr><th>Guest</th><th>Property</th><th>Dates</th><th>Status</th><th class="text-end">Amount</th></tr></thead>
+                                    <thead><tr><th>Guest</th><th>Property</th><th>Dates</th><th>Status</th><th class="text-end">Amount</th><th class="text-end">Actions</th></tr></thead>
                                     <tbody>
                                         @foreach (var booking in Model.RecentBookings)
                                         {
@@ -102,6 +102,12 @@
                                                 <td>@booking.CheckInDate.ToString("d MMM") – @booking.CheckOutDate.ToString("d MMM yyyy")</td>
                                                 <td><span class="sh-pill sh-pill-@booking.Status.ToString().ToLowerInvariant()">@booking.Status</span></td>
                                                 <td class="text-end fw-semibold">R @booking.TotalPrice.ToString("N2")</td>
+                                                <td class="text-end">
+                                                    <partial name="_ActionMenu" model='new List<ActionMenuItem>
+                                                    {
+                                                        new("View property", Href: Url.Action("View", "Properties", new { id = booking.PropertyId }))
+                                                    }' />
+                                                </td>
                                             </tr>
                                         }
                                     </tbody>

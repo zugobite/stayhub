@@ -22,7 +22,7 @@
 
         <div class="table-responsive">
             <table class="table sh-table align-middle">
-                <thead><tr><th>Name</th><th>Email</th><th>Roles</th><th>Registered</th><th>Actions</th></tr></thead>
+                <thead><tr><th>Name</th><th>Email</th><th>Roles</th><th>Registered</th><th class="text-end">Actions</th></tr></thead>
                 <tbody>
                     @foreach (var row in Model.Users)
                     {
@@ -36,19 +36,26 @@
                                 }
                             </td>
                             <td>@row.User.CreatedAt.ToString("d MMM yyyy")</td>
-                            <td class="d-flex gap-2">
-                                <a class="sh-btn sh-btn-sm sh-btn-ghost" asp-controller="Messages" asp-action="Conversation" asp-route-id="@row.User.Id">Message</a>
-                                @if (Model.CanPromote && row.Roles.Contains(Roles.Guest))
-                                {
-                                    <form asp-action="PromoteToAdmin" method="post"
-                                          data-sh-confirm-title="Promote to Admin"
-                                          data-sh-confirm="@row.User.FullName (@row.User.Email) will gain full administrative access to StayHub. This cannot be undone from the interface."
-                                          data-sh-confirm-action="Promote">
-                                        @Html.AntiForgeryToken()
-                                        <input type="hidden" name="id" value="@row.User.Id" />
-                                        <button class="sh-btn sh-btn-sm sh-btn-primary" type="submit">Promote to Admin</button>
-                                    </form>
+                            <td class="text-end">
+                                @{
+                                    var actions = new List<ActionMenuItem>
+                                    {
+                                        new("Message", Href: Url.Action("Conversation", "Messages", new { id = row.User.Id }))
+                                    };
+
+                                    if (Model.CanPromote && row.Roles.Contains(Roles.Guest))
+                                    {
+                                        actions.Add(new ActionMenuItem(
+                                            "Promote to Admin",
+                                            Controller: "Admin",
+                                            Action: "PromoteToAdmin",
+                                            HiddenFields: new Dictionary<string, string> { ["id"] = row.User.Id },
+                                            ConfirmMessage: $"{row.User.FullName} ({row.User.Email}) will gain full administrative access to StayHub. This cannot be undone from the interface.",
+                                            ConfirmTitle: "Promote to Admin",
+                                            ConfirmAction: "Promote"));
+                                    }
                                 }
+                                <partial name="_ActionMenu" model="actions" />
                             </td>
                         </tr>
                     }

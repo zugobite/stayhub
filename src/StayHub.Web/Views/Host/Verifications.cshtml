@@ -47,29 +47,38 @@
                                     <td>@document.UploadedAt.ToString("d MMM yyyy HH:mm")</td>
                                     <td><span class="sh-pill sh-pill-@document.Status.ToString().ToLowerInvariant()">@document.Status</span></td>
                                     <td>
-                                        @if (document.Status == DocumentStatus.Pending)
-                                        {
-                                            <div class="d-flex gap-2">
-                                                <form asp-action="VerifyDocument" method="post">
-                                                    @Html.AntiForgeryToken()
-                                                    <input type="hidden" name="documentId" value="@document.Id" />
-                                                    <input type="hidden" name="bookingId" value="@checkIn.BookingId" />
-                                                    <input type="hidden" name="approved" value="true" />
-                                                    <button class="sh-btn sh-btn-sm sh-btn-primary" type="submit">Verify</button>
-                                                </form>
-                                                <form asp-action="VerifyDocument" method="post">
-                                                    @Html.AntiForgeryToken()
-                                                    <input type="hidden" name="documentId" value="@document.Id" />
-                                                    <input type="hidden" name="bookingId" value="@checkIn.BookingId" />
-                                                    <input type="hidden" name="approved" value="false" />
-                                                    <button class="sh-btn sh-btn-sm sh-btn-ghost" type="submit">Reject</button>
-                                                </form>
-                                            </div>
+                                        @{
+                                            var actions = new List<ActionMenuItem>
+                                            {
+                                                new("View document", Href: document.FileUrl, OpenInNewTab: true)
+                                            };
+
+                                            if (document.Status == DocumentStatus.Pending)
+                                            {
+                                                actions.Add(new ActionMenuItem(
+                                                    "Verify",
+                                                    Controller: "Host",
+                                                    Action: "VerifyDocument",
+                                                    HiddenFields: new Dictionary<string, string>
+                                                    {
+                                                        ["documentId"] = document.Id.ToString(),
+                                                        ["bookingId"] = checkIn.BookingId.ToString(),
+                                                        ["approved"] = "true"
+                                                    }));
+                                                actions.Add(new ActionMenuItem(
+                                                    "Reject",
+                                                    Controller: "Host",
+                                                    Action: "VerifyDocument",
+                                                    HiddenFields: new Dictionary<string, string>
+                                                    {
+                                                        ["documentId"] = document.Id.ToString(),
+                                                        ["bookingId"] = checkIn.BookingId.ToString(),
+                                                        ["approved"] = "false"
+                                                    },
+                                                    Danger: true));
+                                            }
                                         }
-                                        else
-                                        {
-                                            <span class="text-muted">-</span>
-                                        }
+                                        <partial name="_ActionMenu" model="actions" />
                                     </td>
                                 </tr>
                             }

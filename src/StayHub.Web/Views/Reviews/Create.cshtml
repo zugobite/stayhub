@@ -1,0 +1,44 @@
+@model LeaveReviewViewModel
+@{
+    ViewData["Title"] = "Leave a review";
+}
+
+<div class="sh-statuspage">
+    <header class="sh-statuspage-head">
+        <h1 class="sh-section-title">Leave a review</h1>
+        <p class="text-muted mb-0">Share how your stay at <strong>@Model.PropertyTitle</strong> went.</p>
+    </header>
+
+    <form asp-action="Create" method="post" class="sh-formcard mx-auto">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="BookingId" />
+        <input type="hidden" asp-for="PropertyId" />
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+        <div class="mb-3">
+            <label asp-for="Rating" class="form-label"></label>
+            <select asp-for="Rating" class="form-select">
+                @for (var stars = 5; stars >= 1; stars--)
+                {
+                    <option value="@stars">@stars @(stars == 1 ? "star" : "stars")</option>
+                }
+            </select>
+            <span asp-validation-for="Rating" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Comment" class="form-label"></label>
+            <textarea asp-for="Comment" class="form-control" rows="5" placeholder="What stood out about the place, the host, or the area?"></textarea>
+            <span asp-validation-for="Comment" class="text-danger"></span>
+        </div>
+
+        <div class="d-flex flex-wrap gap-2">
+            <button class="sh-btn sh-btn-primary" type="submit">Submit review</button>
+            <a class="sh-btn sh-btn-ghost" asp-controller="Bookings" asp-action="Index">Cancel</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

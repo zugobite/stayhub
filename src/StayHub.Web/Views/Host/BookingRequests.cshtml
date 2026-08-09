@@ -42,27 +42,32 @@
                                 <td>R @booking.TotalPrice.ToString("N2")</td>
                                 <td><span class="sh-pill sh-pill-@booking.Status.ToString().ToLowerInvariant()">@booking.Status</span></td>
                                 <td>
-                                    <div class="d-flex flex-wrap gap-2">
-                                        @if (!string.IsNullOrEmpty(booking.GuestId))
+                                    @{
+                                        var actions = new List<ActionMenuItem>();
+
+                                        if (!string.IsNullOrEmpty(booking.GuestId))
                                         {
-                                            <a class="sh-btn sh-btn-sm sh-btn-ghost" asp-controller="Messages" asp-action="Conversation" asp-route-id="@booking.GuestId">
-                                                Message guest
-                                            </a>
+                                            actions.Add(new ActionMenuItem(
+                                                "Message guest",
+                                                Href: Url.Action("Conversation", "Messages", new { id = booking.GuestId })));
                                         }
-                                        @if (booking.Status == BookingStatus.Pending)
+
+                                        if (booking.Status == BookingStatus.Pending)
                                         {
-                                            <form asp-action="ApproveBooking" method="post">
-                                                @Html.AntiForgeryToken()
-                                                <input type="hidden" name="id" value="@booking.Id" />
-                                                <button class="sh-btn sh-btn-sm sh-btn-primary" type="submit">Approve</button>
-                                            </form>
-                                            <form asp-action="RejectBooking" method="post">
-                                                @Html.AntiForgeryToken()
-                                                <input type="hidden" name="id" value="@booking.Id" />
-                                                <button class="sh-btn sh-btn-sm sh-btn-ghost" type="submit">Reject</button>
-                                            </form>
+                                            actions.Add(new ActionMenuItem(
+                                                "Approve",
+                                                Controller: "Host",
+                                                Action: "ApproveBooking",
+                                                HiddenFields: new Dictionary<string, string> { ["id"] = booking.Id.ToString() }));
+                                            actions.Add(new ActionMenuItem(
+                                                "Reject",
+                                                Controller: "Host",
+                                                Action: "RejectBooking",
+                                                HiddenFields: new Dictionary<string, string> { ["id"] = booking.Id.ToString() },
+                                                Danger: true));
                                         }
-                                    </div>
+                                    }
+                                    <partial name="_ActionMenu" model="actions" />
                                 </td>
                             </tr>
                         }

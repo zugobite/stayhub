@@ -1,0 +1,63 @@
+@model IReadOnlyList<ActionMenuItem>
+@{
+    if (Model is null || Model.Count == 0)
+    {
+        return;
+    }
+
+    var menuId = $"sh-actions-{Guid.NewGuid():N}";
+}
+
+<div class="dropdown sh-actions">
+    <button class="sh-actions-btn" type="button" id="@menuId" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Actions">
+        <partial name="_Icon" model='"more"' />
+    </button>
+    <ul class="dropdown-menu dropdown-menu-end sh-menu" aria-labelledby="@menuId">
+        @foreach (var item in Model)
+        {
+            <li>
+                @if (!string.IsNullOrEmpty(item.Controller) && !string.IsNullOrEmpty(item.Action))
+                {
+                    if (!string.IsNullOrEmpty(item.ConfirmMessage))
+                    {
+                        <form asp-controller="@item.Controller" asp-action="@item.Action" method="post"
+                              data-sh-confirm="@item.ConfirmMessage"
+                              data-sh-confirm-title="@(item.ConfirmTitle ?? "Please confirm")"
+                              data-sh-confirm-action="@(item.ConfirmAction ?? "Confirm")"
+                              data-sh-confirm-danger="@(item.Danger ? "true" : null)">
+                            @Html.AntiForgeryToken()
+                            @if (item.HiddenFields is not null)
+                            {
+                                foreach (var field in item.HiddenFields)
+                                {
+                                    <input type="hidden" name="@field.Key" value="@field.Value" />
+                                }
+                            }
+                            <button class="dropdown-item @(item.Danger ? "text-danger" : "")" type="submit">@item.Label</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <form asp-controller="@item.Controller" asp-action="@item.Action" method="post">
+                            @Html.AntiForgeryToken()
+                            @if (item.HiddenFields is not null)
+                            {
+                                foreach (var field in item.HiddenFields)
+                                {
+                                    <input type="hidden" name="@field.Key" value="@field.Value" />
+                                }
+                            }
+                            <button class="dropdown-item @(item.Danger ? "text-danger" : "")" type="submit">@item.Label</button>
+                        </form>
+                    }
+                }
+                else if (!string.IsNullOrEmpty(item.Href))
+                {
+                    <a class="dropdown-item @(item.Danger ? "text-danger" : "")"
+                       href="@item.Href"
+                       @(item.OpenInNewTab ? Html.Raw("target=\"_blank\" rel=\"noopener\"") : null)>@item.Label</a>
+                }
+            </li>
+        }
+    </ul>
+</div>

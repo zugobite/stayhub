@@ -25,7 +25,7 @@
         {
             <div class="table-responsive mt-3">
                 <table class="table sh-table align-middle">
-                    <thead><tr><th>Applicant</th><th>Property</th><th>Type</th><th>Submitted</th><th>Status</th><th>Actions</th></tr></thead>
+                    <thead><tr><th>Applicant</th><th>Property</th><th>Type</th><th>Submitted</th><th>Status</th><th class="text-end">Actions</th></tr></thead>
                     <tbody>
                         @foreach (var application in Model)
                         {
@@ -38,7 +38,12 @@
                                 <td>@(application.IsAdditionalProperty ? "Additional" : "Initial")</td>
                                 <td>@application.AppliedAt.ToString("d MMM yyyy")</td>
                                 <td><span class="sh-pill sh-pill-@application.Status.ToString().ToLowerInvariant()">@application.Status</span></td>
-                                <td><a class="sh-btn sh-btn-sm sh-btn-ghost" asp-action="ReviewApplication" asp-route-id="@application.Id">Review</a></td>
+                                <td class="text-end">
+                                    <partial name="_ActionMenu" model='new List<ActionMenuItem>
+                                    {
+                                        new("Review", Href: Url.Action("ReviewApplication", new { id = application.Id }))
+                                    }' />
+                                </td>
                             </tr>
                         }
                     </tbody>

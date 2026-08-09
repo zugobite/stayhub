@@ -10,14 +10,15 @@ using StayHub.Web.ViewModels;
 namespace StayHub.Web.Controllers;
 
 /// <summary>
-/// The guest side of the booking engine: raising requests and reviewing trips.
-/// Hosts and administrators are kept out by the role filter.
+/// The guest side of the booking engine: raising requests, paying, completing
+/// stays, and reviewing trips. Hosts and administrators are kept out by the role filter.
 /// </summary>
 [Authorize(Roles = Roles.Guest)]
 public class BookingsController : Controller
 {
     private readonly IBookingRepository _bookings;
     private readonly IPropertyRepository _properties;
+    private readonly IReviewRepository _reviews;
     private readonly INotificationRepository _notifications;
     private readonly IActivityLogRepository _activityLog;
     private readonly UserManager<ApplicationUser> _userManager;
@@ -27,18 +28,21 @@ public class BookingsController : Controller
     /// </summary>
     /// <param name="bookings">The booking repository.</param>
     /// <param name="properties">The listing repository.</param>
+    /// <param name="reviews">The review repository.</param>
     /// <param name="notifications">The notification repository.</param>
     /// <param name="activityLog">The audit trail repository.</param>
     /// <param name="userManager">The Identity user manager.</param>
     public BookingsController(
         IBookingRepository bookings,
         IPropertyRepository properties,
+        IReviewRepository reviews,
         INotificationRepository notifications,
         IActivityLogRepository activityLog,
         UserManager<ApplicationUser> userManager)
     {
         _bookings = bookings;
         _properties = properties;
+        _reviews = reviews;
         _notifications = notifications;
         _activityLog = activityLog;
         _userManager = userManager;
@@ -52,7 +56,20 @@ public class BookingsController : Controller
     public async Task<IActionResult> Index()
     {
         var userId = _userManager.GetUserId(User)!;
-        return View(new MyTripsViewModel { Bookings = await _bookings.GetByGuestAsync(userId) });
+        var bookings = (await _bookings.GetByGuestAsync(userId)).ToList();
+        var reviewed = new HashSet<int>();
+
+        foreach (var booking in bookings.Where(b => b.Status == BookingStatus.Completed))
+        {
+            if (await _reviews.ExistsAsync(booking.PropertyId, userId))
+                reviewed.Add(booking.PropertyId);
+        }
+
+        return View(new MyTripsViewModel
+        {
+            Bookings = bookings,
+            ReviewedPropertyIds = reviewed
+        });
     }
 
     /// <summary>
@@ -118,6 +135,94 @@ public class BookingsController : Controller
             "/Host/BookingRequests");
 
         TempData["Success"] = "Your booking request has been sent to the host.";
+        return RedirectToAction(nameof(Index));
+    }
+
+    /// <summary>
+    /// Records a simulated payment for an approved booking.
+    /// </summary>
+    /// <param name="id">The booking identifier.</param>
+    /// <returns>A redirect to the trips page.</returns>
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Pay(int id)
+    {
+        var userId = _userManager.GetUserId(User)!;
+        var booking = await _bookings.GetByIdAsync(id);
+
+        if (booking is null || booking.GuestId != userId || booking.Property is null)
+            return NotFound();
+
+        if (!booking.MarkPaid())
+        {
+            TempData["Error"] = "Only an approved booking can be paid.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        booking.Payment = new Payment
+        {
+            BookingId = booking.Id,
+            Amount = booking.TotalPrice,
+            Status = PaymentStatus.Paid,
+            CreatedAt = DateTime.UtcNow
+        };
+
+        await _bookings.UpdateAsync(booking);
+
+        await _activityLog.LogAsync(
+            userId,
+            "BookingPaid",
+            ActivityType.BookingStatusUpdate,
+            $"Booking #{booking.Id} marked Paid (R {booking.TotalPrice:N2}).");
+
+        await _notifications.CreateAsync(
+            booking.Property.HostId,
+            "Booking paid",
+            $"A guest paid R {booking.TotalPrice:N2} for '{booking.Property.Title}'.",
+            NotificationType.System,
+            "/Host/Earnings");
+
+        TempData["Success"] = "Payment recorded. You can continue with check-in when you are ready.";
+        return RedirectToAction(nameof(Index));
+    }
+
+    /// <summary>
+    /// Marks a checked-in stay as completed.
+    /// </summary>
+    /// <param name="id">The booking identifier.</param>
+    /// <returns>A redirect to the trips page.</returns>
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Complete(int id)
+    {
+        var userId = _userManager.GetUserId(User)!;
+        var booking = await _bookings.GetByIdAsync(id);
+
+        if (booking is null || booking.GuestId != userId || booking.Property is null)
+            return NotFound();
+
+        if (!booking.Complete())
+        {
+            TempData["Error"] = "Only a checked-in stay can be marked complete.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        await _bookings.UpdateAsync(booking);
+
+        await _activityLog.LogAsync(
+            userId,
+            "BookingCompleted",
+            ActivityType.BookingStatusUpdate,
+            $"Booking #{booking.Id} marked Completed.");
+
+        await _notifications.CreateAsync(
+            booking.Property.HostId,
+            "Stay completed",
+            $"A guest completed their stay at '{booking.Property.Title}'.",
+            NotificationType.System,
+            "/Host/Dashboard");
+
+        TempData["Success"] = "Stay marked complete. You can leave a review for the host.";
         return RedirectToAction(nameof(Index));
     }
 

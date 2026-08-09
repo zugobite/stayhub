@@ -4,11 +4,25 @@
     var cover = Model.Images.FirstOrDefault(i => i.IsCover)?.ImageUrl
                 ?? Model.Images.FirstOrDefault()?.ImageUrl
                 ?? "/images/placeholder.svg";
+
+    var actions = new List<ActionMenuItem>
+    {
+        new("View details", Href: Url.Action("View", "Properties", new { id = Model.Id })),
+        new("Edit listing", Href: Url.Action("Edit", "Host", new { id = Model.Id })),
+        new("Check-in process", Href: Url.Action("CheckInProcess", "Host", new { id = Model.Id }))
+    };
+
+    actions.Add(new ActionMenuItem(
+        Model.IsActive ? "Deactivate" : "Activate",
+        Controller: "Host",
+        Action: "ToggleActive",
+        HiddenFields: new Dictionary<string, string> { ["id"] = Model.Id.ToString() }));
 }
 
 <article class="sh-card">
     <div class="sh-card-media">
         <img src="@cover" alt="@Model.Title" loading="lazy" />
+        <partial name="_ActionMenu" model="actions" />
         @if (Model.Images.Count > 0)
         {
             <span class="sh-card-count">@Model.Images.Count photos</span>
@@ -27,15 +41,5 @@
             <span class="text-muted">@(Model.Bookings?.Count ?? 0) bookings &middot; @(Model.Reviews?.Count ?? 0) reviews</span>
         </div>
         <div class="sh-card-price"><strong>R @Model.PricePerNight.ToString("N0")</strong> <span class="text-muted">per night</span></div>
-
-        <div class="d-flex flex-wrap gap-2 mt-2">
-            <a class="sh-btn sh-btn-sm sh-btn-ghost" asp-controller="Properties" asp-action="View" asp-route-id="@Model.Id">View Details</a>
-            <a class="sh-btn sh-btn-sm sh-btn-ghost" asp-controller="Host" asp-action="CheckInProcess" asp-route-id="@Model.Id">Check-in Process</a>
-            <form asp-controller="Host" asp-action="ToggleActive" method="post">
-                @Html.AntiForgeryToken()
-                <input type="hidden" name="id" value="@Model.Id" />
-                <button class="sh-btn sh-btn-sm sh-btn-ghost" type="submit">@(Model.IsActive ? "Deactivate" : "Activate")</button>
-            </form>
-        </div>
     </div>
 </article>

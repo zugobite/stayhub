@@ -64,6 +64,9 @@ public class StayHubDbContext : IdentityDbContext<ApplicationUser>
     /// <summary>Gets or sets the uploaded identity documents.</summary>
     public DbSet<GuestDocument> GuestDocuments => Set<GuestDocument>();
 
+    /// <summary>Gets the newsletter subscription set.</summary>
+    public DbSet<NewsletterSubscription> NewsletterSubscriptions => Set<NewsletterSubscription>();
+
     /// <inheritdoc />
     protected override void OnModelCreating(ModelBuilder builder)
     {

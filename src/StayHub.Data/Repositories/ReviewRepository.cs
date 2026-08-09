@@ -48,4 +48,11 @@ public class ReviewRepository : IReviewRepository
         await _context.SaveChangesAsync();
         return review.Id;
     }
+
+    /// <inheritdoc />
+    public Task<bool> ExistsAsync(int propertyId, string reviewerId)
+    {
+        return _context.Reviews.AnyAsync(r =>
+            r.PropertyId == propertyId && r.ReviewerId == reviewerId);
+    }
 }

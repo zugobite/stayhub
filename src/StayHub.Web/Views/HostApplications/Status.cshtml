@@ -3,39 +3,55 @@
     ViewData["Title"] = "Host application status";
 }
 
-<h1 class="sh-section-title">Host application status</h1>
+<div class="sh-statuspage">
+    <header class="sh-statuspage-head">
+        <h1 class="sh-section-title">Host application status</h1>
+        <p class="text-muted mb-0">Track every listing you have submitted for review.</p>
+    </header>
 
-@if (!Model.Any())
-{
-    <p class="text-muted">You have not applied yet. <a asp-action="Apply">Become a Host</a>.</p>
-}
-else
-{
-    <div class="table-responsive">
-        <table class="table sh-table align-middle">
-            <thead>
-                <tr>
-                    <th>Property</th>
-                    <th>Type</th>
-                    <th>Submitted</th>
-                    <th>Reviewed</th>
-                    <th>Status</th>
-                    <th>Notes</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var application in Model)
-                {
-                    <tr>
-                        <td>@application.Property?.Title</td>
-                        <td>@(application.IsAdditionalProperty ? "Additional property" : "Initial host application")</td>
-                        <td>@application.AppliedAt.ToString("d MMM yyyy")</td>
-                        <td>@(application.ReviewedAt?.ToString("d MMM yyyy") ?? "-")</td>
-                        <td><span class="sh-pill sh-pill-@application.Status.ToString().ToLowerInvariant()">@application.Status</span></td>
-                        <td class="text-muted">@application.ReviewNotes</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-}
+    @if (!Model.Any())
+    {
+        <partial name="_EmptyState" model='new EmptyState("empty-listings", "No applications yet", "Submit a host application and it will show up here once an administrator can review it.", "Become a Host", "HostApplications", "Apply")' />
+    }
+    else
+    {
+        <div class="sh-panel sh-statuspage-panel">
+            <div class="table-responsive">
+                <table class="table sh-table align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>Property</th>
+                            <th>Type</th>
+                            <th>Submitted</th>
+                            <th>Reviewed</th>
+                            <th>Status</th>
+                            <th>Notes</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var application in Model)
+                        {
+                            var actions = application.PropertyId is > 0
+                                ? new List<ActionMenuItem>
+                                {
+                                    new("View property", Href: Url.Action("View", "Properties", new { id = application.PropertyId }))
+                                }
+                                : new List<ActionMenuItem>();
+
+                            <tr>
+                                <td>@application.Property?.Title</td>
+                                <td>@(application.IsAdditionalProperty ? "Additional property" : "Initial host application")</td>
+                                <td>@application.AppliedAt.ToString("d MMM yyyy")</td>
+                                <td>@(application.ReviewedAt?.ToString("d MMM yyyy") ?? "-")</td>
+                                <td><span class="sh-pill sh-pill-@application.Status.ToString().ToLowerInvariant()">@application.Status</span></td>
+                                <td class="text-muted">@application.ReviewNotes</td>
+                                <td class="text-end"><partial name="_ActionMenu" model="actions" /></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+</div>

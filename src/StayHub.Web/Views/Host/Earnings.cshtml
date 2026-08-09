@@ -20,11 +20,23 @@
         <div class="table-responsive mt-4">
             <table class="table sh-table align-middle">
                 <thead>
-                    <tr><th>Booking</th><th>Property</th><th>Guest</th><th>Dates</th><th>Status</th><th class="text-end">Amount</th></tr>
+                    <tr><th>Booking</th><th>Property</th><th>Guest</th><th>Dates</th><th>Status</th><th class="text-end">Amount</th><th class="text-end">Actions</th></tr>
                 </thead>
                 <tbody>
                     @foreach (var booking in Model)
                     {
+                        var actions = new List<ActionMenuItem>
+                        {
+                            new("View property", Href: Url.Action("View", "Properties", new { id = booking.PropertyId }))
+                        };
+
+                        if (!string.IsNullOrEmpty(booking.GuestId))
+                        {
+                            actions.Add(new ActionMenuItem(
+                                "Message guest",
+                                Href: Url.Action("Conversation", "Messages", new { id = booking.GuestId })));
+                        }
+
                         <tr>
                             <td>#@booking.Id</td>
                             <td>@booking.Property?.Title</td>
@@ -32,6 +44,7 @@
                             <td>@booking.CheckInDate.ToString("d MMM") – @booking.CheckOutDate.ToString("d MMM yyyy")</td>
                             <td><span class="sh-pill sh-pill-@booking.Status.ToString().ToLowerInvariant()">@booking.Status</span></td>
                             <td class="text-end">R @booking.TotalPrice.ToString("N2")</td>
+                            <td class="text-end"><partial name="_ActionMenu" model="actions" /></td>
                         </tr>
                     }
                 </tbody>

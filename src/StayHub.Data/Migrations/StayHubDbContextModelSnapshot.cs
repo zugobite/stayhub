@@ -666,6 +666,30 @@ namespace StayHub.Data.Migrations
                     b.ToTable("Notifications");
                 });
 
+            modelBuilder.Entity("StayHub.Core.Models.NewsletterSubscription", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<DateTime>("SubscribedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.ToTable("NewsletterSubscriptions");
+                });
+
             modelBuilder.Entity("StayHub.Core.Models.Payment", b =>
                 {
                     b.Property<int>("Id")

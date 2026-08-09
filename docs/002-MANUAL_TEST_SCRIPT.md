@@ -119,6 +119,19 @@ While signed in as the new Host, browse directly to `/Bookings`.
 
 **Verify in SQL:** `ActivityLogs` contains `BookingApproved` with `ActivityType = 'BookingStatusUpdate'`.
 
+### Step 9b: Guest pays (simulated)
+
+1. Sign in as the Guest.
+2. Open **My trips**.
+3. On the approved booking, open the actions menu and click **Pay now**. Confirm.
+
+**Expected:** Status becomes `Paid`.
+
+**Verify in SQL:**
+- The booking's `Status` is `Paid`.
+- `SELECT * FROM Payments WHERE BookingId = <id>;` shows `Amount` matching the booking total and `Status = 'Paid'`.
+- `ActivityLogs` contains `BookingPaid`.
+
 ---
 
 ## Test Scenario 5: Check-in workflow
@@ -133,7 +146,7 @@ While signed in as the new Host, browse directly to `/Bookings`.
 
 ### Step 11: Guest completes check-in
 
-1. Sign in as the Guest, open **My trips**, click **Start check-in**.
+1. Sign in as the Guest, open **My trips**, click **Start check-in** (available for `Approved` or `Paid`).
 2. Work through each step.
 3. On the final step, choose a document type and upload a JPG, PNG, or PDF.
 
@@ -149,6 +162,36 @@ While signed in as the new Host, browse directly to `/Bookings`.
 **Expected:** The queue empties.
 
 **Verify in SQL:** query 5 - the booking's status is now `CheckedIn`. `GuestDocuments.Status` is `Verified`.
+
+### Step 12b: Guest marks the stay complete and leaves a review
+
+1. Sign in as the Guest, open **My trips**.
+2. On the checked-in booking, click **Mark stay complete** and confirm.
+
+**Expected:** Status becomes `Completed`.
+
+3. Click **Leave a review**, choose a rating, write at least 10 characters, and submit.
+
+**Expected:** Redirected to **My trips** with a success message. The listing's detail page shows the new review.
+
+**Verify in SQL:**
+- Booking `Status = 'Completed'`.
+- `SELECT * FROM Reviews WHERE PropertyId = <id> AND ReviewerId = '<guestId>';` returns the new row.
+- `ActivityLogs` contains `BookingCompleted` and `ReviewSubmitted`.
+
+---
+
+## Test Scenario 5b: Host edits a listing
+
+### Step 12c: Edit listing details
+
+1. Sign in as `host@stayhub.co.za`.
+2. Open **My Properties**, open the actions menu on a listing, click **Edit listing**.
+3. Change the title (or nightly price), optionally attach another photo, and save.
+
+**Expected:** Redirected to **My Properties** with a success message. The public listing page shows the new title/price.
+
+**Verify in SQL:** `ActivityLogs` contains `PropertyUpdated` for that listing.
 
 ---
 
@@ -220,7 +263,10 @@ As an Admin, open **Activity Logs** and filter by type.
 - [ ] Approval publishes the listing (`IsActive = 1`)
 - [ ] Guest-only and Host-only routes each refuse the other role
 - [ ] Booking total matches `(PricePerNight × Nights) + CleaningFee + ServiceFee`
-- [ ] Booking moves Pending → Approved → CheckedIn
+- [ ] Booking moves Pending → Approved → Paid → CheckedIn → Completed
+- [ ] Simulated Pay creates a `Payments` row and sets booking status to `Paid`
+- [ ] Guest can leave a review after completing a stay
+- [ ] Host can edit an owned listing (title/price/photos) and the change persists
 - [ ] Check-in steps persist as JSON, document uploads persist as files plus rows
 - [ ] Message and notification `IsRead` flags update in the database
 - [ ] Guest can message a host from a property page; host can reply from booking/check-in screens

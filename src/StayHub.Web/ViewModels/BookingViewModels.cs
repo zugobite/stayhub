@@ -49,4 +49,10 @@ public class MyTripsViewModel
 {
     /// <summary>Gets or sets the guest's bookings.</summary>
     public IEnumerable<Booking> Bookings { get; set; } = new List<Booking>();
+
+    /// <summary>
+    /// Gets or sets the property identifiers the guest has already reviewed,
+    /// used to hide the leave-a-review action on completed trips.
+    /// </summary>
+    public HashSet<int> ReviewedPropertyIds { get; set; } = new();
 }

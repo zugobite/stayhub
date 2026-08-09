@@ -82,30 +82,72 @@
                         </div>
 
                         <div class="sh-trip-actions">
-                            @if (!string.IsNullOrEmpty(booking.Property?.HostId))
-                            {
-                                <a class="sh-btn sh-btn-sm sh-btn-ghost" asp-controller="Messages" asp-action="Conversation" asp-route-id="@booking.Property.HostId">
-                                    Message host
-                                </a>
+                            @{
+                                var actions = new List<ActionMenuItem>
+                                {
+                                    new("View listing", Href: Url.Action("View", "Properties", new { id = booking.PropertyId }))
+                                };
+
+                                if (!string.IsNullOrEmpty(booking.Property?.HostId))
+                                {
+                                    actions.Add(new ActionMenuItem(
+                                        "Message host",
+                                        Href: Url.Action("Conversation", "Messages", new { id = booking.Property.HostId })));
+                                }
+
+                                if (booking.Status == BookingStatus.Approved)
+                                {
+                                    actions.Add(new ActionMenuItem(
+                                        "Pay now",
+                                        Controller: "Bookings",
+                                        Action: "Pay",
+                                        HiddenFields: new Dictionary<string, string> { ["id"] = booking.Id.ToString() },
+                                        ConfirmMessage: $"Record a simulated payment of R {booking.TotalPrice:N2} for {booking.Property?.Title}?",
+                                        ConfirmTitle: "Pay for stay",
+                                        ConfirmAction: "Pay now"));
+                                }
+
+                                if (booking.Status is BookingStatus.Approved or BookingStatus.Paid)
+                                {
+                                    actions.Add(new ActionMenuItem(
+                                        booking.GuestCheckIn is null ? "Start check-in" : "Continue check-in",
+                                        Href: Url.Action("Start", "CheckIn", new { id = booking.Id })));
+                                }
+
+                                if (booking.Status == BookingStatus.CheckedIn)
+                                {
+                                    actions.Add(new ActionMenuItem(
+                                        "Mark stay complete",
+                                        Controller: "Bookings",
+                                        Action: "Complete",
+                                        HiddenFields: new Dictionary<string, string> { ["id"] = booking.Id.ToString() },
+                                        ConfirmMessage: $"Mark your stay at {booking.Property?.Title} as complete?",
+                                        ConfirmTitle: "Complete stay",
+                                        ConfirmAction: "Mark complete"));
+                                }
+
+                                if (booking.Status == BookingStatus.Completed
+                                    && !Model.ReviewedPropertyIds.Contains(booking.PropertyId))
+                                {
+                                    actions.Add(new ActionMenuItem(
+                                        "Leave a review",
+                                        Href: Url.Action("Create", "Reviews", new { bookingId = booking.Id })));
+                                }
+
+                                if (booking.Status is BookingStatus.Pending or BookingStatus.Approved or BookingStatus.Paid)
+                                {
+                                    actions.Add(new ActionMenuItem(
+                                        "Cancel booking",
+                                        Controller: "Bookings",
+                                        Action: "Cancel",
+                                        HiddenFields: new Dictionary<string, string> { ["id"] = booking.Id.ToString() },
+                                        ConfirmMessage: $"Your stay at {booking.Property?.Title} from {booking.CheckInDate:d MMM} to {booking.CheckOutDate:d MMM yyyy} will be cancelled.",
+                                        ConfirmTitle: "Cancel booking",
+                                        ConfirmAction: "Cancel booking",
+                                        Danger: true));
+                                }
                             }
-                            @if (booking.Status is BookingStatus.Approved or BookingStatus.Paid)
-                            {
-                                <a class="sh-btn sh-btn-sm sh-btn-primary" asp-controller="CheckIn" asp-action="Start" asp-route-id="@booking.Id">
-                                    @(booking.GuestCheckIn is null ? "Start check-in" : "Continue check-in")
-                                </a>
-                            }
-                            @if (booking.Status is BookingStatus.Pending or BookingStatus.Approved)
-                            {
-                                <form asp-action="Cancel" method="post"
-                                      data-sh-confirm-title="Cancel booking"
-                                      data-sh-confirm="Your stay at @booking.Property?.Title from @booking.CheckInDate.ToString("d MMM") to @booking.CheckOutDate.ToString("d MMM yyyy") will be cancelled."
-                                      data-sh-confirm-action="Cancel booking"
-                                      data-sh-confirm-danger="true">
-                                    @Html.AntiForgeryToken()
-                                    <input type="hidden" name="id" value="@booking.Id" />
-                                    <button class="sh-btn sh-btn-sm sh-btn-ghost" type="submit">Cancel</button>
-                                </form>
-                            }
+                            <partial name="_ActionMenu" model="actions" />
                         </div>
                     </article>
                 }
