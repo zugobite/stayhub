@@ -13,7 +13,8 @@ A managed property rental ecosystem built with C# and ASP.NET Core MVC, demonstr
 - **Property Discovery** - Gallery of active listings across all nine provinces, with wishlist hearts and a photo carousel
 - **Advanced Search** - Keyword, province, city, stay type, price range, guests, bedrooms, bathrooms, required amenities, and five sort orders, all composable in one query string
 - **Host Profiles** - Every listing shows who you would be staying with: bio, home town, hosting-since date, listing and review counts, and their other stays
-- **Booking Engine** - Date and traveller selection with a live price breakdown matching `(PricePerNight × Nights) + CleaningFee + ServiceFee`
+- **Booking Engine** - Date and traveller selection with a live price breakdown matching `(PricePerNight × Nights × Guests) + CleaningFee + ServiceFee`, priced per person per night
+- **Simulated Payment Gateway** - "Pay Now" hands off to a sandbox checkout with pre-filled test cards, Luhn and expiry validation, approving and declining cards, and a referenced receipt. No money moves and only the last four digits are stored
 - **Multi-Step Guest Check-in** - Host-defined steps stored as JSON, ending in an ID or passport upload the host verifies
 - **Host Dashboard** - Listing management with an active toggle, booking approvals, earnings, reviews, and document verification
 - **Admin Dashboard** - Application review queue, platform statistics, all bookings and listings, and SuperAdmin-only role promotion

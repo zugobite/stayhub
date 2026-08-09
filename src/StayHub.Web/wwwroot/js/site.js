@@ -9,6 +9,7 @@
     var breakdown = document.querySelector('.sh-pricebreakdown');
     var checkIn = document.getElementById('checkIn');
     var checkOut = document.getElementById('checkOut');
+    var guestsInput = document.getElementById('guests');
 
     if (!breakdown || !checkIn || !checkOut) {
         return;
@@ -30,12 +31,21 @@
             nights = 1;
         }
 
-        var subtotal = nightly * nights;
+        // The nightly rate is per person, so party size scales the subtotal and,
+        // through it, the service fee. The cleaning fee stays flat per stay.
+        var guests = parseInt(guestsInput && guestsInput.value, 10);
+
+        if (!isFinite(guests) || guests < 1) {
+            guests = 1;
+        }
+
+        var subtotal = nightly * nights * guests;
         var serviceFee = Math.round(subtotal * serviceRate * 100) / 100;
         var total = subtotal + cleaning + serviceFee;
 
         document.getElementById('nightsLabel').textContent =
-            'R ' + rand.format(nightly) + ' × ' + nights + (nights === 1 ? ' night' : ' nights');
+            'R ' + rand.format(nightly) + ' × ' + nights + (nights === 1 ? ' night' : ' nights') +
+            ' × ' + guests + (guests === 1 ? ' guest' : ' guests');
         document.getElementById('subtotal').textContent = 'R ' + rand.format(subtotal);
         document.getElementById('serviceFee').textContent = 'R ' + rand.format(serviceFee);
         document.getElementById('total').textContent = 'R ' + rand.format(total);
@@ -43,6 +53,11 @@
 
     checkIn.addEventListener('change', recalculate);
     checkOut.addEventListener('change', recalculate);
+
+    if (guestsInput) {
+        guestsInput.addEventListener('change', recalculate);
+        guestsInput.addEventListener('input', recalculate);
+    }
     recalculate();
 })();
 

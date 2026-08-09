@@ -67,6 +67,6 @@
         </div>
         <a class="sh-card-title" asp-controller="Properties" asp-action="View" asp-route-id="@Model.Id">@Model.Title</a>
         <div class="sh-card-meta">@Model.PropertyType &middot; @Model.MaxGuests guests &middot; @Model.Bedrooms bedrooms</div>
-        <div class="sh-card-price"><strong>R @Model.PricePerNight.ToString("N0")</strong> <span class="text-muted">per night</span></div>
+        <div class="sh-card-price"><strong>R @Model.PricePerNight.ToString("N0")</strong> <span class="text-muted">per person / night</span></div>
     </div>
 </article>

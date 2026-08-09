@@ -42,6 +42,6 @@
             <span class="sh-tag">@Model.PropertyType</span>
             <span class="text-muted">@(Model.Bookings?.Count ?? 0) bookings &middot; @(Model.Reviews?.Count ?? 0) reviews</span>
         </div>
-        <div class="sh-card-price"><strong>R @Model.PricePerNight.ToString("N0")</strong> <span class="text-muted">per night</span></div>
+        <div class="sh-card-price"><strong>R @Model.PricePerNight.ToString("N0")</strong> <span class="text-muted">per person / night</span></div>
     </div>
 </article>

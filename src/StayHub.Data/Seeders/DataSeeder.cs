@@ -95,7 +95,7 @@ public static class DataSeeder
             (Listing("Lovely City Apartment",
                 "A bright, modern apartment a short walk from the V&A Waterfront. Sleeps four, with fast WiFi " +
                 "and a fully equipped kitchen.",
-                3100m, 350m, "42 Long Street", "Cape Town", Province.WesternCape, PropertyType.Apartment,
+                780m, 350m, "42 Long Street", "Cape Town", Province.WesternCape, PropertyType.Apartment,
                 4, 2, 3, 1, zascia.Id, 30),
                 new[] { "/images/seed/apartment-1.svg", "/images/seed/apartment-2.svg" },
                 new[] { "WiFi", "Kitchen", "Washer", "Dryer" }),
@@ -103,7 +103,7 @@ public static class DataSeeder
             (Listing("Garden Cottage Retreat",
                 "A quiet cottage set in an established garden in Johannesburg's leafy north. Ideal for a " +
                 "weekend away from the city noise.",
-                1780m, 250m, "8 Jan Smuts Avenue", "Johannesburg", Province.Gauteng, PropertyType.Cottage,
+                890m, 250m, "8 Jan Smuts Avenue", "Johannesburg", Province.Gauteng, PropertyType.Cottage,
                 2, 1, 1, 1, lerato.Id, 14),
                 new[] { "/images/seed/cottage-1.svg" },
                 new[] { "WiFi", "Kitchen" }),
@@ -111,7 +111,7 @@ public static class DataSeeder
             (Listing("Camps Bay Villa with Pool",
                 "Glass-fronted villa above Camps Bay beach. Heated pool, eight beds, and the whole Atlantic " +
                 "seaboard laid out below the deck.",
-                8900m, 900m, "17 Theresa Avenue", "Cape Town", Province.WesternCape, PropertyType.Villa,
+                1150m, 900m, "17 Theresa Avenue", "Cape Town", Province.WesternCape, PropertyType.Villa,
                 8, 4, 5, 3, zascia.Id, 26),
                 new[] { "/images/seed/villa-pool.svg", "/images/seed/apartment-2.svg" },
                 new[] { "WiFi", "Kitchen", "Pool", "Air Conditioning", "Free Parking", "Washer" }),
@@ -119,7 +119,7 @@ public static class DataSeeder
             (Listing("Umhlanga Beach House",
                 "Family beach house a hundred metres from the promenade. Wide veranda, outdoor shower, and " +
                 "the lighthouse visible from the front room.",
-                4600m, 500m, "3 Lagoon Drive", "Umhlanga", Province.KwaZuluNatal, PropertyType.House,
+                790m, 500m, "3 Lagoon Drive", "Umhlanga", Province.KwaZuluNatal, PropertyType.House,
                 6, 3, 4, 2, ayesha.Id, 24),
                 new[] { "/images/seed/beach-house.svg" },
                 new[] { "WiFi", "Kitchen", "Air Conditioning", "Free Parking" }),
@@ -127,7 +127,7 @@ public static class DataSeeder
             (Listing("Kruger Gate Bushveld Lodge",
                 "Thatched lodge fifteen minutes from the Phabeni gate. Outdoor boma, resident bushbabies, and " +
                 "no traffic noise whatsoever.",
-                5400m, 600m, "Plot 22, Sabie River Road", "Hazyview", Province.Mpumalanga, PropertyType.GuestHouse,
+                920m, 600m, "Plot 22, Sabie River Road", "Hazyview", Province.Mpumalanga, PropertyType.GuestHouse,
                 6, 3, 3, 2, sipho.Id, 22),
                 new[] { "/images/seed/bushveld-lodge.svg" },
                 new[] { "WiFi", "Kitchen", "Pool", "Free Parking" }),
@@ -135,7 +135,7 @@ public static class DataSeeder
             (Listing("Vineyard Cottage, Stellenbosch",
                 "Restored labourer's cottage on a working wine farm. Thick walls, a wood stove, and vines " +
                 "running right up to the stoep.",
-                2950m, 300m, "Bosmanshoek Farm, R44", "Stellenbosch", Province.WesternCape, PropertyType.Cottage,
+                740m, 300m, "Bosmanshoek Farm, R44", "Stellenbosch", Province.WesternCape, PropertyType.Cottage,
                 4, 2, 2, 1, pieter.Id, 20),
                 new[] { "/images/seed/winelands.svg" },
                 new[] { "WiFi", "Kitchen", "Heating", "Free Parking" }),
@@ -143,7 +143,7 @@ public static class DataSeeder
             (Listing("Karoo Farmstay",
                 "Nineteenth-century farmhouse outside Graaff-Reinet. Enormous skies, complete silence, and a " +
                 "stoep built for watching thunderstorms roll in.",
-                1450m, 200m, "Rietfontein Farm, N9", "Graaff-Reinet", Province.EasternCape, PropertyType.House,
+                380m, 200m, "Rietfontein Farm, N9", "Graaff-Reinet", Province.EasternCape, PropertyType.House,
                 4, 2, 3, 1, pieter.Id, 18),
                 new[] { "/images/seed/karoo-cottage.svg" },
                 new[] { "Kitchen", "Heating", "Free Parking" }),
@@ -151,14 +151,14 @@ public static class DataSeeder
             (Listing("Maboneng Warehouse Loft",
                 "Double-volume loft in a converted warehouse. Steel windows, a proper coffee machine, and the " +
                 "Sunday market downstairs.",
-                2200m, 280m, "264 Fox Street", "Johannesburg", Province.Gauteng, PropertyType.Apartment,
+                1100m, 280m, "264 Fox Street", "Johannesburg", Province.Gauteng, PropertyType.Apartment,
                 2, 1, 1, 1, lerato.Id, 16),
                 new[] { "/images/seed/city-loft.svg" },
                 new[] { "WiFi", "Kitchen", "Washer", "Air Conditioning" }),
 
             (Listing("Durban Beachfront Apartment",
                 "Tenth-floor flat on the Golden Mile with uninterrupted sea views and secure parking downstairs.",
-                2650m, 300m, "155 OR Tambo Parade", "Durban", Province.KwaZuluNatal, PropertyType.Apartment,
+                670m, 300m, "155 OR Tambo Parade", "Durban", Province.KwaZuluNatal, PropertyType.Apartment,
                 4, 2, 2, 2, ayesha.Id, 15),
                 new[] { "/images/seed/apartment-2.svg" },
                 new[] { "WiFi", "Kitchen", "Air Conditioning", "Pool", "Free Parking" }),
@@ -166,7 +166,7 @@ public static class DataSeeder
             (Listing("Kalahari Stargazing Cabin",
                 "Off-grid cabin outside Upington with a bed that rolls onto the deck. Some of the darkest skies " +
                 "left in the country.",
-                1980m, 220m, "Farm 41, Kalahari Road", "Upington", Province.NorthernCape, PropertyType.Cottage,
+                990m, 220m, "Farm 41, Kalahari Road", "Upington", Province.NorthernCape, PropertyType.Cottage,
                 2, 1, 1, 1, sipho.Id, 12),
                 new[] { "/images/seed/karoo-cottage.svg" },
                 new[] { "Kitchen", "Heating", "Free Parking" }),
@@ -174,7 +174,7 @@ public static class DataSeeder
             (Listing("Clarens Mountain Cottage",
                 "Sandstone cottage looking onto the Maluti mountains. Ten minutes' walk from the village square " +
                 "and its breweries.",
-                1690m, 240m, "12 Van Reenen Street", "Clarens", Province.FreeState, PropertyType.Cottage,
+                430m, 240m, "12 Van Reenen Street", "Clarens", Province.FreeState, PropertyType.Cottage,
                 4, 2, 2, 1, lerato.Id, 11),
                 new[] { "/images/seed/winelands.svg" },
                 new[] { "WiFi", "Kitchen", "Heating", "Free Parking" }),
@@ -182,7 +182,7 @@ public static class DataSeeder
             (Listing("Hoedspruit Safari Suite",
                 "Private suite on a wildlife estate. Giraffe wander past the plunge pool, and the airstrip is " +
                 "twenty minutes away.",
-                6200m, 700m, "Raptor's View Wildlife Estate", "Hoedspruit", Province.Limpopo, PropertyType.GuestHouse,
+                1560m, 700m, "Raptor's View Wildlife Estate", "Hoedspruit", Province.Limpopo, PropertyType.GuestHouse,
                 4, 2, 2, 2, sipho.Id, 9),
                 new[] { "/images/seed/bushveld-lodge.svg" },
                 new[] { "WiFi", "Pool", "Air Conditioning", "Free Parking", "Kitchen" }),
@@ -190,7 +190,7 @@ public static class DataSeeder
             (Listing("Pilanesberg Game Cottage",
                 "Self-catering cottage inside a private reserve bordering Pilanesberg. Braai area, game drives " +
                 "on request, and zebra on the lawn most mornings.",
-                3400m, 400m, "Black Rhino Reserve", "Rustenburg", Province.NorthWest, PropertyType.Cottage,
+                690m, 400m, "Black Rhino Reserve", "Rustenburg", Province.NorthWest, PropertyType.Cottage,
                 5, 2, 3, 2, sipho.Id, 8),
                 new[] { "/images/seed/karoo-cottage.svg" },
                 new[] { "Kitchen", "Pool", "Free Parking", "WiFi" }),
@@ -198,7 +198,7 @@ public static class DataSeeder
             (Listing("Knysna Lagoon House",
                 "Timber house on the lagoon edge with a jetty and a kayak. The Heads are a short drive, the " +
                 "oysters are closer.",
-                3850m, 450m, "9 Belvidere Road", "Knysna", Province.WesternCape, PropertyType.House,
+                650m, 450m, "9 Belvidere Road", "Knysna", Province.WesternCape, PropertyType.House,
                 6, 3, 4, 2, zascia.Id, 6),
                 new[] { "/images/seed/beach-house.svg" },
                 new[] { "WiFi", "Kitchen", "Heating", "Free Parking", "Washer" }),
@@ -206,7 +206,7 @@ public static class DataSeeder
             (Listing("Jeffreys Bay Surf Room",
                 "Simple private room a two-minute walk from Supertubes. Board storage, outdoor shower, and a " +
                 "shared kitchen.",
-                890m, 120m, "6 Pepper Street", "Jeffreys Bay", Province.EasternCape, PropertyType.Room,
+                450m, 120m, "6 Pepper Street", "Jeffreys Bay", Province.EasternCape, PropertyType.Room,
                 2, 1, 1, 1, ayesha.Id, 4),
                 new[] { "/images/seed/cottage-1.svg" },
                 new[] { "WiFi", "Kitchen" })
@@ -254,7 +254,7 @@ public static class DataSeeder
             CheckInDate = DateTime.UtcNow.Date.AddDays(7),
             CheckOutDate = DateTime.UtcNow.Date.AddDays(8),
             NumberOfGuests = 2,
-            TotalPrice = apartment.CalculateTotalPrice(1),
+            TotalPrice = apartment.CalculateTotalPrice(1, 2),
             CreatedAt = DateTime.UtcNow.AddDays(-2)
         });
 

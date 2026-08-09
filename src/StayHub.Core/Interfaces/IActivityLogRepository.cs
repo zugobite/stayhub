@@ -15,7 +15,7 @@ public interface IActivityLogRepository
     /// <param name="action">The action name, for example <c>HostApplicationSubmitted</c>.</param>
     /// <param name="activityType">The action category.</param>
     /// <param name="details">Optional detail about the affected entity.</param>
-    /// <returns>The generated identifier.</returns>
+    /// <returns>The generated identifier, or <c>0</c> when the user no longer exists.</returns>
     Task<int> LogAsync(string userId, string action, ActivityType activityType, string? details = null);
 
     /// <summary>

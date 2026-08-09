@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Per-person pricing: `PricePerNight` is now charged per guest per night, with `CalculateSubtotal/TotalPrice/ServiceFee` taking a guest count and the live breakdown reacting to the guest field
+- Simulated card gateway (`StayPay Sandbox`) behind `IPaymentGateway`: a checkout page pre-filled with a sandbox card, Luhn and expiry validation, approving and declining test cards, a reference and last-4 on the receipt, and declines recorded as `PaymentStatus.Failed`
 - `Province` enum and `HostProperty.Province`, with an index, so listings can be browsed by region
 - `ApplicationUser.Bio` and `ApplicationUser.Location`, surfaced as a host profile card on the listing page
 - Advanced gallery search: keyword, province, city, stay type, price range, guests, bedrooms, bathrooms, required amenities (AND-matched), and five sort orders
@@ -19,6 +21,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Seed nightly rates rescaled to per-person figures so totals stay realistic (a R 8 900 villa is now R 1 150 per person)
+- "Pay Now" opens the gateway checkout instead of charging inline
 - Seeded host tenure is now fixed rather than random, so a rebuilt database reproduces the same "hosting since" dates
 
 ### Fixed

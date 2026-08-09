@@ -115,7 +115,7 @@ public class BookingsController : Controller
             CheckInDate = model.CheckInDate.Date,
             CheckOutDate = model.CheckOutDate.Date,
             NumberOfGuests = model.NumberOfGuests,
-            TotalPrice = property.CalculateTotalPrice(nights),
+            TotalPrice = property.CalculateTotalPrice(nights, model.NumberOfGuests),
             CreatedAt = DateTime.UtcNow
         };
 

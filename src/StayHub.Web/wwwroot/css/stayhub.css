@@ -1581,7 +1581,11 @@ textarea.form-control { border-radius: var(--sh-radius); }
 .sh-table thead th { border-bottom: 1px solid var(--sh-line); background: transparent; }
 .sh-table tbody tr { border-bottom: 1px solid var(--sh-shade); }
 .sh-table tbody tr:hover { background: var(--sh-shade); }
-.sh-table tbody tr:last-child { border-bottom: 0; }
+/* Bootstrap paints borders on cells; clear both the row and its cells. */
+.sh-table tbody tr:last-child,
+.sh-table tbody tr:last-child > * {
+    border-bottom: 0;
+}
 .sh-table a { color: var(--sh-primary); text-decoration: none; font-weight: 600; }
 .sh-table a:hover { text-decoration: underline; }
 
@@ -3027,7 +3031,11 @@ textarea.form-control { border-radius: var(--sh-radius); }
 .sh-closer {
     position: relative;
     overflow: hidden;
-    text-align: center;
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr);
+    gap: 2.5rem;
+    align-items: center;
+    text-align: left;
     border: 1.5px solid var(--sh-ink);
     border-radius: 24px;
     background:
@@ -3086,8 +3094,7 @@ textarea.form-control { border-radius: var(--sh-radius); }
 .sh-closer-copy {
     position: relative;
     z-index: 1;
-    max-width: 36rem;
-    margin: 0 auto;
+    max-width: 34rem;
     animation: sh-closer-rise .7s ease-out both;
 }
 
@@ -3101,7 +3108,7 @@ textarea.form-control { border-radius: var(--sh-radius); }
     font-weight: 800;
     letter-spacing: -.035em;
     line-height: 1.1;
-    margin: 0 0 .85rem;
+    margin: 0 0 1rem;
 }
 
 .sh-closer h2 em {
@@ -3110,12 +3117,55 @@ textarea.form-control { border-radius: var(--sh-radius); }
     padding: 0 .08em;
 }
 
-.sh-closer p {
-    color: rgba(255, 255, 255, .82);
-    margin: 0 auto 1.75rem;
-    font-size: 1.05rem;
+.sh-closer-lead {
+    color: rgba(255, 255, 255, .88);
+    margin: 0 0 1rem;
+    font-size: 1.08rem;
+    line-height: 1.6;
+    max-width: 46ch;
+}
+
+.sh-closer-meta {
+    color: rgba(255, 255, 255, .72);
+    margin: 0 0 1.35rem;
+    font-size: .95rem;
     line-height: 1.55;
-    max-width: 34ch;
+    max-width: 44ch;
+}
+
+.sh-closer-meta strong {
+    color: #fff;
+    font-weight: 700;
+}
+
+.sh-closer-points {
+    list-style: none;
+    margin: 0 0 1.85rem;
+    padding: 0;
+    display: grid;
+    gap: .5rem;
+    max-width: 40rem;
+}
+
+.sh-closer-points li {
+    position: relative;
+    padding-left: 1.15rem;
+    font-size: .88rem;
+    font-weight: 600;
+    letter-spacing: -.01em;
+    color: rgba(255, 255, 255, .9);
+}
+
+.sh-closer-points li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: .45em;
+    width: .55rem;
+    height: .55rem;
+    border-radius: 50%;
+    background: var(--sh-sun);
+    box-shadow: 0 0 0 1.5px rgba(22, 50, 63, .35);
 }
 
 .sh-closer-actions {
@@ -3190,3 +3240,272 @@ textarea.form-control { border-radius: var(--sh-radius); }
 
 .sh-quote-author { display: flex; align-items: center; gap: .75rem; }
 .sh-quote-place { display: block; }
+
+/* --- Simulated payment gateway --------------------------------------------- */
+
+/* Deliberately styled as a separate surface from the rest of StayHub, so the
+   hand-off to a "gateway" reads as leaving the site the way a real one would. */
+.sh-gateway {
+    max-width: 980px;
+    margin: 0 auto;
+    border: 1.5px solid var(--sh-ink);
+    border-radius: var(--sh-radius);
+    overflow: hidden;
+    box-shadow: var(--sh-press);
+    background: var(--sh-surface);
+}
+
+.sh-gateway-head {
+    display: flex;
+    align-items: center;
+    gap: .85rem;
+    padding: 1rem 1.4rem;
+    background: var(--sh-ink);
+    color: #fff;
+}
+
+.sh-gateway-mark {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: var(--sh-sun);
+    color: var(--sh-ink);
+}
+
+.sh-gateway-mark svg { width: 20px; height: 20px; }
+.sh-gateway-name { font-weight: 800; letter-spacing: -.01em; }
+
+.sh-gateway-secure {
+    display: flex;
+    align-items: center;
+    gap: .35rem;
+    font-size: .72rem;
+    text-transform: uppercase;
+    letter-spacing: .07em;
+    opacity: .75;
+}
+
+.sh-gateway-secure svg { width: 13px; height: 13px; }
+
+.sh-gateway-badge {
+    margin-left: auto;
+    font-size: .66rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    padding: .3rem .6rem;
+    border-radius: 999px;
+    background: var(--sh-sun);
+    color: var(--sh-ink);
+}
+
+.sh-gateway-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr);
+    gap: 2rem;
+    padding: 1.75rem;
+}
+
+.sh-gateway-form .sh-section-title { font-size: 1.4rem; }
+
+.sh-field { display: block; margin-bottom: .9rem; }
+
+.sh-field > span:first-child {
+    display: block;
+    margin-bottom: .3rem;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    font-size: .66rem;
+    font-weight: 700;
+    color: var(--sh-muted);
+}
+
+.sh-field input {
+    width: 100%;
+    border: 1px solid var(--sh-line);
+    border-radius: var(--sh-radius-sm);
+    padding: .6rem .75rem;
+    font-size: .95rem;
+    font-weight: 600;
+    color: var(--sh-ink);
+    font-variant-numeric: tabular-nums;
+}
+
+.sh-field input:focus {
+    outline: none;
+    border-color: var(--sh-primary);
+    box-shadow: 0 0 0 3px var(--sh-primary-soft);
+}
+
+.sh-fielderror { display: block; margin-top: .25rem; font-size: .78rem; color: var(--sh-bad-fg); }
+.sh-fieldrow { display: grid; grid-template-columns: 1fr 1fr; gap: .9rem; }
+
+.sh-testcards {
+    margin-top: 1.5rem;
+    padding: 1rem 1.1rem;
+    border: 1px dashed var(--sh-line);
+    border-radius: var(--sh-radius-sm);
+    background: var(--sh-shade);
+}
+
+.sh-testcards h2 {
+    font-size: .72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .09em;
+    color: var(--sh-muted);
+    margin-bottom: .3rem;
+}
+
+.sh-testcards p { font-size: .8rem; color: var(--sh-muted); margin-bottom: .6rem; }
+.sh-testcards ul { list-style: none; margin: 0; padding: 0; display: grid; gap: .45rem; }
+
+.sh-testcards li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .75rem;
+    flex-wrap: wrap;
+}
+
+.sh-testcards code { font-size: .88rem; font-weight: 700; color: var(--sh-ink); }
+
+.sh-gateway-summary {
+    border: 1px solid var(--sh-line);
+    border-radius: var(--sh-radius);
+    background: var(--sh-sand, var(--sh-shade));
+    padding: 1.25rem;
+    align-self: start;
+}
+
+.sh-gateway-summary h2 {
+    font-size: .72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .09em;
+    color: var(--sh-muted);
+    margin-bottom: .8rem;
+}
+
+.sh-gateway-property { margin-bottom: .9rem; }
+.sh-gateway-property strong { display: block; font-size: 1rem; }
+.sh-gateway-property span { font-size: .84rem; color: var(--sh-muted); }
+
+.sh-gateway-dates {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    margin-top: .9rem;
+    padding-top: .9rem;
+    border-top: 1px solid var(--sh-line);
+    font-size: .84rem;
+    color: var(--sh-muted);
+}
+
+.sh-gateway-dates svg { width: 15px; height: 15px; }
+
+/* Receipt */
+.sh-receipt {
+    max-width: 620px;
+    margin: 0 auto;
+    text-align: center;
+    border: 1.5px solid var(--sh-ink);
+    border-radius: var(--sh-radius);
+    background: var(--sh-surface);
+    padding: 2.5rem 2rem;
+    box-shadow: var(--sh-press);
+}
+
+.sh-receipt-tick {
+    display: grid;
+    place-items: center;
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 1rem;
+    border-radius: 50%;
+    background: var(--sh-ok-bg);
+    color: var(--sh-ok-fg);
+}
+
+.sh-receipt-tick svg { width: 30px; height: 30px; stroke-width: 2.5; }
+.sh-receipt h1 { font-size: 1.6rem; font-weight: 800; letter-spacing: -.02em; }
+
+.sh-receipt-lines {
+    margin: 1.6rem 0 0;
+    text-align: left;
+    border-top: 1px solid var(--sh-line);
+}
+
+.sh-receipt-lines > div {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: .6rem 0;
+    border-bottom: 1px solid var(--sh-line);
+}
+
+.sh-receipt-lines dt { font-size: .82rem; color: var(--sh-muted); font-weight: 600; }
+.sh-receipt-lines dd { margin: 0; font-size: .9rem; font-weight: 700; text-align: right; }
+.sh-receipt-actions { display: flex; gap: .75rem; justify-content: center; flex-wrap: wrap; margin-top: 1.6rem; }
+
+@media (max-width: 820px) {
+    .sh-gateway-body { grid-template-columns: 1fr; padding: 1.25rem; }
+}
+
+/* --- Landing page section artwork ------------------------------------------ */
+
+/* Replaces the small icon chips in "Booked in 3 Steps" and "Built so Strangers
+   can Trust Each Other". The illustrations carry the same flat shapes and
+   palette as the listing artwork, and reuse the portrait figures so the page
+   reads as one set rather than stock parts. */
+.sh-step-art {
+    display: block;
+    width: 100%;
+    max-width: 220px;
+    height: auto;
+    margin-bottom: 1rem;
+    border-radius: var(--sh-radius-sm);
+}
+
+.sh-feature-art {
+    display: block;
+    width: 100%;
+    max-width: 190px;
+    height: auto;
+    margin-bottom: .9rem;
+    border-radius: var(--sh-radius-sm);
+}
+
+/* The step number badge previously sat above an icon chip; with wider artwork
+   beneath it, keep it clear of the illustration's top edge. */
+.sh-step-card { padding-top: 1.9rem; }
+
+
+/* --- Closing band artwork -------------------------------------------------- */
+
+.sh-closer-art {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.sh-closer-actions { justify-content: flex-start; }
+
+@media (max-width: 900px) {
+    .sh-closer {
+        grid-template-columns: 1fr;
+        gap: 1.75rem;
+        text-align: center;
+    }
+
+    .sh-closer-copy { max-width: none; margin: 0 auto; }
+    .sh-closer-lead,
+    .sh-closer-meta { margin-inline: auto; }
+    .sh-closer-points { justify-items: center; }
+    .sh-closer-actions { justify-content: center; }
+    .sh-closer-art { max-width: 380px; margin: 0 auto; }
+}

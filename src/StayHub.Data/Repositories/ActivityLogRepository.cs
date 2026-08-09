@@ -24,6 +24,14 @@ public class ActivityLogRepository : IActivityLogRepository
     /// <inheritdoc />
     public async Task<int> LogAsync(string userId, string action, ActivityType activityType, string? details = null)
     {
+        // Skip quietly when the cookie still holds an id from a previous database
+        // (common after a local drop/reseed) so audit writes never break the request.
+        if (string.IsNullOrWhiteSpace(userId) ||
+            !await _context.Users.AsNoTracking().AnyAsync(u => u.Id == userId))
+        {
+            return 0;
+        }
+
         var entry = new ActivityLog
         {
             UserId = userId,

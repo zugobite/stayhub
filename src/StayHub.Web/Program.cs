@@ -60,6 +60,7 @@ builder.Services.AddScoped<INewsletterRepository, NewsletterRepository>();
 
 builder.Services.AddScoped<IFileStorageService, FileStorageService>();
 builder.Services.AddScoped<IRoleTransitionService, RoleTransitionService>();
+builder.Services.AddScoped<IPaymentGateway, SimulatedPaymentGateway>();
 builder.Services.AddScoped<IMessagingPolicyService, MessagingPolicyService>();
 builder.Services.AddScoped<IRealtimeDispatchService, RealtimeDispatchService>();
 

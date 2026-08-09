@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 140" role="img" aria-label="Checking in and collecting the key">
+  <rect width="200" height="140" rx="14" fill="#e4f4ea"/>
+
+  <!-- whitewashed arched doorway, echoing the StayHub mark -->
+  <path d="M46 124V72a30 30 0 0 1 60 0v52z" fill="#ffffff" stroke="#16323f" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M60 124V74a16 16 0 0 1 32 0v50z" fill="#0e6ba8"/>
+  <circle cx="84" cy="100" r="3.5" fill="#f6b31b"/>
+
+  <!-- key -->
+  <circle cx="146" cy="60" r="14" fill="none" stroke="#16323f" stroke-width="6"/>
+  <path d="M146 74v34M146 96h10M146 86h8" stroke="#16323f" stroke-width="6" stroke-linecap="round"/>
+
+  <!-- verified badge -->
+  <circle cx="118" cy="112" r="17" fill="#0f6b39"/>
+  <path d="m110 112 6 6 12-13" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

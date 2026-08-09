@@ -160,7 +160,7 @@
                             <img src="@cover" alt="" aria-hidden="true" loading="lazy" />
                             <div>
                                 <div class="sh-morefrom-title">@other.Title</div>
-                                <div class="sh-morefrom-meta">@other.City &middot; R @other.PricePerNight.ToString("N0") per night</div>
+                                <div class="sh-morefrom-meta">@other.City &middot; R @other.PricePerNight.ToString("N0") per person / night</div>
                             </div>
                         </a>
                     }
@@ -189,7 +189,7 @@
     <div class="col-lg-5">
         <aside class="sh-bookwidget">
             <div class="sh-bookwidget-price">
-                <strong>R @Model.Property.PricePerNight.ToString("N0")</strong> <span class="text-muted">per night</span>
+                <strong>R @Model.Property.PricePerNight.ToString("N0")</strong> <span class="text-muted">per person / night</span>
             </div>
 
             @if (User.Identity?.IsAuthenticated != true)
@@ -239,10 +239,10 @@
                     data-nightly="@Model.Property.PricePerNight.ToString(CultureInfo.InvariantCulture)"
                     data-cleaning="@Model.Property.CleaningFee.ToString(CultureInfo.InvariantCulture)"
                     data-servicerate="@Model.Property.ServiceFeeRate.ToString(CultureInfo.InvariantCulture)">
-                    <div><dt id="nightsLabel">R @Model.Property.PricePerNight.ToString("N0") × 1 nights</dt><dd id="subtotal">R @Model.Property.PricePerNight.ToString("N0")</dd></div>
+                    <div><dt id="nightsLabel">R @Model.Property.PricePerNight.ToString("N0") × 1 night × 1 guest</dt><dd id="subtotal">R @Model.Property.PricePerNight.ToString("N0")</dd></div>
                     <div><dt>Cleaning fee</dt><dd id="cleaning">R @Model.Property.CleaningFee.ToString("N0")</dd></div>
-                    <div><dt>Service fee</dt><dd id="serviceFee">R @Model.Property.CalculateServiceFee(1).ToString("N0")</dd></div>
-                    <div class="sh-pricetotal"><dt>Total</dt><dd id="total">R @Model.Property.CalculateTotalPrice(1).ToString("N0")</dd></div>
+                    <div><dt>Service fee</dt><dd id="serviceFee">R @Model.Property.CalculateServiceFee(1, 1).ToString("N0")</dd></div>
+                    <div class="sh-pricetotal"><dt>Total</dt><dd id="total">R @Model.Property.CalculateTotalPrice(1, 1).ToString("N0")</dd></div>
                 </dl>
             }
         </aside>

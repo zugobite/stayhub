@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 140" role="img" aria-label="Choosing dates and seeing the price">
+  <rect width="200" height="140" rx="14" fill="#fdf3dc"/>
+
+  <!-- calendar -->
+  <rect x="24" y="30" width="112" height="94" rx="10" fill="#ffffff" stroke="#16323f" stroke-width="2.5"/>
+  <path d="M24 54V40a10 10 0 0 1 10-10h92a10 10 0 0 1 10 10v14z" fill="#0e6ba8"/>
+  <path d="M50 22v14M110 22v14" stroke="#16323f" stroke-width="5" stroke-linecap="round"/>
+
+  <g fill="#dbe5ec">
+    <rect x="36" y="64" width="16" height="12" rx="3"/><rect x="58" y="64" width="16" height="12" rx="3"/>
+    <rect x="102" y="64" width="16" height="12" rx="3"/>
+    <rect x="36" y="82" width="16" height="12" rx="3"/>
+    <rect x="102" y="82" width="16" height="12" rx="3"/>
+    <rect x="36" y="100" width="16" height="12" rx="3"/><rect x="58" y="100" width="16" height="12" rx="3"/>
+  </g>
+
+  <!-- the selected range -->
+  <rect x="80" y="64" width="16" height="12" rx="3" fill="#f6b31b"/>
+  <rect x="58" y="82" width="16" height="12" rx="3" fill="#f6b31b"/>
+  <rect x="80" y="82" width="16" height="12" rx="3" fill="#f6b31b"/>
+  <rect x="80" y="100" width="16" height="12" rx="3" fill="#0e6ba8"/>
+
+  <!-- price tag -->
+  <rect x="130" y="76" width="52" height="40" rx="8" fill="#ffffff" stroke="#16323f" stroke-width="2.5"/>
+  <rect x="139" y="86" width="34" height="6" rx="3" fill="#16323f"/>
+  <rect x="139" y="97" width="22" height="5" rx="2.5" fill="#dbe5ec"/>
+  <circle cx="176" cy="76" r="6" fill="#c75b39"/>
+</svg>

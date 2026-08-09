@@ -141,12 +141,20 @@ public class AccountController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Logout()
     {
-        var userId = _userManager.GetUserId(User);
+        // Resolve against the database so a stale auth cookie (after a reseed)
+        // does not try to write an activity row for a missing user.
+        var user = await _userManager.GetUserAsync(User);
 
-        if (userId is not null)
-            await _activityLog.LogAsync(userId, "UserLoggedOut", ActivityType.Logout);
+        try
+        {
+            if (user is not null)
+                await _activityLog.LogAsync(user.Id, "UserLoggedOut", ActivityType.Logout);
+        }
+        finally
+        {
+            await _signInManager.SignOutAsync();
+        }
 
-        await _signInManager.SignOutAsync();
         return RedirectToAction(nameof(HomeController.Index), "Home");
     }
 

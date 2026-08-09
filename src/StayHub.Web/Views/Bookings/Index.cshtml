@@ -101,12 +101,7 @@
                                     actions.Add(new ActionMenuItem(
                                         "Pay Now",
                                         Icon: "wallet",
-                                        Controller: "Bookings",
-                                        Action: "Pay",
-                                        HiddenFields: new Dictionary<string, string> { ["id"] = booking.Id.ToString() },
-                                        ConfirmMessage: $"Record a simulated payment of R {booking.TotalPrice:N2} for {booking.Property?.Title}?",
-                                        ConfirmTitle: "Pay for Stay",
-                                        ConfirmAction: "Pay Now"));
+                                        Href: Url.Action("Checkout", "Payments", new { id = booking.Id })));
                                 }
 
                                 if (booking.Status is BookingStatus.Approved or BookingStatus.Paid)

@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 140" role="img" aria-label="An identity document being verified at check-in">
+  <defs>
+    <clipPath id="tvFace"><rect x="44" y="52" width="42" height="46" rx="7"/></clipPath>
+  </defs>
+  <rect width="200" height="140" rx="14" fill="#fdf3dc"/>
+
+  <!-- ID card -->
+  <rect x="26" y="32" width="148" height="86" rx="11" fill="#ffffff" stroke="#16323f" stroke-width="2.5"/>
+  <path d="M26 48V43a11 11 0 0 1 11-11h126a11 11 0 0 1 11 11v5z" fill="#0e6ba8"/>
+
+  <!-- portrait panel -->
+  <g clip-path="url(#tvFace)">
+    <rect x="44" y="52" width="42" height="46" rx="7" fill="#e7f1f8"/>
+    <path d="M44 100c0-11 9.4-15 21-15s21 4 21 15z" fill="#c75b39"/>
+    <circle cx="65" cy="72" r="11" fill="#7a4a28"/>
+    <path d="M54 70a11 11 0 0 1 22 0z" fill="#2b2b2b"/>
+  </g>
+  <rect x="44" y="52" width="42" height="46" rx="7" fill="none" stroke="#16323f" stroke-width="2.5"/>
+
+  <!-- detail lines -->
+  <rect x="98" y="58" width="58" height="6" rx="3" fill="#16323f"/>
+  <rect x="98" y="72" width="44" height="5" rx="2.5" fill="#dbe5ec"/>
+  <rect x="98" y="84" width="52" height="5" rx="2.5" fill="#dbe5ec"/>
+
+  <!-- verified badge -->
+  <circle cx="164" cy="106" r="19" fill="#0f6b39"/>
+  <path d="m155.5 106 6 6 11.5-12.5" fill="none" stroke="#ffffff" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

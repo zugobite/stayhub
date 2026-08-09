@@ -23,6 +23,21 @@ public class Payment
     /// <summary>Gets or sets the settlement state.</summary>
     public PaymentStatus Status { get; set; } = PaymentStatus.Pending;
 
+    /// <summary>
+    /// Gets or sets the reference issued by the simulated gateway, shown on the
+    /// receipt so a guest can quote it.
+    /// </summary>
+    public string Reference { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Gets or sets the last four digits of the card used. Only the last four are
+    /// ever stored — the simulation deliberately keeps no other card data.
+    /// </summary>
+    public string CardLast4 { get; set; } = string.Empty;
+
+    /// <summary>Gets or sets the gateway's message when a charge is declined.</summary>
+    public string? FailureReason { get; set; }
+
     /// <summary>Gets or sets the UTC creation timestamp.</summary>
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }

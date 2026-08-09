@@ -1,0 +1,131 @@
+@model CheckoutViewModel
+@{
+    ViewData["Title"] = "Checkout";
+    var property = Model.Booking.Property;
+}
+
+<div class="sh-gateway">
+    <div class="sh-gateway-head">
+        <span class="sh-gateway-mark">
+            <partial name="_Icon" model='"wallet"' />
+        </span>
+        <div>
+            <div class="sh-gateway-name">@Model.GatewayName</div>
+            <div class="sh-gateway-secure">
+                <partial name="_Icon" model='"shield"' />
+                Simulated secure checkout
+            </div>
+        </div>
+        <span class="sh-gateway-badge">Sandbox</span>
+    </div>
+
+    <div class="sh-gateway-body">
+        <div class="sh-gateway-form">
+            <h1 class="sh-section-title">Pay for your stay</h1>
+            <p class="text-muted">
+                This is a simulation for demonstration purposes. No card is charged and
+                no money moves. Only the last four digits are ever stored.
+            </p>
+
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+            <form asp-action="Process" method="post" autocomplete="off">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="Card.BookingId" />
+
+                <label class="sh-field">
+                    <span>Name on card</span>
+                    <input asp-for="Card.CardHolder" />
+                    <span asp-validation-for="Card.CardHolder" class="sh-fielderror"></span>
+                </label>
+
+                <label class="sh-field">
+                    <span>Card number</span>
+                    <input asp-for="Card.CardNumber" inputmode="numeric" />
+                    <span asp-validation-for="Card.CardNumber" class="sh-fielderror"></span>
+                </label>
+
+                <div class="sh-fieldrow">
+                    <label class="sh-field">
+                        <span>Expiry (MM/YY)</span>
+                        <input asp-for="Card.Expiry" placeholder="12/30" inputmode="numeric" />
+                        <span asp-validation-for="Card.Expiry" class="sh-fielderror"></span>
+                    </label>
+                    <label class="sh-field">
+                        <span>CVV</span>
+                        <input asp-for="Card.Cvv" inputmode="numeric" />
+                        <span asp-validation-for="Card.Cvv" class="sh-fielderror"></span>
+                    </label>
+                </div>
+
+                <button class="sh-btn sh-btn-lg sh-btn-primary w-100 mt-3" type="submit">
+                    Pay R @Model.Booking.TotalPrice.ToString("N2")
+                </button>
+
+                <a class="sh-btn sh-btn-ghost sh-btn-sm w-100 mt-2" asp-controller="Bookings" asp-action="Index">
+                    Cancel and return to my trips
+                </a>
+            </form>
+
+            <div class="sh-testcards">
+                <h2>Sandbox test cards</h2>
+                <p>Any expiry in the future and any three-digit CVV will do.</p>
+                <ul>
+                    @foreach (var testCard in Model.TestCards)
+                    {
+                        <li>
+                            <code>@testCard.Number</code>
+                            <span class="@(testCard.Approves ? "sh-pill sh-pill-approved" : "sh-pill sh-pill-rejected")">
+                                @testCard.Label
+                            </span>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+
+        <aside class="sh-gateway-summary">
+            <h2>Order summary</h2>
+
+            @if (property is not null)
+            {
+                <div class="sh-gateway-property">
+                    <strong>@property.Title</strong>
+                    <span>@property.City, @property.Province.DisplayName()</span>
+                </div>
+            }
+
+            <dl class="sh-pricebreakdown">
+                <div>
+                    <dt>
+                        R @(property?.PricePerNight.ToString("N0")) ×
+                        @Model.Nights @(Model.Nights == 1 ? "night" : "nights") ×
+                        @Model.Booking.NumberOfGuests @(Model.Booking.NumberOfGuests == 1 ? "guest" : "guests")
+                    </dt>
+                    <dd>R @Model.Subtotal.ToString("N2")</dd>
+                </div>
+                <div>
+                    <dt>Cleaning fee</dt>
+                    <dd>R @(property?.CleaningFee.ToString("N2"))</dd>
+                </div>
+                <div>
+                    <dt>Service fee</dt>
+                    <dd>R @Model.ServiceFee.ToString("N2")</dd>
+                </div>
+                <div class="sh-pricetotal">
+                    <dt>Total</dt>
+                    <dd>R @Model.Booking.TotalPrice.ToString("N2")</dd>
+                </div>
+            </dl>
+
+            <div class="sh-gateway-dates">
+                <partial name="_Icon" model='"calendar"' />
+                @Model.Booking.CheckInDate.ToString("d MMM yyyy") &ndash; @Model.Booking.CheckOutDate.ToString("d MMM yyyy")
+            </div>
+        </aside>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

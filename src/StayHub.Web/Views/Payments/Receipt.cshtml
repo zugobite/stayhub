@@ -1,0 +1,58 @@
+@model PaymentReceiptViewModel
+@{
+    ViewData["Title"] = "Payment receipt";
+    var property = Model.Booking.Property;
+}
+
+<div class="sh-receipt">
+    <span class="sh-receipt-tick">
+        <partial name="_Icon" model='"check"' />
+    </span>
+
+    <h1>Payment successful</h1>
+    <p class="text-muted">
+        @Model.GatewayName authorised R @Model.Payment.Amount.ToString("N2"). This was a
+        simulated charge — no money has moved.
+    </p>
+
+    <dl class="sh-receipt-lines">
+        <div>
+            <dt>Reference</dt>
+            <dd><code>@Model.Payment.Reference</code></dd>
+        </div>
+        <div>
+            <dt>Card</dt>
+            <dd>•••• •••• •••• @Model.Payment.CardLast4</dd>
+        </div>
+        <div>
+            <dt>Amount</dt>
+            <dd>R @Model.Payment.Amount.ToString("N2")</dd>
+        </div>
+        <div>
+            <dt>Paid on</dt>
+            <dd>@Model.Payment.CreatedAt.ToString("d MMMM yyyy, HH:mm")</dd>
+        </div>
+        @if (property is not null)
+        {
+            <div>
+                <dt>Stay</dt>
+                <dd>@property.Title, @property.City</dd>
+            </div>
+        }
+        <div>
+            <dt>Dates</dt>
+            <dd>@Model.Booking.CheckInDate.ToString("d MMM yyyy") &ndash; @Model.Booking.CheckOutDate.ToString("d MMM yyyy")</dd>
+        </div>
+        <div>
+            <dt>Guests</dt>
+            <dd>@Model.Booking.NumberOfGuests</dd>
+        </div>
+    </dl>
+
+    <div class="sh-receipt-actions">
+        <a class="sh-btn sh-btn-primary" asp-controller="CheckIn" asp-action="Start" asp-route-id="@Model.Booking.Id">
+            Continue to check-in
+        </a>
+        <a class="sh-btn sh-btn-ghost" asp-controller="Bookings" asp-action="Index">Back to my trips</a>
+    </div>
+</div>

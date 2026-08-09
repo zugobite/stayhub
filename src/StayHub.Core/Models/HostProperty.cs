@@ -106,27 +106,48 @@ public class HostProperty
     public void Deactivate() => _isActive = false;
 
     /// <summary>
-    /// Calculates the total price of a stay:
-    /// <c>(PricePerNight × Nights) + CleaningFee + ServiceFee</c>.
+    /// Calculates the nightly subtotal before fees:
+    /// <c>PricePerNight × Nights × Guests</c>.
     /// </summary>
     /// <param name="nights">The number of nights booked.</param>
-    /// <returns>The total payable amount in ZAR, rounded to two decimals.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="nights"/> is not positive.</exception>
-    public decimal CalculateTotalPrice(int nights)
+    /// <param name="guests">The number of travellers.</param>
+    /// <returns>The accommodation subtotal in ZAR.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="nights"/> or <paramref name="guests"/> is not positive.
+    /// </exception>
+    public decimal CalculateSubtotal(int nights, int guests)
     {
         if (nights <= 0)
             throw new ArgumentOutOfRangeException(nameof(nights), "A stay must be at least one night.");
 
-        var subtotal = PricePerNight * nights;
+        if (guests <= 0)
+            throw new ArgumentOutOfRangeException(nameof(guests), "A stay must have at least one guest.");
+
+        return PricePerNight * nights * guests;
+    }
+
+    /// <summary>
+    /// Calculates the total price of a stay:
+    /// <c>(PricePerNight × Nights × Guests) + CleaningFee + ServiceFee</c>.
+    /// </summary>
+    /// <param name="nights">The number of nights booked.</param>
+    /// <param name="guests">The number of travellers. Defaults to one.</param>
+    /// <returns>The total payable amount in ZAR, rounded to two decimals.</returns>
+    public decimal CalculateTotalPrice(int nights, int guests = 1)
+    {
+        var subtotal = CalculateSubtotal(nights, guests);
         var serviceFee = Math.Round(subtotal * ServiceFeeRate, 2);
         return Math.Round(subtotal + CleaningFee + serviceFee, 2);
     }
 
     /// <summary>
-    /// Calculates the service fee charged on a stay of the given length.
+    /// Calculates the service fee charged on a stay. The fee is a fraction of the
+    /// accommodation subtotal, so it scales with party size too. The cleaning fee
+    /// is excluded, being a flat per-stay charge.
     /// </summary>
     /// <param name="nights">The number of nights booked.</param>
+    /// <param name="guests">The number of travellers. Defaults to one.</param>
     /// <returns>The service fee in ZAR.</returns>
-    public decimal CalculateServiceFee(int nights) =>
-        Math.Round(PricePerNight * nights * ServiceFeeRate, 2);
+    public decimal CalculateServiceFee(int nights, int guests = 1) =>
+        Math.Round(CalculateSubtotal(nights, guests) * ServiceFeeRate, 2);
 }

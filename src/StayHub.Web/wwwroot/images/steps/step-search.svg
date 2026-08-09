@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 140" role="img" aria-label="Searching listings">
+  <rect width="200" height="140" rx="14" fill="#e7f1f8"/>
+  <circle cx="170" cy="26" r="13" fill="#f6b31b"/>
+
+  <!-- two listing cards -->
+  <rect x="18" y="40" width="74" height="70" rx="8" fill="#ffffff" stroke="#16323f" stroke-width="2.5"/>
+  <path d="M18 62V48a8 8 0 0 1 8-8h58a8 8 0 0 1 8 8v14z" fill="#6aa9d2"/>
+  <path d="M40 62a15 10 0 0 1 30 0z" fill="#0e6ba8"/>
+  <rect x="28" y="72" width="40" height="5" rx="2.5" fill="#16323f"/>
+  <rect x="28" y="83" width="26" height="4" rx="2" fill="#dbe5ec"/>
+  <rect x="28" y="94" width="32" height="5" rx="2.5" fill="#f6b31b"/>
+
+  <rect x="102" y="52" width="66" height="58" rx="8" fill="#f7fbfd" stroke="#16323f" stroke-width="2.5"/>
+  <path d="M102 70V60a8 8 0 0 1 8-8h50a8 8 0 0 1 8 8v10z" fill="#c75b39"/>
+  <rect x="112" y="80" width="34" height="5" rx="2.5" fill="#16323f"/>
+  <rect x="112" y="91" width="22" height="4" rx="2" fill="#dbe5ec"/>
+
+  <!-- magnifier -->
+  <circle cx="128" cy="96" r="27" fill="#ffffff" fill-opacity=".55"/>
+  <circle cx="128" cy="96" r="27" fill="none" stroke="#16323f" stroke-width="6"/>
+  <path d="m148 116 18 18" stroke="#16323f" stroke-width="8" stroke-linecap="round"/>
+</svg>
