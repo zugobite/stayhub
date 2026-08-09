@@ -34,37 +34,41 @@
 </head>
 <body>
     <header class="sh-header">
-        <div class="container d-flex align-items-center justify-content-between gap-3 py-3">
-            <a class="sh-brand" asp-controller="Home" asp-action="Index">
-                <img class="sh-brand-mark" src="~/images/brand/stayhub-mark.svg" alt="" aria-hidden="true" />
-                <span class="fuzzy-bubbles-bold">StayHub</span>
-            </a>
+        <div class="container sh-header-inner py-3">
+            <div class="sh-header-start">
+                <a class="sh-brand" asp-controller="Home" asp-action="Index">
+                    <img class="sh-brand-mark" src="~/images/brand/stayhub-mark.svg" alt="" aria-hidden="true" />
+                    <span class="fuzzy-bubbles-bold">StayHub</span>
+                </a>
+            </div>
 
-            <form class="sh-searchbar d-none d-lg-flex" asp-controller="Properties" asp-action="Index" method="get" role="search">
-                <label class="sh-searchbar-field">
-                    <span>Where</span>
-                    <input name="city" placeholder="Anywhere" value="@searchCity" autocomplete="off" aria-label="City" />
-                </label>
-                <span class="sh-searchbar-divider"></span>
-                <label class="sh-searchbar-field">
-                    <span>Stay type</span>
-                    <select name="type" aria-label="Property type">
-                        <option value="">Any Type</option>
-                        @foreach (PropertyType type in Enum.GetValues<PropertyType>())
-                        {
-                            <option value="@type" selected="@(type.ToString() == searchType)">@type</option>
-                        }
-                    </select>
-                </label>
-                <button class="sh-searchbar-btn" type="submit" aria-label="Search stays">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true">
-                        <circle cx="11" cy="11" r="7" />
-                        <path d="M20 20l-3.5-3.5" />
-                    </svg>
-                </button>
-            </form>
+            <div class="sh-header-center">
+                <form class="sh-searchbar d-none d-lg-flex" asp-controller="Properties" asp-action="Index" method="get" role="search">
+                    <label class="sh-searchbar-field">
+                        <span>Where</span>
+                        <input name="city" placeholder="Anywhere" value="@searchCity" autocomplete="off" aria-label="City" />
+                    </label>
+                    <span class="sh-searchbar-divider"></span>
+                    <label class="sh-searchbar-field">
+                        <span>Stay type</span>
+                        <select name="type" aria-label="Property type">
+                            <option value="">Any Type</option>
+                            @foreach (PropertyType type in Enum.GetValues<PropertyType>())
+                            {
+                                <option value="@type" selected="@(type.ToString() == searchType)">@type</option>
+                            }
+                        </select>
+                    </label>
+                    <button class="sh-searchbar-btn" type="submit" aria-label="Search stays">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true">
+                            <circle cx="11" cy="11" r="7" />
+                            <path d="M20 20l-3.5-3.5" />
+                        </svg>
+                    </button>
+                </form>
+            </div>
 
-            <nav class="d-flex align-items-center gap-2">
+            <nav class="sh-header-end">
                 @if (SignInManager.IsSignedIn(User))
                 {
                     <a class="sh-navlink sh-navicon" asp-controller="Notifications" asp-action="Index" title="Notifications" aria-label="Notifications">
@@ -97,7 +101,7 @@
                             <span class="sh-account-chip-caret" aria-hidden="true"></span>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end sh-menu">
-                            <li class="px-2 py-1">
+                            <li class="sh-menu-user">
                                 <div class="fw-bold small">@currentUser?.FullName</div>
                                 <div class="small text-muted">@currentUser?.Email</div>
                             </li>
@@ -185,19 +189,17 @@
         @RenderBody()
     </main>
 
-    <footer class="sh-footer">
-        <div class="container">
-            <div class="sh-footer-promo">
-                <div class="sh-footer-promo-inner">
-                    <p class="sh-footer-promo-copy">Find a stay, or open your doors.</p>
-                    <div class="sh-footer-promo-actions">
-                        <a class="sh-btn sh-btn-ghost" asp-controller="Properties" asp-action="Index">Browse stays</a>
-                        <a class="sh-btn sh-btn-sun" asp-controller="HostApplications" asp-action="Apply">Become a host</a>
-                    </div>
-                </div>
+    <div class="sh-footer-promo" role="region" aria-label="Get started with StayHub">
+        <div class="container sh-footer-promo-inner">
+            <p class="sh-footer-promo-copy">Find a stay, or open your doors.</p>
+            <div class="sh-footer-promo-actions">
+                <a class="sh-btn sh-btn-ghost" asp-controller="Properties" asp-action="Index">Browse stays</a>
+                <a class="sh-btn sh-btn-sun" asp-controller="HostApplications" asp-action="Apply">Become a host</a>
             </div>
         </div>
+    </div>
 
+    <footer class="sh-footer">
         <div class="sh-footer-main">
             <div class="container">
                 <div class="sh-footer-grid">
@@ -206,12 +208,31 @@
                             <img class="sh-brand-mark" src="~/images/brand/stayhub-mark-light.svg" alt="" aria-hidden="true" />
                             <span class="fuzzy-bubbles-bold">StayHub</span>
                         </a>
+                        <div class="sh-footer-social" aria-label="StayHub on social media">
+                            <a class="sh-footer-social-link" href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+                                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14 9h3V6h-3c-1.9 0-3.5 1.5-3.5 3.4V12H8v3h2.5v7h3.2v-7H16l.5-3h-3V9.5c0-.3.2-.5.5-.5z"/></svg>
+                            </a>
+                            <a class="sh-footer-social-link" href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <rect x="3" y="3" width="18" height="18" rx="5"/>
+                                    <circle cx="12" cy="12" r="4"/>
+                                    <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+                                </svg>
+                            </a>
+                            <a class="sh-footer-social-link" href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+                                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.5 9.5H3.7V20h2.8V9.5zM5.1 4A1.65 1.65 0 1 0 5.1 7.3 1.65 1.65 0 0 0 5.1 4zM20.3 20h-2.8v-5.4c0-1.5-.5-2.5-1.8-2.5-1 0-1.5.7-1.8 1.3-.1.2-.1.6-.1.9V20H11V9.5h2.7v1.4c.4-.7 1.2-1.7 3-1.7 2.2 0 3.6 1.4 3.6 4.5V20z"/></svg>
+                            </a>
+                            <a class="sh-footer-social-link" href="https://wa.me/" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+                                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3.1A8.9 8.9 0 0 0 3.2 12c0 1.6.4 3.1 1.2 4.4L3 21l4.7-1.2A8.9 8.9 0 1 0 12 3.1zm0 16.2c-1.4 0-2.7-.4-3.9-1.1l-.3-.2-2.8.7.7-2.7-.2-.3A7.2 7.2 0 1 1 12 19.3zm4-5.4c-.2-.1-1.2-.6-1.4-.7-.2-.1-.3-.1-.5.1s-.6.7-.7.9-.3.2-.5.1a5.9 5.9 0 0 1-1.7-1.1 6.5 6.5 0 0 1-1.2-1.5c-.1-.2 0-.3.1-.4l.3-.4.1-.3c0-.1 0-.3-.1-.4s-.5-1.1-.6-1.5-.4-.3-.5-.3h-.4c-.2 0-.4.1-.6.3a2 2 0 0 0-.6 1.5 3.5 3.5 0 0 0 .7 1.8 7.9 7.9 0 0 0 3 3 10 10 0 0 0 2 .8 2.5 2.5 0 0 0 1.6-.4 2.9 2.9 0 0 0 1-1.7c.1-.3.1-.5 0-.6l-.3-.2z"/></svg>
+                            </a>
+                        </div>
                     </div>
 
                     <nav class="sh-footer-col" aria-label="Explore">
                         <span class="sh-footer-heading">Explore</span>
                         <a asp-controller="Home" asp-action="Index">Home</a>
                         <a asp-controller="Properties" asp-action="Index">Browse Properties</a>
+                        <span class="sh-footer-heading sh-footer-heading-sub">Legal</span>
                         <a asp-controller="Home" asp-action="Privacy">Privacy Policy</a>
                         <a asp-controller="Home" asp-action="Terms">Terms of Service</a>
                         <a asp-controller="Home" asp-action="Cookies">Cookie Policy</a>
@@ -221,6 +242,9 @@
                         <span class="sh-footer-heading">Hosting</span>
                         <a asp-controller="HostApplications" asp-action="Apply">Become a Host</a>
                         <a asp-controller="HostApplications" asp-action="Status">Application Status</a>
+                        <span class="sh-footer-heading sh-footer-heading-sub">Support</span>
+                        <a class="sh-footer-contact" href="mailto:hosts@stayhub.co.za">hosts@stayhub.co.za</a>
+                        <a class="sh-footer-contact" href="tel:+27215550180">+27 21 555 0180</a>
                     </nav>
 
                     <nav class="sh-footer-col" aria-label="Guest">
@@ -232,6 +256,9 @@
                         }
                         <a asp-controller="Bookings" asp-action="Index">My Trips</a>
                         <a asp-controller="Wishlist" asp-action="Index">Wishlist</a>
+                        <span class="sh-footer-heading sh-footer-heading-sub">Support</span>
+                        <a class="sh-footer-contact" href="mailto:guests@stayhub.co.za">guests@stayhub.co.za</a>
+                        <a class="sh-footer-contact" href="tel:+27215550190">+27 21 555 0190</a>
                     </nav>
 
                     <div class="sh-footer-newsletter">

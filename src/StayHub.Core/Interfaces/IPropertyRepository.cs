@@ -30,6 +30,13 @@ public interface IPropertyRepository
     Task<IEnumerable<Province>> GetProvincesAsync();
 
     /// <summary>
+    /// Counts the active listings in each province, for the landing page's
+    /// "browse by region" cards.
+    /// </summary>
+    /// <returns>A province-to-count map, covering only provinces that have listings.</returns>
+    Task<IReadOnlyDictionary<Province, int>> GetProvinceCountsAsync();
+
+    /// <summary>
     /// Retrieves the lowest and highest nightly rate across all active listings,
     /// used to bound the gallery's price filter.
     /// </summary>

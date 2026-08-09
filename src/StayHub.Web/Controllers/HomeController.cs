@@ -1,5 +1,7 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
+using StayHub.Core.Constants;
 using StayHub.Core.Interfaces;
 using StayHub.Core.Models;
 using StayHub.Web.Models;
@@ -13,27 +15,74 @@ namespace StayHub.Web.Controllers;
 public class HomeController : Controller
 {
     private readonly IPropertyRepository _properties;
+    private readonly IReviewRepository _reviews;
     private readonly INewsletterRepository _newsletter;
+    private readonly UserManager<ApplicationUser> _userManager;
 
     /// <summary>
     /// Initialises a new instance of the <see cref="HomeController"/> class.
     /// </summary>
     /// <param name="properties">The listing repository.</param>
+    /// <param name="reviews">The review repository, used for testimonials.</param>
     /// <param name="newsletter">The newsletter subscription repository.</param>
-    public HomeController(IPropertyRepository properties, INewsletterRepository newsletter)
+    /// <param name="userManager">The Identity user manager, used for the host count.</param>
+    public HomeController(
+        IPropertyRepository properties,
+        IReviewRepository reviews,
+        INewsletterRepository newsletter,
+        UserManager<ApplicationUser> userManager)
     {
         _properties = properties;
+        _reviews = reviews;
         _newsletter = newsletter;
+        _userManager = userManager;
     }
 
     /// <summary>
-    /// Renders the hero banner and a strip of featured active listings.
+    /// Renders the landing page: hero, trust bar, regional discovery, featured
+    /// listings, how it works, guest testimonials, and the host proposition.
     /// </summary>
     /// <returns>The landing page.</returns>
     public async Task<IActionResult> Index()
     {
-        var featured = (await _properties.GetActiveAsync()).Take(6);
-        return View(featured);
+        var active = (await _properties.GetActiveAsync()).ToList();
+        var provinceCounts = await _properties.GetProvinceCountsAsync();
+        var (lowest, _) = await _properties.GetPriceRangeAsync();
+        var hosts = await _userManager.GetUsersInRoleAsync(Roles.Host);
+
+        var allReviews = active.SelectMany(p => p.Reviews).ToList();
+
+        // One cover image per province, taken from that province's newest listing,
+        // so the discovery cards stay in step with real inventory.
+        var provinceImages = active
+            .OrderByDescending(p => p.CreatedAt)
+            .GroupBy(p => p.Province)
+            .ToDictionary(
+                g => g.Key,
+                g => g.SelectMany(p => p.Images)
+                      .OrderByDescending(i => i.IsCover)
+                      .Select(i => i.ImageUrl)
+                      .FirstOrDefault() ?? "/images/placeholder.svg");
+
+        var model = new HomeViewModel
+        {
+            Featured = active
+                .OrderByDescending(p => p.Reviews.Count)
+                .ThenByDescending(p => p.CreatedAt)
+                .Take(6)
+                .ToList(),
+            ListingCount = active.Count,
+            ProvinceCount = provinceCounts.Count,
+            HostCount = hosts.Count,
+            ReviewCount = allReviews.Count,
+            AverageRating = allReviews.Count == 0 ? 0 : allReviews.Average(r => r.Rating),
+            LowestPrice = lowest,
+            ProvinceCounts = provinceCounts,
+            ProvinceImages = provinceImages,
+            Testimonials = await _reviews.GetRecentHighlightsAsync(3)
+        };
+
+        return View(model);
     }
 
     /// <summary>

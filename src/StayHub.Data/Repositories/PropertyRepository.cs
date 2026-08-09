@@ -123,6 +123,19 @@ public class PropertyRepository : IPropertyRepository
     }
 
     /// <inheritdoc />
+    public async Task<IReadOnlyDictionary<Province, int>> GetProvinceCountsAsync()
+    {
+        var counts = await _context.Properties
+            .AsNoTracking()
+            .Where(p => p.IsActive)
+            .GroupBy(p => p.Province)
+            .Select(g => new { Province = g.Key, Count = g.Count() })
+            .ToListAsync();
+
+        return counts.ToDictionary(c => c.Province, c => c.Count);
+    }
+
+    /// <inheritdoc />
     public async Task<(decimal Min, decimal Max)> GetPriceRangeAsync()
     {
         var active = _context.Properties.AsNoTracking().Where(p => p.IsActive);

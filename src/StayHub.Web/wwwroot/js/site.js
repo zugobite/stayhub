@@ -101,16 +101,141 @@
     });
 })();
 
-// --- Listing gallery pagination ---------------------------------------------
-// The track already scrolls and snaps by itself; this only keeps the arrows,
-// dots and counter in step with it.
+// --- Listing gallery pagination + fullscreen lightbox -----------------------
+// The track already scrolls and snaps by itself; arrows/dots/counter stay in
+// step with it. The magnifying glass opens the current photo full screen.
 (function () {
     'use strict';
+
+    var lightbox = null;
+    var lightboxImg = null;
+    var lightboxCounter = null;
+    var lightboxPrev = null;
+    var lightboxNext = null;
+    var lightboxSources = [];
+    var lightboxIndex = 0;
+    var lastFocus = null;
+
+    function ensureLightbox() {
+        if (lightbox) {
+            return;
+        }
+
+        lightbox = document.createElement('div');
+        lightbox.className = 'sh-lightbox';
+        lightbox.hidden = true;
+        lightbox.setAttribute('role', 'dialog');
+        lightbox.setAttribute('aria-modal', 'true');
+        lightbox.setAttribute('aria-label', 'Full screen photo');
+        lightbox.innerHTML =
+            '<button class="sh-lightbox-close" type="button" data-sh-lightbox-close aria-label="Close full screen photo">' +
+                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">' +
+                    '<path d="M18 6 6 18M6 6l12 12"/>' +
+                '</svg>' +
+            '</button>' +
+            '<button class="sh-lightbox-nav prev" type="button" data-sh-lightbox-prev aria-label="Previous photo">' +
+                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+                    '<path d="M15 5l-7 7 7 7"/>' +
+                '</svg>' +
+            '</button>' +
+            '<img class="sh-lightbox-image" alt="" data-sh-lightbox-image />' +
+            '<button class="sh-lightbox-nav next" type="button" data-sh-lightbox-next aria-label="Next photo">' +
+                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+                    '<path d="M9 5l7 7-7 7"/>' +
+                '</svg>' +
+            '</button>' +
+            '<span class="sh-lightbox-counter" data-sh-lightbox-counter aria-live="polite"></span>';
+
+        document.body.appendChild(lightbox);
+
+        lightboxImg = lightbox.querySelector('[data-sh-lightbox-image]');
+        lightboxCounter = lightbox.querySelector('[data-sh-lightbox-counter]');
+        lightboxPrev = lightbox.querySelector('[data-sh-lightbox-prev]');
+        lightboxNext = lightbox.querySelector('[data-sh-lightbox-next]');
+
+        lightbox.addEventListener('click', function (event) {
+            if (event.target === lightbox || event.target.closest('[data-sh-lightbox-close]')) {
+                closeLightbox();
+            }
+        });
+
+        lightboxPrev.addEventListener('click', function (event) {
+            event.stopPropagation();
+            showLightboxIndex(lightboxIndex - 1);
+        });
+
+        lightboxNext.addEventListener('click', function (event) {
+            event.stopPropagation();
+            showLightboxIndex(lightboxIndex + 1);
+        });
+
+        document.addEventListener('keydown', function (event) {
+            if (lightbox.hidden) {
+                return;
+            }
+
+            if (event.key === 'Escape') {
+                event.preventDefault();
+                closeLightbox();
+            } else if (event.key === 'ArrowLeft') {
+                event.preventDefault();
+                showLightboxIndex(lightboxIndex - 1);
+            } else if (event.key === 'ArrowRight') {
+                event.preventDefault();
+                showLightboxIndex(lightboxIndex + 1);
+            }
+        });
+    }
+
+    function showLightboxIndex(index) {
+        if (!lightboxSources.length) {
+            return;
+        }
+
+        lightboxIndex = (index + lightboxSources.length) % lightboxSources.length;
+        var item = lightboxSources[lightboxIndex];
+        lightboxImg.src = item.src;
+        lightboxImg.alt = item.alt || 'Listing photo';
+        lightboxCounter.textContent = (lightboxIndex + 1) + ' / ' + lightboxSources.length;
+
+        var multi = lightboxSources.length > 1;
+        lightboxPrev.hidden = !multi;
+        lightboxNext.hidden = !multi;
+        lightboxCounter.hidden = !multi;
+    }
+
+    function openLightbox(sources, index) {
+        ensureLightbox();
+        lightboxSources = sources;
+        lastFocus = document.activeElement;
+        showLightboxIndex(index || 0);
+        lightbox.hidden = false;
+        document.body.classList.add('sh-lightbox-open');
+        var closeBtn = lightbox.querySelector('[data-sh-lightbox-close]');
+        if (closeBtn) {
+            closeBtn.focus();
+        }
+    }
+
+    function closeLightbox() {
+        if (!lightbox || lightbox.hidden) {
+            return;
+        }
+
+        lightbox.hidden = true;
+        document.body.classList.remove('sh-lightbox-open');
+        lightboxImg.removeAttribute('src');
+        lightboxSources = [];
+
+        if (lastFocus && typeof lastFocus.focus === 'function') {
+            lastFocus.focus();
+        }
+    }
 
     Array.prototype.forEach.call(document.querySelectorAll('[data-sh-gallery]'), function (gallery) {
         var track = gallery.querySelector('[data-sh-gallery-track]');
 
-        if (!track || track.children.length < 2) {
+        if (!track || !track.children.length) {
             return;
         }
 
@@ -119,9 +244,15 @@
         var next = gallery.querySelector('[data-sh-gallery-next]');
         var counter = gallery.querySelector('[data-sh-gallery-counter]');
         var dots = gallery.querySelectorAll('[data-sh-gallery-dot]');
+        var zoom = gallery.querySelector('[data-sh-gallery-zoom]');
         var ticking = false;
+        var multi = slides.length > 1;
 
         function currentIndex() {
+            if (!multi || !track.clientWidth) {
+                return 0;
+            }
+
             return Math.round(track.scrollLeft / track.clientWidth);
         }
 
@@ -152,6 +283,37 @@
             if (next) {
                 next.disabled = index === slides.length - 1;
             }
+        }
+
+        function gallerySources() {
+            return Array.prototype.map.call(slides, function (slide) {
+                return {
+                    src: slide.getAttribute('data-sh-gallery-src') || slide.currentSrc || slide.src,
+                    alt: slide.getAttribute('alt') || ''
+                };
+            });
+        }
+
+        function openCurrent() {
+            openLightbox(gallerySources(), currentIndex());
+        }
+
+        if (zoom) {
+            zoom.addEventListener('click', function (event) {
+                event.preventDefault();
+                openCurrent();
+            });
+        }
+
+        Array.prototype.forEach.call(slides, function (slide, index) {
+            slide.style.cursor = 'zoom-in';
+            slide.addEventListener('click', function () {
+                openLightbox(gallerySources(), index);
+            });
+        });
+
+        if (!multi) {
+            return;
         }
 
         if (prev) {
@@ -194,9 +356,7 @@
             });
         });
 
-        // Keep the snap position valid when the track is resized.
         window.addEventListener('resize', sync);
-
         sync();
     });
 })();

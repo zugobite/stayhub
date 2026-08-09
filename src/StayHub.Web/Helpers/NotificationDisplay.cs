@@ -13,7 +13,7 @@ public static class NotificationDisplay
         NotificationType.BookingApproved => "Booking approved",
         NotificationType.BookingRejected => "Booking declined",
         NotificationType.NewMessage => "Message",
-        NotificationType.HostApplicationApproved => "Host approved",
+        NotificationType.HostApplicationApproved => "Host Approved",
         NotificationType.AdditionalPropertyApplication => "Property application",
         NotificationType.System => "Update",
         _ => "Notification"

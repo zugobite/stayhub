@@ -35,9 +35,17 @@
         {
             <img class="sh-gallery-slide" src="@imageUrls[i]"
                  alt="@Model.Property.Title - photo @(i + 1) of @imageUrls.Count"
-                 loading="@(i == 0 ? "eager" : "lazy")" />
+                 loading="@(i == 0 ? "eager" : "lazy")"
+                 data-sh-gallery-src="@imageUrls[i]" />
         }
     </div>
+
+    <button class="sh-gallery-zoom" type="button" data-sh-gallery-zoom aria-label="View photo full screen" title="View full screen">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="7" />
+            <path d="M20 20l-3.5-3.5" />
+        </svg>
+    </button>
 
     @if (imageUrls.Count > 1)
     {

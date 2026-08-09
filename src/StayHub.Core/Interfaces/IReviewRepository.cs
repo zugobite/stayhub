@@ -26,6 +26,15 @@ public interface IReviewRepository
     /// </summary>
     /// <param name="review">The review to create.</param>
     /// <returns>The generated identifier.</returns>
+    /// <summary>
+    /// Retrieves the most recent highly-rated reviews across every listing, used
+    /// as testimonials on the landing page.
+    /// </summary>
+    /// <param name="count">The maximum number of reviews to return.</param>
+    /// <param name="minimumRating">The lowest star rating to include.</param>
+    /// <returns>The matching reviews with their reviewer and listing loaded.</returns>
+    Task<IEnumerable<Review>> GetRecentHighlightsAsync(int count, int minimumRating = 4);
+
     Task<int> CreateAsync(Review review);
 
     /// <summary>

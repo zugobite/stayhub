@@ -1,7 +1,20 @@
-@model IEnumerable<HostProperty>
+@model HomeViewModel
 @{
     ViewData["Title"] = "Home";
+
+    // Ordered so the busiest regions lead the discovery grid.
+    var provinces = Model.ProvinceCounts
+        .OrderByDescending(p => p.Value)
+        .ThenBy(p => p.Key.ToString())
+        .ToList();
 }
+
+@*
+    Section order follows conversion research: proposition and CTA above the
+    fold, trust signals immediately beneath, then discovery, benefits, evidence,
+    and a repeated CTA. Guest and host propositions are addressed in separate
+    bands because the two sides want different things from this page.
+*@
 
 <section class="sh-hero">
     <div>
@@ -16,31 +29,239 @@
     <img class="sh-hero-art" src="~/images/brand/hero-village.svg" alt="" aria-hidden="true" />
 </section>
 
-<section class="mt-5">
+@if (Model.HasTraction)
+{
+    @* Trust bar. Every figure is counted from the database, so it stays honest
+       as the platform grows or empties. *@
+    <section class="sh-trustbar" aria-label="StayHub at a glance">
+        <div class="sh-trustbar-item">
+            <partial name="_Icon" model='"home"' />
+            <div>
+                <strong>@Model.ListingCount</strong>
+                <span>@(Model.ListingCount == 1 ? "verified stay" : "verified stays")</span>
+            </div>
+        </div>
+        <div class="sh-trustbar-item">
+            <partial name="_Icon" model='"pin"' />
+            <div>
+                <strong>@Model.ProvinceCount</strong>
+                <span>@(Model.ProvinceCount == 1 ? "province" : "provinces") covered</span>
+            </div>
+        </div>
+        <div class="sh-trustbar-item">
+            <partial name="_Icon" model='"usercheck"' />
+            <div>
+                <strong>@Model.HostCount</strong>
+                <span>approved @(Model.HostCount == 1 ? "host" : "hosts")</span>
+            </div>
+        </div>
+        <div class="sh-trustbar-item">
+            <partial name="_Icon" model='"star"' />
+            <div>
+                <strong>@(Model.ReviewCount == 0 ? "New" : Model.AverageRating.ToString("0.0"))</strong>
+                <span>
+                    @if (Model.ReviewCount == 0)
+                    {
+                        @:awaiting first review
+                    }
+                    else
+                    {
+                        @:from @Model.ReviewCount guest @(Model.ReviewCount == 1 ? "review" : "reviews")
+                    }
+                </span>
+            </div>
+        </div>
+    </section>
+}
+
+@if (provinces.Any())
+{
+    <section class="sh-section">
+        <div class="sh-pagehead">
+            <div>
+                <span class="sh-eyebrow">Where to</span>
+                <h2 class="sh-section-title">Browse by Province</h2>
+                <p class="text-muted mb-0">Nine provinces, one platform. Pick a region and see what is open.</p>
+            </div>
+        </div>
+
+        <div class="sh-regiongrid">
+            @foreach (var (province, count) in provinces)
+            {
+                var image = Model.ProvinceImages.TryGetValue(province, out var url) ? url : "/images/placeholder.svg";
+
+                <a class="sh-region" asp-controller="Properties" asp-action="Index" asp-route-province="@province">
+                    <img src="@image" alt="" aria-hidden="true" loading="lazy" />
+                    <span class="sh-region-body">
+                        <span class="sh-region-name">@province.DisplayName()</span>
+                        <span class="sh-region-count">@count @(count == 1 ? "stay" : "stays")</span>
+                    </span>
+                </a>
+            }
+        </div>
+    </section>
+}
+
+<section class="sh-section">
     <div class="sh-pagehead">
         <div>
             <span class="sh-eyebrow">Handpicked</span>
-            <h1>Featured Stays</h1>
+            <h2 class="sh-section-title">Featured Stays</h2>
+            <p class="text-muted mb-0">Our most reviewed places, from R @Model.LowestPrice.ToString("N0") a night.</p>
         </div>
         <div class="sh-pagehead-actions">
             <a class="sh-linkarrow" asp-controller="Properties" asp-action="Index">See all stays</a>
         </div>
     </div>
 
-    @if (!Model.Any())
+    @if (!Model.Featured.Any())
     {
-        <div class="sh-empty">
-            <div class="sh-empty-title">No listings published yet</div>
-            <p>Once an administrator approves a host application, its property appears here.</p>
-        </div>
+        <partial name="_EmptyState" model='new EmptyState("empty-listings", "No stays published yet", "Once an administrator approves a host application, its property appears here.")' />
     }
     else
     {
         <div class="sh-grid">
-            @foreach (var property in Model)
+            @foreach (var property in Model.Featured)
             {
                 <partial name="_PropertyCard" model="property" />
             }
         </div>
     }
+</section>
+
+@* Benefits, kept to three scannable steps. *@
+<section class="sh-section sh-band">
+    <div class="sh-band-head">
+        <span class="sh-eyebrow">How it works</span>
+        <h2 class="sh-section-title">Booked in 3 Steps</h2>
+    </div>
+
+    <ol class="sh-steps">
+        <li class="sh-step-card">
+            <span class="sh-step-num">1</span>
+            <span class="sh-step-icon"><partial name="_Icon" model='"search"' /></span>
+            <h3>Find your place</h3>
+            <p>Filter by province, price, guests, and the amenities you actually need. Every listing is reviewed before it goes live.</p>
+        </li>
+        <li class="sh-step-card">
+            <span class="sh-step-num">2</span>
+            <span class="sh-step-icon"><partial name="_Icon" model='"calendar"' /></span>
+            <h3>Request your dates</h3>
+            <p>See the full price before you commit - nightly rate, cleaning, and service fee, with no surprises at checkout.</p>
+        </li>
+        <li class="sh-step-card">
+            <span class="sh-step-num">3</span>
+            <span class="sh-step-icon"><partial name="_Icon" model='"key"' /></span>
+            <h3>Check in with confidence</h3>
+            <p>Your host sets out the arrival steps in advance, and identity documents are verified before the keys change hands.</p>
+        </li>
+    </ol>
+</section>
+
+@* Trust signals, the demand side's main objection. *@
+<section class="sh-section">
+    <div class="sh-pagehead">
+        <div>
+            <span class="sh-eyebrow">Why StayHub</span>
+            <h2 class="sh-section-title">Built so Strangers can Trust Each Other</h2>
+            <p class="text-muted mb-0">A marketplace only works if both sides feel safe. These are the guardrails.</p>
+        </div>
+    </div>
+
+    <div class="sh-featuregrid">
+        <div class="sh-feature">
+            <span class="sh-feature-icon"><partial name="_Icon" model='"shield"' /></span>
+            <h3>Every host is approved</h3>
+            <p>Listings do not go public automatically. An administrator reviews the property, its photographs, and the applicant before it appears in search.</p>
+        </div>
+        <div class="sh-feature">
+            <span class="sh-feature-icon sun"><partial name="_Icon" model='"usercheck"' /></span>
+            <h3>Verified check-in</h3>
+            <p>Guests upload an ID or passport during check-in, and the host verifies it before the stay begins. Both sides know who they are dealing with.</p>
+        </div>
+        <div class="sh-feature">
+            <span class="sh-feature-icon clay"><partial name="_Icon" model='"chat"' /></span>
+            <h3>Messaging that stays on record</h3>
+            <p>Arrange arrival times, directions, and house rules in one thread. Nothing important gets lost in a personal inbox.</p>
+        </div>
+        <div class="sh-feature">
+            <span class="sh-feature-icon leaf"><partial name="_Icon" model='"star"' /></span>
+            <h3>Reviews from real stays</h3>
+            <p>Only guests who completed a booking can review it, so the ratings reflect stays that actually happened.</p>
+        </div>
+    </div>
+</section>
+
+@if (Model.Testimonials.Any())
+{
+    @* Supporting evidence, drawn from real reviews rather than written copy. *@
+    <section class="sh-section">
+        <div class="sh-pagehead">
+            <div>
+                <span class="sh-eyebrow">From recent guests</span>
+                <h2 class="sh-section-title">What People Say</h2>
+            </div>
+        </div>
+
+        <div class="sh-quotegrid">
+            @foreach (var review in Model.Testimonials)
+            {
+                <figure class="sh-quote">
+                    <div class="sh-quote-stars" aria-label="@review.Rating out of 5">
+                        @for (var i = 0; i < review.Rating; i++)
+                        {
+                            <partial name="_Icon" model='"star"' />
+                        }
+                    </div>
+                    <blockquote>@review.Comment</blockquote>
+                    <figcaption>
+                        <strong>@review.Reviewer?.FullName</strong>
+                        @if (review.Property is not null)
+                        {
+                            <span>
+                                stayed at
+                                <a asp-controller="Properties" asp-action="View" asp-route-id="@review.Property.Id">@review.Property.Title</a>
+                            </span>
+                        }
+                    </figcaption>
+                </figure>
+            }
+        </div>
+    </section>
+}
+
+@* Supply-side proposition, deliberately separate from the guest message. *@
+<section class="sh-section">
+    <div class="sh-hostband">
+        <div class="sh-hostband-copy">
+            <span class="sh-eyebrow">For hosts</span>
+            <h2 class="sh-section-title">Have a place worth sharing?</h2>
+            <p>
+                List it once and manage everything from one dashboard: booking requests, arrival
+                instructions, guest verification, earnings, and reviews.
+            </p>
+            <ul class="sh-ticklist">
+                <li><partial name="_Icon" model='"check"' /> Free to list - no charge until you take a booking</li>
+                <li><partial name="_Icon" model='"check"' /> You approve every booking request yourself</li>
+                <li><partial name="_Icon" model='"check"' /> Guest identity verified before check-in</li>
+            </ul>
+            <a class="sh-btn sh-btn-lg sh-btn-primary" asp-controller="HostApplications" asp-action="Apply">Start hosting</a>
+        </div>
+        <img class="sh-hostband-art" src="~/images/brand/host-earnings.svg" alt="" aria-hidden="true" loading="lazy" />
+    </div>
+</section>
+
+@* Repeated call to action, per the research on mid/late-page conversion points. *@
+<section class="sh-section">
+    <div class="sh-closer">
+        <h2>Ready when you are</h2>
+        <p>@Model.ListingCount verified @(Model.ListingCount == 1 ? "stay" : "stays") across @Model.ProvinceCount @(Model.ProvinceCount == 1 ? "province" : "provinces"), from R @Model.LowestPrice.ToString("N0") a night.</p>
+        <div class="sh-closer-actions">
+            <a class="sh-btn sh-btn-lg sh-btn-sun" asp-controller="Properties" asp-action="Index">Find a stay</a>
+            @if (User.Identity?.IsAuthenticated != true)
+            {
+                <a class="sh-btn sh-btn-lg sh-btn-ghost" asp-controller="Account" asp-action="Register">Create an account</a>
+            }
+        </div>
+    </div>
 </section>

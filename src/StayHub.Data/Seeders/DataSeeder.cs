@@ -40,6 +40,10 @@ public static class DataSeeder
             location: "Pretoria, Gauteng");
         var guest2 = await CreateUserAsync(userManager, "naledi@stayhub.co.za", "Naledi", "Khumalo", Roles.Guest,
             location: "Durban, KwaZulu-Natal");
+        var guest3 = await CreateUserAsync(userManager, "johan@stayhub.co.za", "Johan", "Steyn", Roles.Guest,
+            location: "Bloemfontein, Free State");
+        var guest4 = await CreateUserAsync(userManager, "fatima@stayhub.co.za", "Fatima", "Adams", Roles.Guest,
+            location: "Port Elizabeth, Eastern Cape");
 
         var zascia = await CreateUserAsync(userManager, "host@stayhub.co.za", "Zascia", "Hugo", Roles.Host,
             location: "Cape Town, Western Cape",
@@ -77,7 +81,7 @@ public static class DataSeeder
         if (await context.Properties.AnyAsync())
             return;
 
-        if (admin is null || guest is null || guest2 is null
+        if (admin is null || guest is null || guest2 is null || guest3 is null || guest4 is null
             || zascia is null || pieter is null || ayesha is null || sipho is null || lerato is null)
         {
             return;
@@ -229,7 +233,8 @@ public static class DataSeeder
 
         await context.SaveChangesAsync();
 
-        await SeedReviewsAsync(context, listings.Select(l => l.Property).ToList(), guest.Id, guest2.Id);
+        await SeedReviewsAsync(context, listings.Select(l => l.Property).ToList(),
+            new[] { guest.Id, guest2.Id, guest3.Id, guest4.Id });
 
         var apartment = listings[0].Property;
 
@@ -328,31 +333,35 @@ public static class DataSeeder
     private static async Task SeedReviewsAsync(
         StayHubDbContext context,
         IReadOnlyList<HostProperty> properties,
-        string guestId,
-        string secondGuestId)
+        IReadOnlyList<string> reviewerIds)
     {
-        var reviews = new (int Index, string ReviewerId, int Rating, string Comment, int DaysAgo)[]
+        // (listing index, reviewer index, rating, comment, days ago). Reviewers are
+        // spread deliberately so the landing page's testimonials come from
+        // different guests rather than one very enthusiastic person.
+        var reviews = new (int Index, int Reviewer, int Rating, string Comment, int DaysAgo)[]
         {
-            (0, guestId, 5, "Spotless, and exactly as described. The walk to the Waterfront takes ten minutes.", 12),
-            (0, secondGuestId, 4, "Great flat, though the street gets a little noisy on a Friday.", 8),
-            (2, secondGuestId, 5, "The view genuinely stops you in your tracks. Worth every rand.", 10),
-            (2, guestId, 5, "Pool was heated as promised in July. Zascia answered every message within minutes.", 5),
-            (3, guestId, 4, "Lovely house and a great location. Could do with a few more kitchen things.", 9),
-            (4, secondGuestId, 5, "Woke up to hippo noise from the river. Sipho's game drive advice was spot on.", 7),
-            (5, guestId, 4, "Very peaceful, and the wood stove made it. Bring warm clothes in winter.", 6),
-            (8, secondGuestId, 3, "Good views, but the lift was out for a day and it is a long way up.", 4),
-            (11, guestId, 5, "Giraffe at breakfast. Genuinely unforgettable, and immaculately kept.", 3)
+            (0, 0, 5, "Spotless, and exactly as described. The walk to the Waterfront takes ten minutes.", 12),
+            (0, 1, 4, "Great flat, though the street gets a little noisy on a Friday.", 8),
+            (2, 2, 5, "The view genuinely stops you in your tracks. Worth every rand.", 4),
+            (2, 0, 5, "Pool was heated as promised in July, and every message was answered within minutes.", 9),
+            (3, 3, 4, "Lovely house and a great location. Could do with a few more kitchen things.", 6),
+            (4, 1, 5, "Woke up to hippo noise from the river. Sipho's game drive advice was spot on.", 3),
+            (5, 3, 4, "Very peaceful, and the wood stove made it. Bring warm clothes in winter.", 7),
+            (8, 2, 3, "Good views, but the lift was out for a day and it is a long way up.", 11),
+            (11, 0, 5, "Giraffe at breakfast. Genuinely unforgettable, and immaculately kept.", 5),
+            (13, 3, 5, "Kayak on the lagoon at sunrise was the highlight of our year.", 2),
+            (6, 2, 4, "Silence like I have never known. The stoep is worth the drive on its own.", 10)
         };
 
-        foreach (var (index, reviewerId, rating, comment, daysAgo) in reviews)
+        foreach (var (index, reviewer, rating, comment, daysAgo) in reviews)
         {
-            if (index >= properties.Count)
+            if (index >= properties.Count || reviewer >= reviewerIds.Count)
                 continue;
 
             context.Reviews.Add(new Review
             {
                 PropertyId = properties[index].Id,
-                ReviewerId = reviewerId,
+                ReviewerId = reviewerIds[reviewer],
                 Rating = rating,
                 Comment = comment,
                 CreatedAt = DateTime.UtcNow.AddDays(-daysAgo)

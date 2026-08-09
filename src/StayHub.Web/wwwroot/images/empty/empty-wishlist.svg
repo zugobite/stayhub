@@ -1,6 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 120" role="img" aria-label="Nothing saved">
+  <defs>
+    <!-- One heart outline, reused at both sizes. The small heart was previously a
+         separate hand-drawn path and closed into a lopsided blob rather than a
+         heart; sharing the geometry makes that impossible. -->
+    <path id="shHeart" d="M80 94 47.6 61.6a17.5 17.5 0 0 1 24.7-24.7L80 44.5l7.7-7.6a17.5 17.5 0 0 1 24.7 24.7z"/>
+  </defs>
+
   <ellipse cx="80" cy="108" rx="48" ry="7" fill="#dbe5ec"/>
-  <path d="M80 94 47.6 61.6a17.5 17.5 0 0 1 24.7-24.7L80 44.5l7.7-7.6a17.5 17.5 0 0 1 24.7 24.7z"
-        fill="#ffffff" stroke="#0e6ba8" stroke-width="2.5" stroke-linejoin="round"/>
-  <path d="M110 30 c4-6 13-5 14 2 c1 6-6 10-9 13 c-4-3-9-8-5-15z" fill="#f6b31b"/>
+
+  <use href="#shHeart" fill="#ffffff" stroke="#0e6ba8" stroke-width="2.5" stroke-linejoin="round"/>
+
+  <!-- Centre the heart on the origin, shrink it, then tuck it against the large
+       heart's upper-right lobe. The lobe is effectively a circle centred near
+       (100, 49) with r=17.5, so this sits just outside it with a small gap. -->
+  <use href="#shHeart" fill="#f6b31b" transform="translate(121 29) scale(0.27) translate(-80 -63)"/>
 </svg>
