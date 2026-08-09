@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="Karoo cottage beneath a wide sky">
+  <defs>
+    <linearGradient id="krSky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e7f1f8"/>
+      <stop offset="1" stop-color="#fdf3dc"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="300" fill="url(#krSky)"/>
+  <circle cx="316" cy="66" r="24" fill="#f6b31b"/>
+  <!-- flat-topped koppies -->
+  <path d="M0 196h120v-34H24z" fill="#dbc9ae"/>
+  <path d="M262 196h138v-46H286z" fill="#e6d9c2"/>
+  <!-- cottage -->
+  <rect x="128" y="150" width="130" height="46" fill="#ffffff"/>
+  <path d="M120 150 193 116l73 34z" fill="#c75b39"/>
+  <g fill="#0e6ba8">
+    <rect x="144" y="162" width="20" height="20" rx="3"/>
+    <rect x="222" y="162" width="20" height="20" rx="3"/>
+  </g>
+  <path d="M182 196v-20a11 11 0 0 1 22 0v20z" fill="#0e6ba8"/>
+  <rect x="150" y="120" width="9" height="18" fill="#a8482c"/>
+  <rect y="196" width="400" height="104" fill="#efe3cb"/>
+  <rect y="196" width="400" height="8" fill="#dbc9ae"/>
+  <g fill="#c9b696">
+    <ellipse cx="66" cy="238" rx="26" ry="6"/>
+    <ellipse cx="330" cy="258" rx="30" ry="7"/>
+  </g>
+</svg>

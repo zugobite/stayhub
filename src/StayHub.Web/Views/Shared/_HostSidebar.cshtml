@@ -1,0 +1,49 @@
+@{
+    var active = ViewContext.RouteData.Values["action"]?.ToString() ?? string.Empty;
+    var controller = ViewContext.RouteData.Values["controller"]?.ToString() ?? string.Empty;
+    var isHost = controller == "Host";
+}
+
+<nav class="sh-sidebar" aria-label="Hosting">
+    <h6 class="sh-sidebar-title">Hosting</h6>
+
+    <a class="sh-sidebar-link @(isHost && active == "Dashboard" ? "active" : "")" asp-controller="Host" asp-action="Dashboard">
+        <partial name="_Icon" model='"dashboard"' /> Dashboard
+    </a>
+    <a class="sh-sidebar-link @(isHost && active == "Properties" ? "active" : "")" asp-controller="Host" asp-action="Properties">
+        <partial name="_Icon" model='"home"' /> My Properties
+    </a>
+    <a class="sh-sidebar-link @(isHost && active == "BookingRequests" ? "active" : "")" asp-controller="Host" asp-action="BookingRequests">
+        <partial name="_Icon" model='"calendar"' /> Booking Requests
+    </a>
+    <a class="sh-sidebar-link @(isHost && active is "Verifications" or "CheckInProcess" ? "active" : "")" asp-controller="Host" asp-action="Verifications">
+        <partial name="_Icon" model='"usercheck"' /> Guest check-ins
+    </a>
+    <a class="sh-sidebar-link @(isHost && active == "Earnings" ? "active" : "")" asp-controller="Host" asp-action="Earnings">
+        <partial name="_Icon" model='"wallet"' /> Earnings
+    </a>
+    <a class="sh-sidebar-link @(isHost && active == "Reviews" ? "active" : "")" asp-controller="Host" asp-action="Reviews">
+        <partial name="_Icon" model='"star"' /> Reviews
+    </a>
+
+    <div class="sh-sidebar-sep"></div>
+
+    <a class="sh-sidebar-link @(controller == "Messages" ? "active" : "")" asp-controller="Messages" asp-action="Index">
+        <partial name="_Icon" model='"mail"' /> Messages
+    </a>
+    <a class="sh-sidebar-link @(controller == "Notifications" ? "active" : "")" asp-controller="Notifications" asp-action="Index">
+        <partial name="_Icon" model='"bell"' /> Notifications
+    </a>
+    <a class="sh-sidebar-link @(controller == "HostApplications" ? "active" : "")" asp-controller="HostApplications" asp-action="Apply">
+        <partial name="_Icon" model='"plus"' /> List Another Property
+    </a>
+
+    <div class="sh-sidebar-sep"></div>
+
+    <form asp-controller="Account" asp-action="Logout" method="post">
+        @Html.AntiForgeryToken()
+        <button class="sh-sidebar-link sh-sidebar-logout" type="submit">
+            <partial name="_Icon" model='"logout"' /> Log out
+        </button>
+    </form>
+</nav>

@@ -1,0 +1,31 @@
+services:
+  sqlserver:
+    platform: linux/amd64
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: stayhub-sql
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=Password123!
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlvolume:/var/opt/mssql
+    restart: always
+
+  sql-setup:
+    platform: linux/amd64
+    image: mcr.microsoft.com/mssql-tools
+    depends_on:
+      - sqlserver
+    volumes:
+      - ./sql:/sql
+    command: >
+      /bin/bash -c "
+      echo 'Waiting for SQL Server to be ready...';
+      sleep 30;
+      /opt/mssql-tools/bin/sqlcmd -S sqlserver -U sa -P Password123! -d master -i /sql/001-create-database.sql;
+      echo 'Database created. Schema and seed data are applied by EF Core migrations on first run.';
+      "
+
+volumes:
+  sqlvolume:

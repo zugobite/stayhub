@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="Beach house above the shore">
+  <rect width="400" height="300" fill="#eef5fa"/>
+  <circle cx="72" cy="60" r="24" fill="#f6b31b"/>
+  <!-- sea -->
+  <path d="M0 214h400v86H0z" fill="#0e6ba8"/>
+  <rect y="214" width="400" height="10" fill="#6aa9d2"/>
+  <!-- stilted house -->
+  <path d="M104 128 200 78l96 50z" fill="#0e6ba8"/>
+  <rect x="120" y="128" width="160" height="66" fill="#ffffff"/>
+  <g fill="#0e6ba8">
+    <rect x="138" y="146" width="26" height="26" rx="3"/>
+    <rect x="236" y="146" width="26" height="26" rx="3"/>
+  </g>
+  <path d="M180 194v-26a10 10 0 0 1 20 0v26z" fill="#c75b39"/>
+  <g fill="#dbe5ec">
+    <rect x="126" y="194" width="9" height="22"/>
+    <rect x="265" y="194" width="9" height="22"/>
+    <rect x="112" y="188" width="176" height="8" rx="4"/>
+  </g>
+  <circle cx="336" cy="200" r="15" fill="#4d97c7"/>
+</svg>

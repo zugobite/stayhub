@@ -1,0 +1,53 @@
+@model HostProperty
+
+@{
+    var cover = Model.Images.FirstOrDefault(i => i.IsCover)?.ImageUrl
+                ?? Model.Images.FirstOrDefault()?.ImageUrl
+                ?? "/images/placeholder.svg";
+
+    var reviewCount = Model.Reviews?.Count ?? 0;
+    var rating = reviewCount == 0 ? 0 : Model.Reviews!.Average(r => r.Rating);
+    var wishlisted = ViewData["Wishlisted"] as bool? ?? false;
+}
+
+<article class="sh-card">
+    <div class="sh-card-media">
+        <a asp-controller="Properties" asp-action="View" asp-route-id="@Model.Id">
+            <img src="@cover" alt="@Model.Title" loading="lazy" />
+        </a>
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <form asp-controller="Wishlist" asp-action="Toggle" method="post" class="sh-card-heart">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="propertyId" value="@Model.Id" />
+                <input type="hidden" name="returnUrl" value="@Context.Request.Path@Context.Request.QueryString" />
+                <button type="submit" title="@(wishlisted ? "Remove from wishlist" : "Save to wishlist")">
+                    @(wishlisted ? "♥" : "♡")
+                </button>
+            </form>
+        }
+        @if (Model.Images.Count > 1)
+        {
+            <span class="sh-card-count">@Model.Images.Count photos</span>
+        }
+    </div>
+
+    <div class="sh-card-body">
+        <div class="d-flex justify-content-between align-items-start gap-2">
+            <span class="sh-card-location">@Model.City</span>
+            <span class="sh-card-rating">
+                @if (reviewCount > 0)
+                {
+                    <text>★ @rating.ToString("0.0") <span class="text-muted">(@reviewCount)</span></text>
+                }
+                else
+                {
+                    <span class="text-muted">New</span>
+                }
+            </span>
+        </div>
+        <a class="sh-card-title" asp-controller="Properties" asp-action="View" asp-route-id="@Model.Id">@Model.Title</a>
+        <div class="sh-card-meta">@Model.PropertyType &middot; @Model.MaxGuests guests &middot; @Model.Bedrooms bedrooms</div>
+        <div class="sh-card-price"><strong>R @Model.PricePerNight.ToString("N0")</strong> <span class="text-muted">per night</span></div>
+    </div>
+</article>

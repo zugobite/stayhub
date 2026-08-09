@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="Modern villa with a pool">
+  <rect width="400" height="300" fill="#e7f1f8"/>
+  <circle cx="330" cy="58" r="26" fill="#f6b31b"/>
+  <!-- villa blocks -->
+  <rect x="48" y="96" width="150" height="86" fill="#ffffff"/>
+  <rect x="198" y="126" width="112" height="56" fill="#f7fbfd"/>
+  <rect x="48" y="88" width="262" height="10" fill="#dbe5ec"/>
+  <g fill="#0e6ba8">
+    <rect x="66" y="118" width="46" height="42" rx="3"/>
+    <rect x="126" y="118" width="46" height="42" rx="3"/>
+    <rect x="218" y="142" width="34" height="30" rx="3"/>
+  </g>
+  <path d="M268 182v-24a9 9 0 0 1 18 0v24z" fill="#c75b39"/>
+  <!-- deck and pool -->
+  <rect y="182" width="400" height="118" fill="#f2f7fa"/>
+  <rect x="40" y="206" width="270" height="66" rx="12" fill="#3f8ec2"/>
+  <rect x="40" y="206" width="270" height="12" rx="6" fill="#6aa9d2"/>
+  <g fill="#dbe5ec">
+    <rect x="330" y="200" width="42" height="8" rx="4"/>
+    <rect x="334" y="212" width="34" height="46" rx="6"/>
+  </g>
+</svg>

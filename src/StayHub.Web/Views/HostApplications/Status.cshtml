@@ -1,0 +1,41 @@
+@model IEnumerable<HostApplication>
+@{
+    ViewData["Title"] = "Host application status";
+}
+
+<h1 class="sh-section-title">Host application status</h1>
+
+@if (!Model.Any())
+{
+    <p class="text-muted">You have not applied yet. <a asp-action="Apply">Become a Host</a>.</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table sh-table align-middle">
+            <thead>
+                <tr>
+                    <th>Property</th>
+                    <th>Type</th>
+                    <th>Submitted</th>
+                    <th>Reviewed</th>
+                    <th>Status</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var application in Model)
+                {
+                    <tr>
+                        <td>@application.Property?.Title</td>
+                        <td>@(application.IsAdditionalProperty ? "Additional property" : "Initial host application")</td>
+                        <td>@application.AppliedAt.ToString("d MMM yyyy")</td>
+                        <td>@(application.ReviewedAt?.ToString("d MMM yyyy") ?? "-")</td>
+                        <td><span class="sh-pill sh-pill-@application.Status.ToString().ToLowerInvariant()">@application.Status</span></td>
+                        <td class="text-muted">@application.ReviewNotes</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

@@ -1,0 +1,82 @@
+@model IEnumerable<GuestCheckIn>
+@{
+    ViewData["Title"] = "Guest check-ins";
+}
+
+<div class="sh-shell">
+    <partial name="_HostSidebar" />
+
+    <section class="sh-shell-main">
+        <h1 class="sh-section-title">Guest check-ins awaiting verification</h1>
+
+        @if (!Model.Any())
+        {
+            <partial name="_EmptyState" model='new EmptyState("empty-documents", "Nothing to verify", "Identity documents uploaded by guests during check-in appear here.")' />
+        }
+        else
+        {
+            foreach (var checkIn in Model)
+            {
+                <div class="sh-panel">
+                    <div class="d-flex justify-content-between flex-wrap gap-2">
+                        <div>
+                            <strong>@checkIn.Booking?.Guest?.FullName</strong>
+                            <div class="text-muted">@checkIn.Booking?.Property?.Title &middot; booking #@checkIn.BookingId</div>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            @if (!string.IsNullOrEmpty(checkIn.Booking?.GuestId))
+                            {
+                                <a class="sh-btn sh-btn-sm sh-btn-ghost" asp-controller="Messages" asp-action="Conversation" asp-route-id="@checkIn.Booking.GuestId">
+                                    Message guest
+                                </a>
+                            }
+                            <span class="sh-pill sh-pill-pending">@checkIn.Status</span>
+                        </div>
+                    </div>
+
+                    <table class="table sh-table align-middle mt-3 mb-0">
+                        <thead>
+                            <tr><th>Document</th><th>Type</th><th>Uploaded</th><th>Status</th><th>Actions</th></tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var document in checkIn.Documents)
+                            {
+                                <tr>
+                                    <td><a href="@document.FileUrl" target="_blank" rel="noopener">@document.FileName</a></td>
+                                    <td>@document.DocumentType</td>
+                                    <td>@document.UploadedAt.ToString("d MMM yyyy HH:mm")</td>
+                                    <td><span class="sh-pill sh-pill-@document.Status.ToString().ToLowerInvariant()">@document.Status</span></td>
+                                    <td>
+                                        @if (document.Status == DocumentStatus.Pending)
+                                        {
+                                            <div class="d-flex gap-2">
+                                                <form asp-action="VerifyDocument" method="post">
+                                                    @Html.AntiForgeryToken()
+                                                    <input type="hidden" name="documentId" value="@document.Id" />
+                                                    <input type="hidden" name="bookingId" value="@checkIn.BookingId" />
+                                                    <input type="hidden" name="approved" value="true" />
+                                                    <button class="sh-btn sh-btn-sm sh-btn-primary" type="submit">Verify</button>
+                                                </form>
+                                                <form asp-action="VerifyDocument" method="post">
+                                                    @Html.AntiForgeryToken()
+                                                    <input type="hidden" name="documentId" value="@document.Id" />
+                                                    <input type="hidden" name="bookingId" value="@checkIn.BookingId" />
+                                                    <input type="hidden" name="approved" value="false" />
+                                                    <button class="sh-btn sh-btn-sm sh-btn-ghost" type="submit">Reject</button>
+                                                </form>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">-</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        }
+    </section>
+</div>

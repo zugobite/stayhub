@@ -1,0 +1,46 @@
+@{
+    var active = ViewContext.RouteData.Values["action"]?.ToString() ?? string.Empty;
+    var controller = ViewContext.RouteData.Values["controller"]?.ToString() ?? string.Empty;
+    var isAdmin = controller == "Admin";
+}
+
+<nav class="sh-sidebar" aria-label="Administration">
+    <h6 class="sh-sidebar-title">Administration</h6>
+
+    <a class="sh-sidebar-link @(isAdmin && active == "Dashboard" ? "active" : "")" asp-controller="Admin" asp-action="Dashboard">
+        <partial name="_Icon" model='"dashboard"' /> Dashboard
+    </a>
+    <a class="sh-sidebar-link @(isAdmin && active == "Users" ? "active" : "")" asp-controller="Admin" asp-action="Users">
+        <partial name="_Icon" model='"users"' /> Users
+    </a>
+    <a class="sh-sidebar-link @(isAdmin && active is "HostRequests" or "ReviewApplication" ? "active" : "")" asp-controller="Admin" asp-action="HostRequests">
+        <partial name="_Icon" model='"document"' /> Host requests
+    </a>
+    <a class="sh-sidebar-link @(isAdmin && active == "Bookings" ? "active" : "")" asp-controller="Admin" asp-action="Bookings">
+        <partial name="_Icon" model='"calendar"' /> Bookings
+    </a>
+    <a class="sh-sidebar-link @(isAdmin && active == "Properties" ? "active" : "")" asp-controller="Admin" asp-action="Properties">
+        <partial name="_Icon" model='"home"' /> Properties
+    </a>
+
+    <div class="sh-sidebar-sep"></div>
+
+    <a class="sh-sidebar-link @(controller == "Messages" ? "active" : "")" asp-controller="Messages" asp-action="Index">
+        <partial name="_Icon" model='"mail"' /> Messages
+    </a>
+    <a class="sh-sidebar-link @(controller == "Notifications" ? "active" : "")" asp-controller="Notifications" asp-action="Index">
+        <partial name="_Icon" model='"bell"' /> Notifications
+    </a>
+    <a class="sh-sidebar-link @(isAdmin && active == "ActivityLogs" ? "active" : "")" asp-controller="Admin" asp-action="ActivityLogs">
+        <partial name="_Icon" model='"activity"' /> Activity logs
+    </a>
+
+    <div class="sh-sidebar-sep"></div>
+
+    <form asp-controller="Account" asp-action="Logout" method="post">
+        @Html.AntiForgeryToken()
+        <button class="sh-sidebar-link sh-sidebar-logout" type="submit">
+            <partial name="_Icon" model='"logout"' /> Log out
+        </button>
+    </form>
+</nav>

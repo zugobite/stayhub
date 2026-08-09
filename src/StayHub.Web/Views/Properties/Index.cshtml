@@ -1,0 +1,152 @@
+@model PropertyGalleryViewModel
+@{
+    ViewData["Title"] = "Properties";
+
+    var count = Model.Properties.Count();
+    var c = Model.Criteria;
+    var selectedAmenities = c.AmenityIds.ToHashSet();
+
+    // The panel starts open when the guest arrives with filters already applied,
+    // so they can see what is narrowing their results.
+    var advancedOpen = c.MinPrice.HasValue || c.MaxPrice.HasValue || c.Guests.HasValue
+                       || c.Bedrooms.HasValue || c.Bathrooms.HasValue || selectedAmenities.Count > 0;
+}
+
+<div class="sh-pagehead">
+    <div>
+        <span class="sh-eyebrow">Browse</span>
+        <h1>Places to Stay</h1>
+        <p>
+            @count @(count == 1 ? "stay" : "stays")
+            @(c.Province.HasValue ? $"in {c.Province.Value.DisplayName()}" : "across South Africa")
+            @(string.IsNullOrEmpty(c.City) ? "" : $" · {c.City}")
+        </p>
+    </div>
+</div>
+
+<form method="get" class="sh-search" id="propertySearch">
+    <div class="sh-search-row">
+        <label class="sh-search-field sh-search-grow">
+            <span>Search</span>
+            <input type="search" name="q" value="@c.Keyword" placeholder="Try &quot;lagoon&quot;, &quot;Kruger&quot; or &quot;loft&quot;" />
+        </label>
+
+        <label class="sh-search-field">
+            <span>Province</span>
+            <select name="province">
+                <option value="">Anywhere</option>
+                @foreach (var province in Model.Provinces)
+                {
+                    <option value="@province" selected="@(c.Province == province)">@province.DisplayName()</option>
+                }
+            </select>
+        </label>
+
+        <label class="sh-search-field">
+            <span>City</span>
+            <select name="city">
+                <option value="">Any City</option>
+                @foreach (var city in Model.Cities)
+                {
+                    <option value="@city" selected="@(city == c.City)">@city</option>
+                }
+            </select>
+        </label>
+
+        <label class="sh-search-field">
+            <span>Stay type</span>
+            <select name="type">
+                <option value="">Any Type</option>
+                @foreach (PropertyType type in Enum.GetValues<PropertyType>())
+                {
+                    <option value="@type" selected="@(c.PropertyType == type)">@type</option>
+                }
+            </select>
+        </label>
+
+        <button class="sh-btn sh-btn-primary" type="submit">Search</button>
+    </div>
+
+    <details class="sh-search-more" open="@advancedOpen">
+        <summary>
+            <partial name="_Icon" model='"dashboard"' />
+            More filters
+        </summary>
+
+        <div class="sh-search-grid">
+            <label class="sh-search-field">
+                <span>Min price (R)</span>
+                <input type="number" name="minPrice" min="0" step="50" value="@c.MinPrice"
+                       placeholder="@Model.LowestPrice.ToString("0")" />
+            </label>
+
+            <label class="sh-search-field">
+                <span>Max price (R)</span>
+                <input type="number" name="maxPrice" min="0" step="50" value="@c.MaxPrice"
+                       placeholder="@Model.HighestPrice.ToString("0")" />
+            </label>
+
+            <label class="sh-search-field">
+                <span>Guests</span>
+                <input type="number" name="guests" min="1" max="20" value="@c.Guests" placeholder="Any" />
+            </label>
+
+            <label class="sh-search-field">
+                <span>Bedrooms</span>
+                <input type="number" name="bedrooms" min="0" max="10" value="@c.Bedrooms" placeholder="Any" />
+            </label>
+
+            <label class="sh-search-field">
+                <span>Bathrooms</span>
+                <input type="number" name="bathrooms" min="0" max="10" value="@c.Bathrooms" placeholder="Any" />
+            </label>
+
+            <label class="sh-search-field">
+                <span>Sort by</span>
+                <select name="sort">
+                    @foreach (PropertySortOrder order in Enum.GetValues<PropertySortOrder>())
+                    {
+                        <option value="@order" selected="@(c.SortOrder == order)">@order.DisplayName()</option>
+                    }
+                </select>
+            </label>
+        </div>
+
+        @if (Model.Amenities.Any())
+        {
+            <fieldset class="sh-amenityfilter">
+                <legend>Must include</legend>
+                @foreach (var amenity in Model.Amenities)
+                {
+                    <label class="sh-checkchip">
+                        <input type="checkbox" name="amenities" value="@amenity.Id"
+                               checked="@selectedAmenities.Contains(amenity.Id)" />
+                        <span>@amenity.Name</span>
+                    </label>
+                }
+            </fieldset>
+        }
+    </details>
+
+    @if (c.HasAnyFilter)
+    {
+        <div class="sh-search-actions">
+            <span class="sh-search-summary">Filters applied</span>
+            <a class="sh-btn sh-btn-ghost sh-btn-sm" asp-action="Index">Clear all</a>
+        </div>
+    }
+</form>
+
+@if (!Model.Properties.Any())
+{
+    <partial name="_EmptyState" model='new EmptyState("empty-listings", "No stays match those filters", "Try widening the price range, choosing another province, or clearing a few filters.")' />
+}
+else
+{
+    <div class="sh-grid">
+        @foreach (var property in Model.Properties)
+        {
+            <partial name="_PropertyCard" model="property" view-data='new ViewDataDictionary(ViewData) { ["Wishlisted"] = Model.WishlistedIds.Contains(property.Id) }' />
+        }
+    </div>
+}

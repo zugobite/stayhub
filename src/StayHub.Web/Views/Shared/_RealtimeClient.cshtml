@@ -1,0 +1,7 @@
+@*
+    SignalR client for live message and notification badge updates.
+    Loaded only for authenticated users from _Layout.cshtml.
+*@
+<script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
+<script src="~/js/realtime.js" asp-append-version="true"></script>
+<div id="shToastHost" class="sh-toast-host" aria-live="polite"></div>

@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="City loft in a high-rise skyline">
+  <rect width="400" height="300" fill="#eef5fa"/>
+  <circle cx="60" cy="52" r="22" fill="#f6b31b"/>
+  <!-- skyline -->
+  <rect x="24" y="120" width="66" height="140" fill="#f7fbfd"/>
+  <rect x="98" y="76" width="86" height="184" fill="#ffffff"/>
+  <rect x="192" y="106" width="72" height="154" fill="#f7fbfd"/>
+  <rect x="272" y="52" width="94" height="208" fill="#ffffff"/>
+  <!-- the loft, picked out in blue -->
+  <rect x="272" y="52" width="94" height="52" fill="#0e6ba8"/>
+  <g fill="#f6b31b">
+    <rect x="288" y="68" width="20" height="22" rx="2"/>
+    <rect x="318" y="68" width="20" height="22" rx="2"/>
+  </g>
+  <g fill="#6aa9d2">
+    <rect x="40" y="140" width="16" height="18" rx="2"/><rect x="66" y="140" width="16" height="18" rx="2"/>
+    <rect x="40" y="172" width="16" height="18" rx="2"/><rect x="66" y="172" width="16" height="18" rx="2"/>
+    <rect x="116" y="98" width="18" height="20" rx="2"/><rect x="148" y="98" width="18" height="20" rx="2"/>
+    <rect x="116" y="132" width="18" height="20" rx="2"/><rect x="148" y="132" width="18" height="20" rx="2"/>
+    <rect x="116" y="166" width="18" height="20" rx="2"/><rect x="148" y="166" width="18" height="20" rx="2"/>
+    <rect x="210" y="126" width="18" height="20" rx="2"/><rect x="238" y="126" width="18" height="20" rx="2"/>
+    <rect x="210" y="160" width="18" height="20" rx="2"/><rect x="238" y="160" width="18" height="20" rx="2"/>
+    <rect x="288" y="126" width="20" height="22" rx="2"/><rect x="318" y="126" width="20" height="22" rx="2"/>
+    <rect x="288" y="166" width="20" height="22" rx="2"/><rect x="318" y="166" width="20" height="22" rx="2"/>
+  </g>
+  <rect y="260" width="400" height="40" fill="#dbe5ec"/>
+  <path d="M186 260v-22a12 12 0 0 1 24 0v22z" fill="#c75b39"/>
+</svg>

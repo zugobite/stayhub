@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360" role="img"
+     aria-label="Illustration of a whitewashed coastal village with a windmill above the sea">
+  <title>A whitewashed coastal village above the bay</title>
+  <defs>
+    <linearGradient id="shSky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e7f1f8"/>
+      <stop offset="1" stop-color="#fdf6e6"/>
+    </linearGradient>
+    <linearGradient id="shSea" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3f8ec2"/>
+      <stop offset="1" stop-color="#0a527f"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="520" height="360" fill="url(#shSky)" rx="16"/>
+  <circle cx="428" cy="74" r="34" fill="#f6b31b"/>
+
+  <!-- sea -->
+  <path d="M0 258h520v86a16 16 0 0 1-16 16H16a16 16 0 0 1-16-16z" fill="url(#shSea)"/>
+  <rect y="258" width="520" height="9" fill="#6aa9d2"/>
+
+  <!-- Domed chapel anchoring the left of the skyline. A windmill was tried here
+       first, but its sails collapsed into an illegible cross at this size. -->
+  <rect x="72" y="196" width="44" height="62" fill="#ffffff"/>
+  <path d="M72 196a22 15 0 0 1 44 0z" fill="#0e6ba8"/>
+  <rect x="92" y="176" width="4" height="14" rx="2" fill="#16323f"/>
+  <path d="M87 258v-18a7 7 0 0 1 14 0v18z" fill="#c75b39"/>
+  <rect x="77" y="212" width="11" height="13" rx="2" fill="#0e6ba8"/>
+  <rect x="100" y="212" width="11" height="13" rx="2" fill="#0e6ba8"/>
+
+  <!-- village -->
+  <rect x="146" y="200" width="72" height="58" fill="#ffffff"/>
+  <path d="M146 200a36 21 0 0 1 72 0z" fill="#0e6ba8"/>
+  <rect x="224" y="178" width="58" height="80" fill="#f7fbfd"/>
+  <rect x="288" y="210" width="56" height="48" fill="#ffffff"/>
+  <path d="M288 210a28 17 0 0 1 56 0z" fill="#0a527f"/>
+  <rect x="350" y="192" width="66" height="66" fill="#f7fbfd"/>
+  <rect x="422" y="222" width="44" height="36" fill="#ffffff"/>
+
+  <!-- openings -->
+  <g fill="#0e6ba8">
+    <rect x="163" y="218" width="15" height="18" rx="2"/>
+    <rect x="190" y="218" width="15" height="18" rx="2"/>
+    <rect x="236" y="196" width="14" height="17" rx="2"/>
+    <rect x="258" y="196" width="14" height="17" rx="2"/>
+    <rect x="236" y="224" width="14" height="17" rx="2"/>
+    <rect x="303" y="228" width="14" height="16" rx="2"/>
+    <rect x="364" y="210" width="15" height="18" rx="2"/>
+    <rect x="390" y="210" width="15" height="18" rx="2"/>
+    <rect x="434" y="236" width="13" height="16" rx="2"/>
+  </g>
+
+  <!-- terracotta doors -->
+  <path d="M258 258v-22a7 7 0 0 1 14 0v22z" fill="#c75b39"/>
+  <path d="M380 258v-20a7 7 0 0 1 14 0v20z" fill="#c75b39"/>
+
+  <!-- boat -->
+  <path d="M356 300h56l-9 13h-38z" fill="#ffffff"/>
+  <path d="M384 296v-30l22 30z" fill="#f6b31b"/>
+  <path d="M384 266v34" stroke="#16323f" stroke-width="2.5" stroke-linecap="round"/>
+
+  <!-- shrubs -->
+  <circle cx="44" cy="250" r="15" fill="#4d97c7"/>
+  <circle cx="486" cy="246" r="12" fill="#4d97c7"/>
+</svg>

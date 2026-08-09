@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="Whitewashed apartments above the bay">
+  <rect width="400" height="300" fill="#e7f1f8"/>
+  <circle cx="332" cy="60" r="28" fill="#f6b31b"/>
+  <!-- headland -->
+  <path d="M0 212h400v88H0z" fill="#0e6ba8"/>
+  <rect y="212" width="400" height="12" fill="#3f8ec2"/>
+  <!-- whitewashed blocks -->
+  <rect x="34" y="128" width="88" height="84" fill="#ffffff"/>
+  <rect x="122" y="98" width="76" height="114" fill="#f7fbfd"/>
+  <rect x="198" y="146" width="66" height="66" fill="#ffffff"/>
+  <path d="M264 146a36 22 0 0 1 72 0Z" fill="#0e6ba8"/>
+  <rect x="264" y="146" width="72" height="66" fill="#f7fbfd"/>
+  <!-- openings -->
+  <g fill="#0e6ba8">
+    <rect x="52" y="150" width="16" height="20" rx="2"/>
+    <rect x="86" y="150" width="16" height="20" rx="2"/>
+    <rect x="140" y="122" width="16" height="20" rx="2"/>
+    <rect x="166" y="122" width="16" height="20" rx="2"/>
+    <rect x="140" y="160" width="16" height="20" rx="2"/>
+    <rect x="216" y="170" width="16" height="22" rx="2"/>
+    <rect x="288" y="176" width="24" height="36" rx="12"/>
+  </g>
+  <rect x="166" y="166" width="18" height="46" fill="#c75b39"/>
+</svg>

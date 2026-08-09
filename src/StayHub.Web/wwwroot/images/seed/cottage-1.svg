@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="Coastal cottage with a blue dome">
+  <rect width="400" height="300" fill="#e7f1f8"/>
+  <circle cx="316" cy="66" r="26" fill="#f6b31b"/>
+  <path d="M0 220h400v80H0z" fill="#0e6ba8"/>
+  <rect y="220" width="400" height="11" fill="#3f8ec2"/>
+  <!-- cottage -->
+  <rect x="96" y="140" width="150" height="80" fill="#ffffff"/>
+  <path d="M96 140a75 44 0 0 1 150 0Z" fill="#0e6ba8"/>
+  <rect x="246" y="164" width="62" height="56" fill="#f7fbfd"/>
+  <path d="M246 164a31 18 0 0 1 62 0Z" fill="#0a527f"/>
+  <!-- openings -->
+  <g fill="#0e6ba8">
+    <rect x="120" y="160" width="22" height="26" rx="2"/>
+    <rect x="200" y="160" width="22" height="26" rx="2"/>
+    <rect x="266" y="188" width="20" height="32" rx="10"/>
+  </g>
+  <path d="M156 220v-30a15 15 0 0 1 30 0v30Z" fill="#c75b39"/>
+  <!-- shrubs -->
+  <circle cx="72" cy="212" r="16" fill="#3f8ec2"/>
+  <circle cx="336" cy="208" r="13" fill="#3f8ec2"/>
+</svg>

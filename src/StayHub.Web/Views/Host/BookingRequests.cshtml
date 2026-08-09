@@ -1,0 +1,74 @@
+@model IEnumerable<Booking>
+@{
+    ViewData["Title"] = "Booking Requests";
+}
+
+<div class="sh-shell">
+    <partial name="_HostSidebar" />
+
+    <section class="sh-shell-main">
+        <h1 class="sh-section-title">Booking Requests</h1>
+
+        @if (!Model.Any())
+        {
+            <partial name="_EmptyState" model='new EmptyState("empty-bookings", "No booking requests", "When a guest requests one of your listings, it lands here for approval.")' />
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table sh-table align-middle">
+                    <thead>
+                        <tr>
+                            <th>Guest</th>
+                            <th>Property</th>
+                            <th>Dates</th>
+                            <th>Guests</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var booking in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @booking.Guest?.FullName
+                                    <div class="small text-muted">@booking.Guest?.Email</div>
+                                </td>
+                                <td>@booking.Property?.Title</td>
+                                <td>@booking.CheckInDate.ToString("d MMM") – @booking.CheckOutDate.ToString("d MMM yyyy")</td>
+                                <td>@booking.NumberOfGuests</td>
+                                <td>R @booking.TotalPrice.ToString("N2")</td>
+                                <td><span class="sh-pill sh-pill-@booking.Status.ToString().ToLowerInvariant()">@booking.Status</span></td>
+                                <td>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        @if (!string.IsNullOrEmpty(booking.GuestId))
+                                        {
+                                            <a class="sh-btn sh-btn-sm sh-btn-ghost" asp-controller="Messages" asp-action="Conversation" asp-route-id="@booking.GuestId">
+                                                Message guest
+                                            </a>
+                                        }
+                                        @if (booking.Status == BookingStatus.Pending)
+                                        {
+                                            <form asp-action="ApproveBooking" method="post">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="id" value="@booking.Id" />
+                                                <button class="sh-btn sh-btn-sm sh-btn-primary" type="submit">Approve</button>
+                                            </form>
+                                            <form asp-action="RejectBooking" method="post">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="id" value="@booking.Id" />
+                                                <button class="sh-btn sh-btn-sm sh-btn-ghost" type="submit">Reject</button>
+                                            </form>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </section>
+</div>

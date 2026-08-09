@@ -1,0 +1,59 @@
+@model UserManagementViewModel
+@{
+    ViewData["Title"] = "Users";
+}
+
+<div class="sh-shell">
+    <partial name="_AdminSidebar" />
+
+    <section class="sh-shell-main">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+            <h1 class="sh-section-title mb-0">Users</h1>
+            <form method="get" class="d-flex gap-2">
+                <input name="search" class="form-control" placeholder="Search name or email" value="@Model.SearchTerm" />
+                <button class="sh-btn sh-btn-primary" type="submit">Search</button>
+            </form>
+        </div>
+
+        @if (!Model.CanPromote)
+        {
+            <p class="text-muted">Only the SuperAdmin can promote a Guest to the Admin role.</p>
+        }
+
+        <div class="table-responsive">
+            <table class="table sh-table align-middle">
+                <thead><tr><th>Name</th><th>Email</th><th>Roles</th><th>Registered</th><th>Actions</th></tr></thead>
+                <tbody>
+                    @foreach (var row in Model.Users)
+                    {
+                        <tr>
+                            <td>@row.User.FullName</td>
+                            <td>@row.User.Email</td>
+                            <td>
+                                @foreach (var role in row.Roles)
+                                {
+                                    <span class="sh-tag">@role</span>
+                                }
+                            </td>
+                            <td>@row.User.CreatedAt.ToString("d MMM yyyy")</td>
+                            <td class="d-flex gap-2">
+                                <a class="sh-btn sh-btn-sm sh-btn-ghost" asp-controller="Messages" asp-action="Conversation" asp-route-id="@row.User.Id">Message</a>
+                                @if (Model.CanPromote && row.Roles.Contains(Roles.Guest))
+                                {
+                                    <form asp-action="PromoteToAdmin" method="post"
+                                          data-sh-confirm-title="Promote to Admin"
+                                          data-sh-confirm="@row.User.FullName (@row.User.Email) will gain full administrative access to StayHub. This cannot be undone from the interface."
+                                          data-sh-confirm-action="Promote">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@row.User.Id" />
+                                        <button class="sh-btn sh-btn-sm sh-btn-primary" type="submit">Promote to Admin</button>
+                                    </form>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </section>
+</div>

@@ -1,0 +1,44 @@
+## .NET
+bin/
+obj/
+out/
+publish/
+
+## IDE
+.vs/
+.vscode/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.idea/
+*.swp
+
+## NuGet
+**/packages/*
+!**/packages/build/
+*.nupkg
+
+## Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+build/
+
+## User-specific
+appsettings.Development.json
+*.env
+
+## SQL Server
+*.mdf
+*.ldf
+*.ndf
+
+## Runtime uploads (listing photos and guest documents)
+src/StayHub.Web/wwwroot/uploads/
+
+## OS
+.DS_Store
+Thumbs.db
+desktop.ini

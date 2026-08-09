@@ -1,0 +1,242 @@
+@model PropertyDetailViewModel
+@{
+    ViewData["Title"] = Model.Property.Title;
+
+    var imageUrls = Model.Property.Images
+        .OrderByDescending(i => i.IsCover)
+        .Select(i => i.ImageUrl)
+        .ToList();
+
+    if (imageUrls.Count == 0)
+    {
+        imageUrls.Add("/images/placeholder.svg");
+    }
+}
+
+<h1 class="sh-detail-title">@Model.Property.Title</h1>
+<div class="sh-detail-sub">
+    @if (Model.ReviewCount > 0)
+    {
+        <span>★ @Model.AverageRating.ToString("0.0") (@Model.ReviewCount reviews)</span>
+        <span>&middot;</span>
+    }
+    <span>@Model.Property.City, @Model.Property.Province.DisplayName()</span>
+    <span>&middot;</span>
+    <span>@Model.Property.MaxGuests guests &middot; @Model.Property.Bedrooms bedrooms &middot; @Model.Property.Beds beds &middot; @Model.Property.Bathrooms baths</span>
+</div>
+
+@*
+    The track scrolls and snaps on its own, so swiping works with scripting
+    disabled. The arrows, dots and counter are enhancement on top of it.
+*@
+<section class="sh-gallery" data-sh-gallery aria-label="Photos of @Model.Property.Title">
+    <div class="sh-gallery-track" data-sh-gallery-track tabindex="0">
+        @for (var i = 0; i < imageUrls.Count; i++)
+        {
+            <img class="sh-gallery-slide" src="@imageUrls[i]"
+                 alt="@Model.Property.Title - photo @(i + 1) of @imageUrls.Count"
+                 loading="@(i == 0 ? "eager" : "lazy")" />
+        }
+    </div>
+
+    @if (imageUrls.Count > 1)
+    {
+        <button class="sh-gallery-nav prev" type="button" data-sh-gallery-prev aria-label="Previous photo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M15 5l-7 7 7 7" />
+            </svg>
+        </button>
+        <button class="sh-gallery-nav next" type="button" data-sh-gallery-next aria-label="Next photo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M9 5l7 7-7 7" />
+            </svg>
+        </button>
+
+        <span class="sh-gallery-counter" data-sh-gallery-counter aria-live="polite">1 / @imageUrls.Count</span>
+
+        <div class="sh-gallery-dots">
+            @for (var i = 0; i < imageUrls.Count; i++)
+            {
+                @* Razor drops the attribute when the value is null, so only the
+                   active dot carries aria-current. *@
+                <button class="sh-gallery-dot" type="button" data-sh-gallery-dot="@i"
+                        aria-current="@(i == 0 ? "true" : null)" aria-label="Go to photo @(i + 1)"></button>
+            }
+        </div>
+    }
+</section>
+
+<div class="row g-4 mt-1">
+    <div class="col-lg-7">
+        <h2 class="sh-subtitle">About this Place</h2>
+        <p>@Model.Property.Description</p>
+        <p class="text-muted">@Model.Property.Address, @Model.Property.City</p>
+
+        <h2 class="sh-subtitle mt-4">Amenities</h2>
+        @if (!Model.Property.PropertyAmenities.Any())
+        {
+            <p class="text-muted">The host has not listed any amenities.</p>
+        }
+        else
+        {
+            <div class="sh-amenities">
+                @foreach (var link in Model.Property.PropertyAmenities.Where(l => l.Amenity is not null))
+                {
+                    <partial name="_AmenityChip" model="link.Amenity" />
+                }
+            </div>
+        }
+
+        @if (Model.Property.Host is not null)
+        {
+            var host = Model.Property.Host;
+
+            <h2 class="sh-subtitle mt-4">Meet your host</h2>
+            <section class="sh-hostcard">
+                <div class="sh-hostcard-head">
+                    <span class="sh-hostcard-avatar" aria-hidden="true">
+                        @(string.IsNullOrEmpty(host.FirstName) ? "H" : host.FirstName[..1].ToUpperInvariant())
+                    </span>
+                    <div>
+                        <div class="sh-hostcard-name">@host.FullName</div>
+                        <div class="sh-hostcard-meta">
+                            @if (!string.IsNullOrWhiteSpace(host.Location))
+                            {
+                                <span>@host.Location</span>
+                                <span>&middot;</span>
+                            }
+                            <span>Hosting since @host.CreatedAt.ToString("MMMM yyyy")</span>
+                        </div>
+                    </div>
+                </div>
+
+                <dl class="sh-hostcard-stats">
+                    <div>
+                        <dt>Listings</dt>
+                        <dd>@Model.HostListingCount</dd>
+                    </div>
+                    <div>
+                        <dt>Reviews</dt>
+                        <dd>@Model.HostReviewCount</dd>
+                    </div>
+                    <div>
+                        <dt>Rating</dt>
+                        <dd>@(Model.HostReviewCount == 0 ? "-" : Model.HostAverageRating.ToString("0.0"))</dd>
+                    </div>
+                </dl>
+
+                @if (!string.IsNullOrWhiteSpace(host.Bio))
+                {
+                    <p class="sh-hostcard-bio">@host.Bio</p>
+                }
+
+                @if (User.Identity?.IsAuthenticated == true && User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value != host.Id)
+                {
+                    <a class="sh-btn sh-btn-ghost sh-btn-sm" asp-controller="Messages" asp-action="Conversation" asp-route-id="@host.Id">
+                        Message @host.FirstName
+                    </a>
+                }
+            </section>
+
+            @if (Model.MoreFromHost.Any())
+            {
+                <h2 class="sh-subtitle mt-4">More from @host.FirstName</h2>
+                <div class="sh-morefrom">
+                    @foreach (var other in Model.MoreFromHost)
+                    {
+                        var cover = other.Images.FirstOrDefault(i => i.IsCover)?.ImageUrl
+                                    ?? other.Images.FirstOrDefault()?.ImageUrl
+                                    ?? "/images/placeholder.svg";
+
+                        <a class="sh-morefrom-item" asp-action="View" asp-route-id="@other.Id">
+                            <img src="@cover" alt="" aria-hidden="true" loading="lazy" />
+                            <div>
+                                <div class="sh-morefrom-title">@other.Title</div>
+                                <div class="sh-morefrom-meta">@other.City &middot; R @other.PricePerNight.ToString("N0") per night</div>
+                            </div>
+                        </a>
+                    }
+                </div>
+            }
+        }
+
+        <h2 class="sh-subtitle mt-4">Reviews</h2>
+        @if (!Model.Property.Reviews.Any())
+        {
+            <partial name="_EmptyState" model='new EmptyState("empty-reviews", "No reviews yet", "Guests can leave a review once they have completed a stay here.")' />
+        }
+        else
+        {
+            foreach (var review in Model.Property.Reviews.OrderByDescending(r => r.CreatedAt))
+            {
+                <div class="sh-review">
+                    <strong>@review.Reviewer?.FullName</strong>
+                    <span class="text-muted">★ @review.Rating &middot; @review.CreatedAt.ToString("d MMM yyyy")</span>
+                    <p class="mb-0">@review.Comment</p>
+                </div>
+            }
+        }
+    </div>
+
+    <div class="col-lg-5">
+        <aside class="sh-bookwidget">
+            <div class="sh-bookwidget-price">
+                <strong>R @Model.Property.PricePerNight.ToString("N0")</strong> <span class="text-muted">per night</span>
+            </div>
+
+            @if (User.Identity?.IsAuthenticated != true)
+            {
+                <p class="text-muted">Log In as a Guest to book this stay.</p>
+                <a class="sh-btn sh-btn-primary w-100" asp-controller="Account" asp-action="Login"
+                   asp-route-returnUrl="@Context.Request.Path">Log In to book</a>
+            }
+            else if (!User.IsInRole(Roles.Guest))
+            {
+                <p class="text-muted mb-0">Only Guest accounts can place bookings.</p>
+            }
+            else
+            {
+                <form asp-controller="Bookings" asp-action="Create" method="post" id="bookingForm">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="PropertyId" value="@Model.Property.Id" />
+
+                    <div class="sh-daterow">
+                        <label>
+                            <span>CHECK IN</span>
+                            <input type="date" name="CheckInDate" id="checkIn"
+                                   value="@Model.BookingRequest.CheckInDate.ToString("yyyy-MM-dd")" required />
+                        </label>
+                        <label>
+                            <span>CHECKOUT</span>
+                            <input type="date" name="CheckOutDate" id="checkOut"
+                                   value="@Model.BookingRequest.CheckOutDate.ToString("yyyy-MM-dd")" required />
+                        </label>
+                    </div>
+
+                    <label class="sh-guestrow">
+                        <span>GUESTS</span>
+                        <input type="number" name="NumberOfGuests" id="guests" min="1"
+                               max="@Model.Property.MaxGuests" value="1" required />
+                    </label>
+
+                    <button class="sh-btn sh-btn-primary w-100 mt-3" type="submit">Reserve</button>
+                </form>
+
+                <hr />
+
+                <dl class="sh-pricebreakdown"
+                    @* Invariant culture: these are parsed by parseFloat, which stops at a
+                       comma. Under a comma-decimal locale "0,1200" parses as 0 and the
+                       live service fee silently renders as R 0. *@
+                    data-nightly="@Model.Property.PricePerNight.ToString(CultureInfo.InvariantCulture)"
+                    data-cleaning="@Model.Property.CleaningFee.ToString(CultureInfo.InvariantCulture)"
+                    data-servicerate="@Model.Property.ServiceFeeRate.ToString(CultureInfo.InvariantCulture)">
+                    <div><dt id="nightsLabel">R @Model.Property.PricePerNight.ToString("N0") × 1 nights</dt><dd id="subtotal">R @Model.Property.PricePerNight.ToString("N0")</dd></div>
+                    <div><dt>Cleaning fee</dt><dd id="cleaning">R @Model.Property.CleaningFee.ToString("N0")</dd></div>
+                    <div><dt>Service fee</dt><dd id="serviceFee">R @Model.Property.CalculateServiceFee(1).ToString("N0")</dd></div>
+                    <div class="sh-pricetotal"><dt>Total</dt><dd id="total">R @Model.Property.CalculateTotalPrice(1).ToString("N0")</dd></div>
+                </dl>
+            }
+        </aside>
+    </div>
+</div>

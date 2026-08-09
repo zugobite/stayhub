@@ -1,0 +1,29 @@
+@model Amenity
+@{
+    // IconClass originally held Bootstrap Icons classes ("bi-wifi"), but that icon
+    // font is not shipped with the project, so those values rendered nothing.
+    // Prefer a stored _Icon name; otherwise derive one from the amenity name so
+    // databases seeded before the change still render correctly.
+    var icon = Model.IconClass;
+
+    if (string.IsNullOrWhiteSpace(icon) || icon.StartsWith("bi-", StringComparison.OrdinalIgnoreCase))
+    {
+        icon = Model.Name.ToLowerInvariant() switch
+        {
+            "wifi" => "wifi",
+            "kitchen" => "kitchen",
+            "washer" => "washer",
+            "dryer" => "dryer",
+            "air conditioning" => "aircon",
+            "heating" => "heating",
+            "free parking" => "parking",
+            "pool" => "pool",
+            _ => "check"
+        };
+    }
+}
+
+<div class="sh-amenity">
+    <partial name="_Icon" model="icon" />
+    <span>@Model.Name</span>
+</div>

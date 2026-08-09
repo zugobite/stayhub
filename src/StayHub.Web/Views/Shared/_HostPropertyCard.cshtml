@@ -1,0 +1,41 @@
+@model HostProperty
+
+@{
+    var cover = Model.Images.FirstOrDefault(i => i.IsCover)?.ImageUrl
+                ?? Model.Images.FirstOrDefault()?.ImageUrl
+                ?? "/images/placeholder.svg";
+}
+
+<article class="sh-card">
+    <div class="sh-card-media">
+        <img src="@cover" alt="@Model.Title" loading="lazy" />
+        @if (Model.Images.Count > 0)
+        {
+            <span class="sh-card-count">@Model.Images.Count photos</span>
+        }
+        <span class="sh-card-state @(Model.IsActive ? "active" : "inactive")">@(Model.IsActive ? "Active" : "Inactive")</span>
+    </div>
+
+    <div class="sh-card-body">
+        <div class="sh-card-location">@Model.City</div>
+        <a class="sh-card-title" asp-controller="Properties" asp-action="View" asp-route-id="@Model.Id">@Model.Title</a>
+        <div class="sh-card-meta">
+            @Model.MaxGuests guests &middot; @Model.Bedrooms bedrooms &middot; @Model.Beds beds &middot; @Model.Bathrooms baths
+        </div>
+        <div class="sh-card-meta">
+            <span class="sh-tag">@Model.PropertyType</span>
+            <span class="text-muted">@(Model.Bookings?.Count ?? 0) bookings &middot; @(Model.Reviews?.Count ?? 0) reviews</span>
+        </div>
+        <div class="sh-card-price"><strong>R @Model.PricePerNight.ToString("N0")</strong> <span class="text-muted">per night</span></div>
+
+        <div class="d-flex flex-wrap gap-2 mt-2">
+            <a class="sh-btn sh-btn-sm sh-btn-ghost" asp-controller="Properties" asp-action="View" asp-route-id="@Model.Id">View Details</a>
+            <a class="sh-btn sh-btn-sm sh-btn-ghost" asp-controller="Host" asp-action="CheckInProcess" asp-route-id="@Model.Id">Check-in Process</a>
+            <form asp-controller="Host" asp-action="ToggleActive" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@Model.Id" />
+                <button class="sh-btn sh-btn-sm sh-btn-ghost" type="submit">@(Model.IsActive ? "Deactivate" : "Activate")</button>
+            </form>
+        </div>
+    </div>
+</article>

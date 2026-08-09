@@ -1,0 +1,46 @@
+@model IEnumerable<HostProperty>
+@{
+    ViewData["Title"] = "Home";
+}
+
+<section class="sh-hero">
+    <div>
+        <span class="sh-eyebrow">Stays across South Africa</span>
+        <h1>Relax. Unwind.<br /><em>Choose your next stay.</em></h1>
+        <p>Browse verified places to stay from Langebaan to the Lowveld, or list your own and start hosting.</p>
+        <div class="sh-hero-actions">
+            <a class="sh-btn sh-btn-lg sh-btn-sun" asp-controller="Properties" asp-action="Index">Browse Properties</a>
+            <a class="sh-btn sh-btn-lg sh-btn-ghost" asp-controller="HostApplications" asp-action="Apply">Become a Host</a>
+        </div>
+    </div>
+    <img class="sh-hero-art" src="~/images/brand/hero-village.svg" alt="" aria-hidden="true" />
+</section>
+
+<section class="mt-5">
+    <div class="sh-pagehead">
+        <div>
+            <span class="sh-eyebrow">Handpicked</span>
+            <h1>Featured Stays</h1>
+        </div>
+        <div class="sh-pagehead-actions">
+            <a class="sh-linkarrow" asp-controller="Properties" asp-action="Index">See all stays</a>
+        </div>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="sh-empty">
+            <div class="sh-empty-title">No listings published yet</div>
+            <p>Once an administrator approves a host application, its property appears here.</p>
+        </div>
+    }
+    else
+    {
+        <div class="sh-grid">
+            @foreach (var property in Model)
+            {
+                <partial name="_PropertyCard" model="property" />
+            }
+        </div>
+    }
+</section>

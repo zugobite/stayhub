@@ -1,0 +1,38 @@
+@model IEnumerable<Booking>
+@{
+    ViewData["Title"] = "Bookings";
+}
+
+<div class="sh-shell">
+    <partial name="_AdminSidebar" />
+
+    <section class="sh-shell-main">
+        <h1 class="sh-section-title">All Bookings</h1>
+
+        @if (!Model.Any())
+        {
+            <partial name="_EmptyState" model='new EmptyState("empty-bookings", "No bookings yet", "Every booking made on the platform will be listed here.")' />
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table sh-table align-middle">
+                    <thead><tr><th>#</th><th>Guest</th><th>Property</th><th>Dates</th><th>Status</th><th class="text-end">Amount</th></tr></thead>
+                    <tbody>
+                        @foreach (var booking in Model)
+                        {
+                            <tr>
+                                <td>@booking.Id</td>
+                                <td>@booking.Guest?.FullName</td>
+                                <td>@booking.Property?.Title</td>
+                                <td>@booking.CheckInDate.ToString("d MMM") – @booking.CheckOutDate.ToString("d MMM yyyy")</td>
+                                <td><span class="sh-pill sh-pill-@booking.Status.ToString().ToLowerInvariant()">@booking.Status</span></td>
+                                <td class="text-end">R @booking.TotalPrice.ToString("N2")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </section>
+</div>

@@ -1,0 +1,42 @@
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
+@model ConversationViewModel
+@{
+    ViewData["Title"] = $"Conversation with {Model.OtherUserName}";
+    var me = UserManager.GetUserId(User);
+}
+
+<a class="sh-backlink" asp-action="Index">&larr; Back to inbox</a>
+<h1 class="sh-section-title">@Model.OtherUserName</h1>
+
+<div class="sh-thread"
+     id="shThread"
+     data-conversation-user-id="@Model.OtherUserId"
+     data-current-user-id="@me">
+    @if (!Model.Messages.Any())
+    {
+        <partial name="_EmptyState" model='new EmptyState("empty-messages", "No messages yet", "Start the conversation - say hello.")' />
+    }
+    else
+    {
+        foreach (var message in Model.Messages)
+        {
+            <div class="sh-bubble @(message.SenderId == me ? "mine" : "theirs")" data-message-id="@message.Id">
+                <div>@message.Content</div>
+                <div class="sh-bubble-time">@message.Timestamp.ToString("d MMM HH:mm")</div>
+            </div>
+        }
+    }
+</div>
+
+<form asp-action="Send" method="post" class="sh-replybox mt-3" id="shReplyForm" data-ajax="true">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="receiverId" value="@Model.OtherUserId" />
+    <input type="hidden" name="ajax" value="true" />
+    <textarea name="content" class="form-control" rows="3" placeholder="Write a reply…" required maxlength="2000"></textarea>
+    <button class="sh-btn sh-btn-primary mt-2" type="submit">Send</button>
+</form>
+
+@section Scripts {
+    <script src="~/js/messages.js" asp-append-version="true"></script>
+}

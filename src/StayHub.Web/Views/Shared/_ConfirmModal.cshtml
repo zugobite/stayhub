@@ -1,0 +1,22 @@
+@*
+    Shared confirmation dialog. Any form carrying data-sh-confirm="message"
+    is intercepted by site.js and routed through this modal instead of the
+    browser's native confirm() box.
+*@
+<div class="modal fade sh-modal" id="shConfirm" tabindex="-1" aria-labelledby="shConfirmTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title h5" id="shConfirmTitle">Please confirm</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-0" id="shConfirmMessage">Are you sure you want to continue?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="sh-btn sh-btn-ghost sh-btn-sm" data-bs-dismiss="modal">Go back</button>
+                <button type="button" class="sh-btn sh-btn-primary sh-btn-sm" id="shConfirmAccept">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>

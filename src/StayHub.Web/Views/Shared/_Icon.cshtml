@@ -1,0 +1,39 @@
+@model string
+@*
+    Single-stroke line icons drawn on a 24x24 grid. Inlined rather than pulled
+    from an icon font so they inherit currentColor and cost no extra request.
+*@
+@{
+    var path = Model switch
+    {
+        "dashboard" => "<rect x='3' y='3' width='7' height='7' rx='1.5'/><rect x='14' y='3' width='7' height='7' rx='1.5'/><rect x='3' y='14' width='7' height='7' rx='1.5'/><rect x='14' y='14' width='7' height='7' rx='1.5'/>",
+        "users" => "<path d='M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2'/><circle cx='9' cy='7' r='4'/><path d='M22 21v-2a4 4 0 0 0-3-3.87'/>",
+        "document" => "<path d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z'/><path d='M14 2v6h6'/><path d='M9 13h6M9 17h6'/>",
+        "calendar" => "<rect x='3' y='4' width='18' height='18' rx='2'/><path d='M16 2v4M8 2v4M3 10h18'/>",
+        "home" => "<path d='m3 10 9-7 9 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'/><path d='M9 22V12h6v10'/>",
+        "mail" => "<rect x='3' y='5' width='18' height='14' rx='2'/><path d='m3 7 9 6 9-6'/>",
+        "bell" => "<path d='M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9'/><path d='M13.7 21a2 2 0 0 1-3.4 0'/>",
+        "activity" => "<path d='M22 12h-4l-3 9L9 3l-3 9H2'/>",
+        "wallet" => "<path d='M21 12V7H5a2 2 0 0 1 0-4h14v4'/><path d='M3 5v14a2 2 0 0 0 2 2h16v-5'/><path d='M18 12a2 2 0 0 0 0 4h4v-4z'/>",
+        "star" => "<path d='m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z'/>",
+        "usercheck" => "<path d='M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2'/><circle cx='9' cy='7' r='4'/><path d='m17 11 2 2 4-4'/>",
+        "plus" => "<path d='M12 5v14M5 12h14'/>",
+        "pin" => "<path d='M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 1 1 18 0z'/><circle cx='12' cy='10' r='3'/>",
+        "heart" => "<path d='M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1L12 21l7.7-7.6 1.1-1a5.5 5.5 0 0 0 0-7.8z'/>",
+        "logout" => "<path d='M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4'/><path d='m16 17 5-5-5-5'/><path d='M21 12H9'/>",
+
+        // Amenities.
+        "wifi" => "<path d='M2.5 8.5a15 15 0 0 1 19 0'/><path d='M5.5 12.2a10.5 10.5 0 0 1 13 0'/><path d='M8.5 15.9a6 6 0 0 1 7 0'/><path d='M12 19.6h.01'/>",
+        "kitchen" => "<path d='M3.5 10h17v6.5a3.5 3.5 0 0 1-3.5 3.5H7a3.5 3.5 0 0 1-3.5-3.5z'/><path d='M2 10h20'/><path d='M8 7V4M12 7V4M16 7V4'/>",
+        "washer" => "<rect x='4' y='2.5' width='16' height='19' rx='2.5'/><circle cx='12' cy='14' r='4.2'/><path d='M7.5 6.5h.01M11 6.5h.01'/>",
+        "dryer" => "<rect x='4' y='2.5' width='16' height='19' rx='2.5'/><path d='M7.5 6.5h.01M11 6.5h.01'/><path d='M9 11.5c1.5-1 4.5-1 6 0M9 15c1.5-1 4.5-1 6 0'/>",
+        "aircon" => "<path d='M12 2.5v19M4.1 7l15.8 10M19.9 7 4.1 17'/><path d='m9.6 4.6 2.4 2.4 2.4-2.4M9.6 19.4l2.4-2.4 2.4 2.4'/>",
+        "heating" => "<path d='M12 22c3.3 0 6-2.6 6-5.8 0-2.1-1-4-2.4-5.7-.4 1.1-1.2 1.9-2.2 2.2.7-2.6-.4-5.5-2.6-7.4-.3 2.7-2 4.3-3.4 5.9C6.2 12.7 6 14.3 6 16.2 6 19.4 8.7 22 12 22z'/>",
+        "parking" => "<rect x='3' y='3' width='18' height='18' rx='3.5'/><path d='M9.5 17.5v-11h3.3a3.3 3.3 0 0 1 0 6.6H9.5'/>",
+        "pool" => "<path d='M8 18.5V6a2.5 2.5 0 0 1 5 0v12.5'/><path d='M8 10.5h5M8 14.5h5'/><path d='M2.5 19.4c1.7 0 1.7 1.5 3.4 1.5s1.7-1.5 3.4-1.5 1.7 1.5 3.4 1.5 1.7-1.5 3.4-1.5 1.7 1.5 3.4 1.5'/>",
+        "check" => "<path d='m5 13 4 4L19 7'/>",
+
+        _ => "<circle cx='12' cy='12' r='9'/>"
+    };
+}
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">@Html.Raw(path)</svg>

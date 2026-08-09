@@ -1,0 +1,58 @@
+@model GuestCheckInViewModel
+@{
+    ViewData["Title"] = "Check in";
+    var step = Math.Min(Model.CurrentStep, Model.Steps.Count);
+    var isUpload = step >= Model.Steps.Count;
+    var total = Model.Steps.Count + 1;
+}
+
+<a class="sh-backlink" asp-controller="Bookings" asp-action="Index">&larr; Back to my trips</a>
+<h1 class="sh-section-title">Check in at @Model.Booking.Property?.Title</h1>
+
+<div class="sh-stepper">
+    @for (var i = 0; i < total; i++)
+    {
+        <span class="sh-step @(i < step ? "done" : i == step ? "current" : "")">@(i + 1)</span>
+    }
+</div>
+
+<div class="sh-formcard mt-3">
+    @if (!isUpload)
+    {
+        <h2 class="sh-subtitle">Step @(step + 1) of @total</h2>
+        <p class="sh-stepbody">@Model.Steps[step]</p>
+
+        <form asp-action="Advance" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="bookingId" value="@Model.Booking.Id" />
+            <input type="hidden" name="step" value="@step" />
+            <button class="sh-btn sh-btn-primary" type="submit">I've done this - continue</button>
+        </form>
+    }
+    else
+    {
+        <h2 class="sh-subtitle">Final step: upload your ID or passport</h2>
+        <p class="text-muted">Your host reviews the document before your check-in is confirmed.</p>
+
+        <form asp-action="Upload" method="post" enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="bookingId" value="@Model.Booking.Id" />
+
+            <div class="mb-3">
+                <label class="form-label" for="documentType">Document type</label>
+                <select class="form-select" id="documentType" name="documentType">
+                    <option value="ID">ID</option>
+                    <option value="Passport">Passport</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label" for="document">Upload file</label>
+                <input class="form-control" id="document" type="file" name="document" accept="image/*,.pdf" required />
+                <div class="form-text">JPG, PNG, or PDF up to 5 MB.</div>
+            </div>
+
+            <button class="sh-btn sh-btn-primary" type="submit">Submit for verification</button>
+        </form>
+    }
+</div>

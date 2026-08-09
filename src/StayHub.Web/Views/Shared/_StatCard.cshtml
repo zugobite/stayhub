@@ -1,0 +1,10 @@
+@model StatCard
+
+<div class="sh-stat">
+    <div class="sh-stat-icon @Model.Tone">
+        <partial name="_Icon" model="Model.Icon" />
+    </div>
+    <div class="sh-stat-label">@Model.Label</div>
+    <div class="sh-stat-value">@Model.Value</div>
+    <div class="sh-stat-caption">@Model.Caption</div>
+</div>

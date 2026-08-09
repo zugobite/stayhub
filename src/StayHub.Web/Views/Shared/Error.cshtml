@@ -1,0 +1,14 @@
+@model ErrorViewModel
+@{
+    ViewData["Title"] = "Error";
+}
+
+<h1 class="sh-section-title">Something went wrong</h1>
+<p>An unexpected error occurred while processing your request.</p>
+
+@if (Model.ShowRequestId)
+{
+    <p><strong>Request ID:</strong> <code>@Model.RequestId</code></p>
+}
+
+<a class="sh-btn sh-btn-primary" asp-controller="Home" asp-action="Index">Back to home</a>

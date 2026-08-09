@@ -1,0 +1,115 @@
+@model MyTripsViewModel
+@{
+    ViewData["Title"] = "My Trips";
+
+    var bookings = Model.Bookings.ToList();
+    var today = DateTime.UtcNow.Date;
+    var upcoming = bookings.Count(b => b.CheckInDate.Date >= today && b.Status != BookingStatus.Cancelled);
+    var awaiting = bookings.Count(b => b.Status == BookingStatus.Pending);
+    var spent = bookings.Where(b => b.Status != BookingStatus.Cancelled).Sum(b => b.TotalPrice);
+    var nextTrip = bookings
+        .Where(b => b.CheckInDate.Date >= today && b.Status != BookingStatus.Cancelled)
+        .OrderBy(b => b.CheckInDate)
+        .FirstOrDefault();
+}
+
+<div class="sh-welcome">
+    <span class="sh-eyebrow">Your travel</span>
+    <h1>My Trips</h1>
+    <p>
+        @if (nextTrip is not null)
+        {
+            @($"Next up: {nextTrip.Property?.Title} in {nextTrip.Property?.City}, {(nextTrip.CheckInDate.Date - today).Days} day(s) away.")
+        }
+        else
+        {
+            @("You have no upcoming stays booked. Find somewhere to escape to.")
+        }
+    </p>
+    <div class="d-flex flex-wrap gap-2">
+        <a class="sh-btn sh-btn-sun sh-btn-sm" asp-controller="Properties" asp-action="Index">Browse stays</a>
+        <a class="sh-btn sh-btn-ghost sh-btn-sm" asp-controller="Wishlist" asp-action="Index">My wishlist</a>
+    </div>
+</div>
+
+<div class="sh-statgrid">
+    <partial name="_StatCard" model='new StatCard("Upcoming Trips", upcoming.ToString(), "Confirmed or awaiting", "calendar")' />
+    <partial name="_StatCard" model='new StatCard("Total Bookings", bookings.Count.ToString(), "All time", "calendar")' />
+    <partial name="_StatCard" model='new StatCard("Awaiting Approval", awaiting.ToString(), "Pending host decision", "calendar", "sun")' />
+    <partial name="_StatCard" model='new StatCard("Total Spent", $"R {spent:N0}", "Excludes cancellations", "wallet", "leaf")' />
+</div>
+
+<div class="sh-panel mt-4">
+    <div class="sh-panel-head">
+        <h2>All Bookings</h2>
+        <a class="sh-linkarrow" asp-controller="Properties" asp-action="Index">Book another stay</a>
+    </div>
+    <div class="sh-panel-body">
+        @if (!bookings.Any())
+        {
+            <div class="sh-empty">
+                <div class="sh-empty-title">No trips yet</div>
+                <p>Once you reserve a place to stay, your booking, check-in steps, and host details all live here.</p>
+                <a class="sh-btn sh-btn-primary sh-btn-sm" asp-controller="Properties" asp-action="Index">Browse Properties</a>
+            </div>
+        }
+        else
+        {
+            <div class="sh-triplist">
+                @foreach (var booking in bookings)
+                {
+                    var cover = booking.Property?.Images.FirstOrDefault(i => i.IsCover)?.ImageUrl
+                                ?? booking.Property?.Images.FirstOrDefault()?.ImageUrl
+                                ?? "/images/placeholder.svg";
+
+                    <article class="sh-trip">
+                        <img class="sh-trip-media" src="@cover" alt="@booking.Property?.Title" loading="lazy" />
+
+                        <div class="sh-trip-body">
+                            <div class="d-flex flex-wrap align-items-center gap-2 mb-1">
+                                <span class="sh-pill sh-pill-@booking.Status.ToString().ToLowerInvariant()">@booking.Status</span>
+                                <span class="sh-tag">@booking.Property?.City</span>
+                            </div>
+                            <a class="sh-trip-title" asp-controller="Properties" asp-action="View" asp-route-id="@booking.PropertyId">
+                                @booking.Property?.Title
+                            </a>
+                            <div class="sh-trip-meta">
+                                <span><strong>@booking.CheckInDate.ToString("d MMM")</strong> – <strong>@booking.CheckOutDate.ToString("d MMM yyyy")</strong></span>
+                                <span>@booking.Nights @(booking.Nights == 1 ? "night" : "nights")</span>
+                                <span>@booking.NumberOfGuests @(booking.NumberOfGuests == 1 ? "guest" : "guests")</span>
+                                <span><strong>R @booking.TotalPrice.ToString("N2")</strong> total</span>
+                            </div>
+                        </div>
+
+                        <div class="sh-trip-actions">
+                            @if (!string.IsNullOrEmpty(booking.Property?.HostId))
+                            {
+                                <a class="sh-btn sh-btn-sm sh-btn-ghost" asp-controller="Messages" asp-action="Conversation" asp-route-id="@booking.Property.HostId">
+                                    Message host
+                                </a>
+                            }
+                            @if (booking.Status is BookingStatus.Approved or BookingStatus.Paid)
+                            {
+                                <a class="sh-btn sh-btn-sm sh-btn-primary" asp-controller="CheckIn" asp-action="Start" asp-route-id="@booking.Id">
+                                    @(booking.GuestCheckIn is null ? "Start check-in" : "Continue check-in")
+                                </a>
+                            }
+                            @if (booking.Status is BookingStatus.Pending or BookingStatus.Approved)
+                            {
+                                <form asp-action="Cancel" method="post"
+                                      data-sh-confirm-title="Cancel booking"
+                                      data-sh-confirm="Your stay at @booking.Property?.Title from @booking.CheckInDate.ToString("d MMM") to @booking.CheckOutDate.ToString("d MMM yyyy") will be cancelled."
+                                      data-sh-confirm-action="Cancel booking"
+                                      data-sh-confirm-danger="true">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@booking.Id" />
+                                    <button class="sh-btn sh-btn-sm sh-btn-ghost" type="submit">Cancel</button>
+                                </form>
+                            }
+                        </div>
+                    </article>
+                }
+            </div>
+        }
+    </div>
+</div>

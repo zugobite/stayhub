@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 120" role="img" aria-label="No bookings">
+  <ellipse cx="80" cy="108" rx="48" ry="7" fill="#dbe5ec"/>
+  <rect x="38" y="30" width="84" height="70" rx="9" fill="#ffffff" stroke="#0e6ba8" stroke-width="2.5"/>
+  <path d="M38 50h84" stroke="#0e6ba8" stroke-width="2.5"/>
+  <path d="M58 24v12M102 24v12" stroke="#16323f" stroke-width="3" stroke-linecap="round"/>
+  <g fill="#dbe5ec">
+    <rect x="50" y="60" width="11" height="9" rx="2"/><rect x="68" y="60" width="11" height="9" rx="2"/>
+    <rect x="99" y="60" width="11" height="9" rx="2"/><rect x="50" y="76" width="11" height="9" rx="2"/>
+    <rect x="86" y="76" width="11" height="9" rx="2"/>
+  </g>
+  <rect x="86" y="60" width="11" height="9" rx="2" fill="#f6b31b"/>
+  <rect x="68" y="76" width="11" height="9" rx="2" fill="#6aa9d2"/>
+</svg>

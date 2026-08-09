@@ -1,0 +1,72 @@
+@model HostDashboardViewModel
+@{
+    ViewData["Title"] = "Host dashboard";
+}
+
+<div class="sh-shell">
+    <partial name="_HostSidebar" />
+
+    <section class="sh-shell-main">
+        <div class="sh-welcome">
+            <span class="sh-eyebrow">Hosting</span>
+            <h1>Welcome back, @Model.Host.FirstName</h1>
+            <p>
+                @if (Model.PendingRequests > 0)
+                {
+                    @($"You have {Model.PendingRequests} booking request(s) waiting for a decision.")
+                }
+                else
+                {
+                    @("No requests are waiting - here is how your listings are performing.")
+                }
+            </p>
+            <div class="d-flex flex-wrap gap-2">
+                <a class="sh-btn sh-btn-sun sh-btn-sm" asp-controller="HostApplications" asp-action="Apply">Add new property</a>
+                <a class="sh-btn sh-btn-ghost sh-btn-sm" asp-action="BookingRequests">Booking Requests</a>
+                <a class="sh-btn sh-btn-ghost sh-btn-sm" asp-action="Earnings">Earnings report</a>
+            </div>
+        </div>
+
+        <div class="sh-statgrid">
+            <partial name="_StatCard" model='new StatCard("Total Properties", Model.TotalProperties.ToString(), $"{Model.ActiveProperties} active", "home")' />
+            <partial name="_StatCard" model='new StatCard("Total Bookings", Model.TotalBookings.ToString(), $"{Model.BookingsThisMonth} this month", "calendar")' />
+            <partial name="_StatCard" model='new StatCard("Total Earnings", $"R {Model.TotalEarnings:N0}", $"R {Model.EarningsThisMonth:N0} this month", "wallet", "leaf")' />
+            <partial name="_StatCard" model='new StatCard("Average Rating", Model.ReviewCount == 0 ? "-" : Model.AverageRating.ToString("0.0"), $"{Model.ReviewCount} reviews", "star", "sun")' />
+        </div>
+
+        <div class="sh-panel mt-4">
+            <div class="sh-panel-head">
+                <h2>Performance Metrics</h2>
+            </div>
+            <div class="sh-panel-body">
+                <div class="sh-metrics">
+                    <div><span>Pending booking requests</span><strong>@Model.PendingRequests</strong></div>
+                    <div><span>Listing activation rate</span><strong>@(Model.TotalProperties == 0 ? "-" : $"{Model.ActiveProperties * 100 / Model.TotalProperties}%")</strong></div>
+                    <div><span>Average earnings per booking</span><strong>@(Model.TotalBookings == 0 ? "-" : $"R {Model.TotalEarnings / Model.TotalBookings:N0}")</strong></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="sh-panel mt-4">
+            <div class="sh-panel-head">
+                <h2>Your Properties</h2>
+                <a class="sh-linkarrow" asp-action="Properties">Manage all</a>
+            </div>
+            <div class="sh-panel-body">
+                @if (!Model.Properties.Any())
+                {
+                    <partial name="_EmptyState" model='new EmptyState("empty-listings", "No listings yet", "Apply to list your first property. Once an administrator approves it, it appears here and in the public gallery.", "List a property", "HostApplications", "Apply")' />
+                }
+                else
+                {
+                    <div class="sh-grid">
+                        @foreach (var property in Model.Properties)
+                        {
+                            <partial name="_HostPropertyCard" model="property" />
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+</div>

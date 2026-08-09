@@ -1,0 +1,30 @@
+@model IEnumerable<Review>
+@{
+    ViewData["Title"] = "Reviews";
+}
+
+<div class="sh-shell">
+    <partial name="_HostSidebar" />
+
+    <section class="sh-shell-main">
+        <h1 class="sh-section-title">Reviews</h1>
+
+        @if (!Model.Any())
+        {
+            <partial name="_EmptyState" model='new EmptyState("empty-reviews", "No reviews yet", "Reviews guests leave across all your listings collect here.")' />
+        }
+        else
+        {
+            <p class="text-muted">Average rating: <strong>@Model.Average(r => r.Rating).ToString("0.0")</strong> across @Model.Count() reviews.</p>
+
+            foreach (var review in Model)
+            {
+                <div class="sh-review">
+                    <strong>@review.Reviewer?.FullName</strong>
+                    <span class="text-muted">★ @review.Rating &middot; @review.Property?.Title &middot; @review.CreatedAt.ToString("d MMM yyyy")</span>
+                    <p class="mb-0">@review.Comment</p>
+                </div>
+            }
+        }
+    </section>
+</div>

@@ -1,0 +1,45 @@
+@model CheckInProcessViewModel
+@{
+    ViewData["Title"] = "Check-in process";
+}
+
+<div class="sh-shell">
+    <partial name="_HostSidebar" />
+
+    <section class="sh-shell-main">
+        <h1 class="sh-section-title">Check-in process</h1>
+        <p class="text-muted">Define the arrival steps guests follow at <strong>@Model.PropertyTitle</strong>. The steps are stored as JSON against the property.</p>
+
+        <form asp-action="CheckInProcess" method="post" class="sh-formcard">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="PropertyId" />
+            <input type="hidden" asp-for="PropertyTitle" />
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="mb-3">
+                <label asp-for="Title" class="form-label"></label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="StepsText" class="form-label"></label>
+                <textarea asp-for="StepsText" class="form-control" rows="8"
+                          placeholder="Collect the key from the lockbox at the gate&#10;Confirm your arrival time by message&#10;Upload your ID or passport"></textarea>
+                <div class="form-text">One step per line. Guests work through them in order before uploading their document.</div>
+                <span asp-validation-for="StepsText" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="RequiredDocument" class="form-label"></label>
+                <input asp-for="RequiredDocument" class="form-control" />
+            </div>
+
+            <button class="sh-btn sh-btn-primary" type="submit">Save process</button>
+        </form>
+    </section>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

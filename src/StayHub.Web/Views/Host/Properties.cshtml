@@ -1,0 +1,29 @@
+@model IEnumerable<HostProperty>
+@{
+    ViewData["Title"] = "My Properties";
+}
+
+<div class="sh-shell">
+    <partial name="_HostSidebar" />
+
+    <section class="sh-shell-main">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h1 class="sh-section-title mb-0">My Properties</h1>
+            <a class="sh-btn sh-btn-primary sh-btn-sm" asp-controller="HostApplications" asp-action="Apply">Add New Property</a>
+        </div>
+
+        @if (!Model.Any())
+        {
+            <p class="text-muted">You have no listings yet.</p>
+        }
+        else
+        {
+            <div class="sh-grid">
+                @foreach (var property in Model)
+                {
+                    <partial name="_HostPropertyCard" model="property" />
+                }
+            </div>
+        }
+    </section>
+</div>

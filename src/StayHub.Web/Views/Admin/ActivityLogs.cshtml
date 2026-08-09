@@ -1,0 +1,47 @@
+@model IEnumerable<ActivityLog>
+@{
+    ViewData["Title"] = "Activity logs";
+    var selected = ViewBag.SelectedType as ActivityType?;
+}
+
+<div class="sh-shell">
+    <partial name="_AdminSidebar" />
+
+    <section class="sh-shell-main">
+        <h1 class="sh-section-title">Activity logs</h1>
+        <p class="text-muted">Every login, role change, and booking status update is recorded here.</p>
+
+        <form method="get" class="d-flex gap-2 mb-3">
+            <select name="type" class="form-select sh-filter">
+                <option value="">All types</option>
+                @foreach (ActivityType type in Enum.GetValues<ActivityType>())
+                {
+                    <option value="@type" selected="@(type == selected)">@type</option>
+                }
+            </select>
+            <button class="sh-btn sh-btn-primary" type="submit">Filter</button>
+            <a class="sh-btn sh-btn-ghost" asp-action="ActivityLogs">Clear</a>
+        </form>
+
+        <div class="table-responsive">
+            <table class="table sh-table align-middle">
+                <thead><tr><th>User</th><th>Action</th><th>Type</th><th>Details</th><th>Date</th></tr></thead>
+                <tbody>
+                    @foreach (var entry in Model)
+                    {
+                        <tr>
+                            <td>
+                                @entry.User?.FullName
+                                <div class="small text-muted">@entry.User?.Email</div>
+                            </td>
+                            <td>@entry.Action</td>
+                            <td><span class="sh-tag">@entry.ActivityType</span></td>
+                            <td class="text-muted">@entry.Details</td>
+                            <td>@entry.CreatedAt.ToString("d MMM yyyy HH:mm")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </section>
+</div>

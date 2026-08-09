@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="Terraced apartment with a sea view">
+  <rect width="400" height="300" fill="#eef5fa"/>
+  <circle cx="66" cy="58" r="24" fill="#f6b31b"/>
+  <path d="M0 226h400v74H0z" fill="#0e6ba8"/>
+  <rect y="226" width="400" height="10" fill="#4d97c7"/>
+  <!-- stacked terraces -->
+  <rect x="112" y="86" width="188" height="140" fill="#ffffff"/>
+  <rect x="112" y="86" width="188" height="10" fill="#dbe5ec"/>
+  <rect x="96" y="150" width="32" height="76" fill="#f7fbfd"/>
+  <rect x="284" y="128" width="34" height="98" fill="#f7fbfd"/>
+  <!-- balcony rails -->
+  <g fill="#0e6ba8">
+    <rect x="126" y="128" width="160" height="5" rx="2"/>
+    <rect x="126" y="176" width="160" height="5" rx="2"/>
+    <rect x="140" y="104" width="20" height="22" rx="2"/>
+    <rect x="176" y="104" width="20" height="22" rx="2"/>
+    <rect x="212" y="104" width="20" height="22" rx="2"/>
+    <rect x="140" y="150" width="20" height="24" rx="2"/>
+    <rect x="212" y="150" width="20" height="24" rx="2"/>
+    <rect x="186" y="192" width="30" height="34" rx="15"/>
+  </g>
+  <rect x="176" y="150" width="20" height="24" fill="#c75b39" rx="2"/>
+</svg>

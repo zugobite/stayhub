@@ -1,0 +1,89 @@
+@model NotificationCentreViewModel
+@{
+    ViewData["Title"] = "Notifications";
+}
+
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3">
+    <h1 class="sh-section-title mb-0">Notifications</h1>
+
+    <form asp-action="MarkAllAsRead" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="filter" value="@Model.Filter" />
+        <button class="sh-btn sh-btn-ghost sh-btn-sm" type="submit">Mark all read</button>
+    </form>
+</div>
+
+<div class="sh-filterbar">
+    <a class="sh-filtertab @(Model.Filter == "all" ? "active" : "")" asp-action="Index" asp-route-filter="all">ALL <span>@Model.AllCount</span></a>
+    <a class="sh-filtertab @(Model.Filter == "unread" ? "active" : "")" asp-action="Index" asp-route-filter="unread">UNREAD <span>@Model.UnreadCount</span></a>
+    <a class="sh-filtertab @(Model.Filter == "read" ? "active" : "")" asp-action="Index" asp-route-filter="read">READ <span>@Model.ReadCount</span></a>
+    <a class="sh-filtertab @(Model.Filter == "today" ? "active" : "")" asp-action="Index" asp-route-filter="today">TODAY <span>@Model.TodayCount</span></a>
+</div>
+
+<div class="row g-4 mt-1">
+    <div class="col-lg-5">
+        @if (!Model.Notifications.Any())
+        {
+            <partial name="_EmptyState" model='new EmptyState("empty-bookings", "Nothing to show", "No notifications match this filter yet.")' />
+        }
+        else
+        {
+            foreach (var group in Model.Notifications.GroupBy(n => n.CreatedAt.Date).OrderByDescending(g => g.Key))
+            {
+                var heading = group.Key == DateTime.UtcNow.Date ? "TODAY" : group.Key.ToString("dd MMM yyyy").ToUpperInvariant();
+
+                <h6 class="sh-daygroup">@heading (@group.Count())</h6>
+
+                foreach (var notification in group)
+                {
+                    <a class="sh-notification @(notification.IsRead ? "" : "unread") @(Model.Selected?.Id == notification.Id ? "selected" : "")"
+                       asp-action="Index" asp-route-filter="@Model.Filter" asp-route-selectedId="@notification.Id">
+                        <div class="sh-notification-title">@notification.Title</div>
+                        <div class="sh-notification-snippet">@notification.Body</div>
+                        <div class="sh-notification-meta">
+                            <span class="sh-tag">@notification.Type</span>
+                            <span>@notification.CreatedAt.ToString("HH:mm")</span>
+                        </div>
+                    </a>
+                }
+            }
+        }
+    </div>
+
+    <div class="col-lg-7">
+        @if (Model.Selected is null)
+        {
+            <div class="sh-detailpane text-muted">Select a notification to read it.</div>
+        }
+        else
+        {
+            <div class="sh-detailpane">
+                <div class="d-flex justify-content-between align-items-start">
+                    <h2 class="sh-subtitle mb-1">@Model.Selected.Title</h2>
+                    <span class="sh-pill @(Model.Selected.IsRead ? "sh-pill-read" : "sh-pill-unread")">
+                        @(Model.Selected.IsRead ? "READ" : "UNREAD")
+                    </span>
+                </div>
+                <div class="text-muted mb-3">@Model.Selected.CreatedAt.ToString("dddd d MMMM yyyy, HH:mm")</div>
+                <p>@Model.Selected.Body</p>
+
+                <div class="d-flex gap-2 mt-4">
+                    @if (!string.IsNullOrEmpty(Model.Selected.ActionUrl))
+                    {
+                        <a class="sh-btn sh-btn-primary sh-btn-sm" href="@Model.Selected.ActionUrl">Take Action</a>
+                    }
+                    <form asp-action="Delete" method="post"
+                          data-sh-confirm-title="Delete notification"
+                          data-sh-confirm="This notification will be permanently removed from your inbox."
+                          data-sh-confirm-action="Delete"
+                          data-sh-confirm-danger="true">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@Model.Selected.Id" />
+                        <input type="hidden" name="filter" value="@Model.Filter" />
+                        <button class="sh-btn sh-btn-ghost sh-btn-sm" type="submit">Delete</button>
+                    </form>
+                </div>
+            </div>
+        }
+    </div>
+</div>

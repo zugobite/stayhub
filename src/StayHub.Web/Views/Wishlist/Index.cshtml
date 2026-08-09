@@ -1,0 +1,21 @@
+@model IEnumerable<WishlistItem>
+@{
+    ViewData["Title"] = "Wishlist";
+}
+
+<h1 class="sh-section-title">Wishlist</h1>
+
+@if (!Model.Any())
+{
+    <partial name="_EmptyState" model='new EmptyState("empty-wishlist", "Nothing saved yet", "Tap the heart on any listing and it will be kept here for later.", "Browse Properties", "Properties", "Index")' />
+}
+else
+{
+    <div class="sh-grid">
+        @foreach (var item in Model.Where(i => i.Property is not null))
+        {
+            <partial name="_PropertyCard" model="item.Property"
+                     view-data='new ViewDataDictionary(ViewData) { ["Wishlisted"] = true }' />
+        }
+    </div>
+}

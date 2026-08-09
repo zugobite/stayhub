@@ -1,0 +1,26 @@
+@model IEnumerable<HostProperty>
+@{
+    ViewData["Title"] = "Properties";
+}
+
+<div class="sh-shell">
+    <partial name="_AdminSidebar" />
+
+    <section class="sh-shell-main">
+        <h1 class="sh-section-title">Active properties</h1>
+
+        @if (!Model.Any())
+        {
+            <partial name="_EmptyState" model='new EmptyState("empty-listings", "No published listings", "Listings appear here once a host application has been approved.")' />
+        }
+        else
+        {
+            <div class="sh-grid">
+                @foreach (var property in Model)
+                {
+                    <partial name="_PropertyCard" model="property" />
+                }
+            </div>
+        }
+    </section>
+</div>

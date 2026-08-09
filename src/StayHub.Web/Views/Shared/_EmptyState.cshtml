@@ -1,0 +1,11 @@
+@model EmptyState
+
+<div class="sh-empty">
+    <img src="~/images/empty/@(Model.Image).svg" alt="" aria-hidden="true" />
+    <div class="sh-empty-title">@Model.Title</div>
+    <p>@Model.Message</p>
+    @if (!string.IsNullOrWhiteSpace(Model.ActionText))
+    {
+        <a class="sh-btn sh-btn-primary" asp-controller="@Model.ActionController" asp-action="@Model.ActionAction">@Model.ActionText</a>
+    }
+</div>
