@@ -19,7 +19,10 @@ public class HostProperty
     /// <summary>Gets or sets the long-form listing description.</summary>
     public string Description { get; set; } = string.Empty;
 
-    /// <summary>Gets or sets the nightly rate in ZAR.</summary>
+    /// <summary>
+    /// Gets or sets the rate in ZAR charged per guest, per night. The booking
+    /// subtotal therefore scales with party size as well as length of stay.
+    /// </summary>
     public decimal PricePerNight { get; set; }
 
     /// <summary>Gets or sets the one-off cleaning fee in ZAR.</summary>

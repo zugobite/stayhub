@@ -99,20 +99,20 @@
                                 if (booking.Status == BookingStatus.Approved)
                                 {
                                     actions.Add(new ActionMenuItem(
-                                        "Pay now",
+                                        "Pay Now",
                                         Icon: "wallet",
                                         Controller: "Bookings",
                                         Action: "Pay",
                                         HiddenFields: new Dictionary<string, string> { ["id"] = booking.Id.ToString() },
                                         ConfirmMessage: $"Record a simulated payment of R {booking.TotalPrice:N2} for {booking.Property?.Title}?",
-                                        ConfirmTitle: "Pay for stay",
-                                        ConfirmAction: "Pay now"));
+                                        ConfirmTitle: "Pay for Stay",
+                                        ConfirmAction: "Pay Now"));
                                 }
 
                                 if (booking.Status is BookingStatus.Approved or BookingStatus.Paid)
                                 {
                                     actions.Add(new ActionMenuItem(
-                                        booking.GuestCheckIn is null ? "Start check-in" : "Continue check-in",
+                                        booking.GuestCheckIn is null ? "Start Check-in" : "Continue check-in",
                                         Icon: "clipboard",
                                         Href: Url.Action("Start", "CheckIn", new { id = booking.Id })));
                                 }

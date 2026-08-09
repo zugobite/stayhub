@@ -519,6 +519,11 @@ body > .sh-footer {
 
 .sh-table .sh-actions { margin-left: auto; }
 
+/* Row action menus escape .table-responsive overflow clipping. */
+.table-responsive:has(.sh-actions .dropdown-menu.show) {
+    overflow: visible;
+}
+
 /* --- Segmented search bar -------------------------------------------------- */
 
 /* Padding is uniform so the white ring reads evenly around the inner pills;
@@ -3018,18 +3023,141 @@ textarea.form-control { border-radius: var(--sh-radius); }
 .sh-ticklist li { display: flex; align-items: center; gap: .6rem; font-size: .92rem; font-weight: 600; }
 .sh-ticklist svg { width: 18px; height: 18px; flex: 0 0 auto; color: var(--sh-ok-fg); }
 
-/* Closing call to action */
+/* Closing call to action — harbour-depth band before the footer */
 .sh-closer {
+    position: relative;
+    overflow: hidden;
     text-align: center;
-    border: 1px dashed var(--sh-line);
+    border: 1.5px solid var(--sh-ink);
     border-radius: 24px;
-    background: var(--sh-shade);
-    padding: 3rem 2rem;
+    background:
+        radial-gradient(ellipse 80% 70% at 12% 100%, rgba(246, 179, 27, .18) 0%, transparent 55%),
+        radial-gradient(ellipse 60% 80% at 92% 8%, rgba(231, 241, 248, .14) 0%, transparent 50%),
+        linear-gradient(125deg, var(--sh-primary) 0%, #12507c 48%, var(--sh-ink) 100%);
+    color: #fff;
+    padding: 3.75rem 2.25rem;
+    box-shadow: var(--sh-press);
 }
 
-.sh-closer h2 { font-size: 2rem; font-weight: 800; letter-spacing: -.03em; }
-.sh-closer p { color: var(--sh-muted); margin-bottom: 1.6rem; }
-.sh-closer-actions { display: flex; gap: .9rem; justify-content: center; flex-wrap: wrap; }
+.sh-closer::before,
+.sh-closer::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+/* Sun disc — logo echo, top-right */
+.sh-closer::before {
+    top: -110px;
+    right: -70px;
+    width: 280px;
+    height: 280px;
+    background: radial-gradient(circle, rgba(246, 179, 27, .42) 0%, rgba(246, 179, 27, 0) 68%);
+    animation: sh-closer-drift 10s ease-in-out infinite alternate;
+}
+
+/* Soft harbour glow — bottom-left */
+.sh-closer::after {
+    bottom: -120px;
+    left: -80px;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(14, 107, 168, .55) 0%, transparent 70%);
+    animation: sh-closer-drift 12s ease-in-out infinite alternate-reverse;
+}
+
+.sh-closer-glow {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+        repeating-linear-gradient(
+            -12deg,
+            transparent 0,
+            transparent 18px,
+            rgba(255, 255, 255, .025) 18px,
+            rgba(255, 255, 255, .025) 19px
+        );
+    opacity: .9;
+    mask-image: linear-gradient(180deg, rgba(0, 0, 0, .55), transparent 85%);
+}
+
+.sh-closer-copy {
+    position: relative;
+    z-index: 1;
+    max-width: 36rem;
+    margin: 0 auto;
+    animation: sh-closer-rise .7s ease-out both;
+}
+
+.sh-closer .sh-eyebrow {
+    color: var(--sh-sun);
+    margin-bottom: .75rem;
+}
+
+.sh-closer h2 {
+    font-size: clamp(1.85rem, 4vw, 2.55rem);
+    font-weight: 800;
+    letter-spacing: -.035em;
+    line-height: 1.1;
+    margin: 0 0 .85rem;
+}
+
+.sh-closer h2 em {
+    font-style: normal;
+    background: linear-gradient(transparent 62%, var(--sh-sun) 62%, var(--sh-sun) 92%, transparent 92%);
+    padding: 0 .08em;
+}
+
+.sh-closer p {
+    color: rgba(255, 255, 255, .82);
+    margin: 0 auto 1.75rem;
+    font-size: 1.05rem;
+    line-height: 1.55;
+    max-width: 34ch;
+}
+
+.sh-closer-actions {
+    display: flex;
+    gap: .9rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.sh-closer .sh-btn-ghost {
+    background: transparent;
+    color: #fff;
+    border-color: rgba(255, 255, 255, .65);
+}
+
+.sh-closer .sh-btn-ghost:hover {
+    background: rgba(255, 255, 255, .12);
+    color: #fff;
+    box-shadow: 3px 3px 0 rgba(0, 0, 0, .35);
+}
+
+.sh-closer .sh-btn-sun:hover {
+    box-shadow: 3px 3px 0 rgba(0, 0, 0, .35);
+}
+
+@keyframes sh-closer-drift {
+    from { transform: translate(0, 0) scale(1); }
+    to   { transform: translate(-18px, 12px) scale(1.06); }
+}
+
+@keyframes sh-closer-rise {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sh-closer::before,
+    .sh-closer::after,
+    .sh-closer-copy {
+        animation: none;
+    }
+}
 
 @media (max-width: 900px) {
     .sh-hostband { grid-template-columns: 1fr; padding: 1.75rem; }
@@ -3040,6 +3168,25 @@ textarea.form-control { border-radius: var(--sh-radius); }
     .sh-section { margin-top: 2.75rem; }
     .sh-section-title { font-size: 1.5rem; }
     .sh-band { padding: 1.75rem 1.25rem; }
-    .sh-closer { padding: 2rem 1.25rem; }
-    .sh-closer h2 { font-size: 1.6rem; }
+    .sh-closer { padding: 2.5rem 1.35rem; }
 }
+
+/* --- Generated guest portraits --------------------------------------------- */
+
+.sh-avatar-fig {
+    display: block;
+    flex: 0 0 auto;
+    width: 46px;
+    height: 46px;
+}
+
+.sh-avatar-art {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 1.5px solid var(--sh-ink);
+}
+
+.sh-quote-author { display: flex; align-items: center; gap: .75rem; }
+.sh-quote-place { display: block; }

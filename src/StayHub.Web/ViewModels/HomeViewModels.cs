@@ -56,3 +56,18 @@ public class HomeViewModel
     /// </summary>
     public bool HasTraction => ListingCount > 0;
 }
+
+/// <summary>
+/// Describes a generated guest portrait.
+/// </summary>
+/// <param name="Seed">
+/// Stable per-person string (user id plus name). Hashing it means a given guest
+/// keeps the same portrait everywhere it is drawn.
+/// </param>
+/// <param name="Variant">
+/// Optional position index. When supplied, skin tone and clothing are taken from
+/// this instead of the hash, which guarantees that a row of portraits is visibly
+/// varied — hashing alone leaves roughly a 45% chance of two of three sharing a
+/// tone. Callers drawing a single portrait omit it and get the stable hash.
+/// </param>
+public record AvatarSpec(string Seed, int? Variant = null);

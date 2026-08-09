@@ -204,6 +204,7 @@
         </div>
 
         <div class="sh-quotegrid">
+            @{ var quoteIndex = 0; }
             @foreach (var review in Model.Testimonials)
             {
                 <figure class="sh-quote">
@@ -214,15 +215,22 @@
                         }
                     </div>
                     <blockquote>@review.Comment</blockquote>
-                    <figcaption>
-                        <strong>@review.Reviewer?.FullName</strong>
-                        @if (review.Property is not null)
-                        {
-                            <span>
-                                stayed at
-                                <a asp-controller="Properties" asp-action="View" asp-route-id="@review.Property.Id">@review.Property.Title</a>
-                            </span>
-                        }
+                    <figcaption class="sh-quote-author">
+                        @* Seeded on the reviewer id so a guest keeps the same portrait
+                           across pages and restarts. *@
+                        <span class="sh-avatar-fig">
+                            <partial name="_Avatar" model="@(new AvatarSpec(review.ReviewerId + review.Reviewer?.FullName, quoteIndex++))" />
+                        </span>
+                        <span>
+                            <strong>@review.Reviewer?.FullName</strong>
+                            @if (review.Property is not null)
+                            {
+                                <span class="sh-quote-place">
+                                    stayed at
+                                    <a asp-controller="Properties" asp-action="View" asp-route-id="@review.Property.Id">@review.Property.Title</a>
+                                </span>
+                            }
+                        </span>
                     </figcaption>
                 </figure>
             }
@@ -254,14 +262,22 @@
 @* Repeated call to action, per the research on mid/late-page conversion points. *@
 <section class="sh-section">
     <div class="sh-closer">
-        <h2>Ready when you are</h2>
-        <p>@Model.ListingCount verified @(Model.ListingCount == 1 ? "stay" : "stays") across @Model.ProvinceCount @(Model.ProvinceCount == 1 ? "province" : "provinces"), from R @Model.LowestPrice.ToString("N0") a night.</p>
-        <div class="sh-closer-actions">
-            <a class="sh-btn sh-btn-lg sh-btn-sun" asp-controller="Properties" asp-action="Index">Find a stay</a>
-            @if (User.Identity?.IsAuthenticated != true)
-            {
-                <a class="sh-btn sh-btn-lg sh-btn-ghost" asp-controller="Account" asp-action="Register">Create an account</a>
-            }
+        <div class="sh-closer-glow" aria-hidden="true"></div>
+        <div class="sh-closer-copy">
+            <span class="sh-eyebrow">StayHub</span>
+            <h2>Ready when <em>you are</em></h2>
+            <p>
+                @Model.ListingCount verified @(Model.ListingCount == 1 ? "stay" : "stays")
+                across @Model.ProvinceCount @(Model.ProvinceCount == 1 ? "province" : "provinces"),
+                from R @Model.LowestPrice.ToString("N0") a night.
+            </p>
+            <div class="sh-closer-actions">
+                <a class="sh-btn sh-btn-lg sh-btn-sun" asp-controller="Properties" asp-action="Index">Find a stay</a>
+                @if (User.Identity?.IsAuthenticated != true)
+                {
+                    <a class="sh-btn sh-btn-lg sh-btn-ghost" asp-controller="Account" asp-action="Register">Create an account</a>
+                }
+            </div>
         </div>
     </div>
 </section>

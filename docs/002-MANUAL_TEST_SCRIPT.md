@@ -123,7 +123,7 @@ While signed in as the new Host, browse directly to `/Bookings`.
 
 1. Sign in as the Guest.
 2. Open **My trips**.
-3. On the approved booking, open the actions menu and click **Pay now**. Confirm.
+3. On the approved booking, open the actions menu and click **Pay Now**. Confirm.
 
 **Expected:** Status becomes `Paid`.
 
@@ -146,7 +146,7 @@ While signed in as the new Host, browse directly to `/Bookings`.
 
 ### Step 11: Guest completes check-in
 
-1. Sign in as the Guest, open **My trips**, click **Start check-in** (available for `Approved` or `Paid`).
+1. Sign in as the Guest, open **My trips**, click **Start Check-in** (available for `Approved` or `Paid`).
 2. Work through each step.
 3. On the final step, choose a document type and upload a JPG, PNG, or PDF.
 

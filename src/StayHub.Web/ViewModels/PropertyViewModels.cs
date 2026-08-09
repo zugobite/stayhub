@@ -144,7 +144,7 @@ public class EditPropertyViewModel : HostApplicationViewModel
     public Province Province { get; set; }
 
     /// <summary>Gets or sets a value indicating whether the listing is published.</summary>
-    [Display(Name = "Listing is active")]
+    [Display(Name = "Listing is Active")]
     public bool IsActive { get; set; }
 
     /// <summary>Gets or sets the photographs already attached to the listing.</summary>

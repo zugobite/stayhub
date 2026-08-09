@@ -1,13 +1,13 @@
 @model HostApplicationViewModel
 @{
     var isAdditionalProperty = User.IsInRole(Roles.Host);
-    ViewData["Title"] = isAdditionalProperty ? "Add a new property" : "Become a Host";
+    ViewData["Title"] = isAdditionalProperty ? "Add a New Property" : "Become a Host";
 }
 
 <div class="sh-statuspage">
     <header class="sh-statuspage-head">
         <span class="sh-eyebrow">Hosting</span>
-        <h1 class="sh-section-title">@(isAdditionalProperty ? "Add a new property" : "Become a Host")</h1>
+        <h1 class="sh-section-title">@(isAdditionalProperty ? "Add a New Property" : "Become a Host")</h1>
         <p class="text-muted mb-0">
             @if (isAdditionalProperty)
             {

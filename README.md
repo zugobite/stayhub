@@ -173,7 +173,7 @@ dotnet run --project src/StayHub.Web
 #    (Host role added, Guest role removed, listing published)
 # 5. Sign in as guest@stayhub.co.za → /Properties → pick dates → Reserve
 # 6. Sign in as the Host → /Host/BookingRequests → Approve
-# 7. As the Guest → /Bookings → Start check-in → upload ID
+# 7. As the Guest → /Bookings → Start Check-in → upload ID
 # 8. As the Host → /Host/Verifications → Verify → booking becomes CheckedIn
 ```
 

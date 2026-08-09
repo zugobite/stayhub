@@ -1,0 +1,131 @@
+@model AvatarSpec
+@*
+    A flat, geometric portrait built from the same shape language as the listing
+    artwork: solid fills, no outlines, no facial features. Faces are deliberately
+    omitted — nothing else in the illustration system carries fine detail, and a
+    featureless silhouette reads clearly at 46px while avoiding caricature.
+
+    Colour comes from the seed (user id plus name) hashed with FNV-1a, so a guest
+    keeps the same portrait everywhere. string.GetHashCode is unsuitable here:
+    .NET randomises it per process, which would reshuffle every portrait on each
+    application restart.
+
+    When the caller supplies a Variant, skin tone and clothing are taken from it
+    instead, so a row of portraits is guaranteed to differ.
+*@
+@functions {
+    private static uint StableHash(string value)
+    {
+        unchecked
+        {
+            uint hash = 2166136261;
+
+            foreach (var ch in value)
+            {
+                hash ^= ch;
+                hash *= 16777619;
+            }
+
+            // Avalanche the result so neighbouring bit ranges are independent;
+            // without this, attributes drawn from different bytes correlate.
+            hash ^= hash >> 16;
+            hash *= 0x7feb352d;
+            hash ^= hash >> 15;
+            hash *= 0x846ca68b;
+            hash ^= hash >> 16;
+
+            return hash;
+        }
+    }
+}
+@{
+    var seed = string.IsNullOrWhiteSpace(Model?.Seed) ? "stayhub" : Model!.Seed;
+    var hash = StableHash(seed);
+
+    // Six tones spanning the full range, so a set reads as a genuine
+    // cross-section rather than one shade with slight variations.
+    var skins = new[] { "#f4d0ad", "#e5b184", "#c98a52", "#a3673a", "#7a4a28", "#53311a" };
+    var hairs = new[] { "#16323f", "#3a2418", "#6b4423", "#2b2b2b", "#8fa3ad", "#4a2c17" };
+    var clothes = new[] { "#0e6ba8", "#c75b39", "#f6b31b", "#0f6b39", "#6aa9d2", "#7a4470" };
+    var backdrops = new[] { "#e7f1f8", "#fdf3dc", "#e4f4ea", "#f8e7e1", "#eef5fa" };
+
+    int skinIndex, clothIndex, style;
+
+    if (Model?.Variant is int variant)
+    {
+        // Each position claims its own pair of tones ({0,1}, {2,3}, {4,5}), so
+        // three portraits in a row can never repeat a shade while the hash still
+        // decides which of the pair a given person gets. Clothing strides by 5
+        // and hair by 2, both giving distinct values across three positions —
+        // left to the hash alone, two of three landed on the same style often
+        // enough to look like a pattern.
+        skinIndex = (variant * 2 + (int)(hash % 2)) % skins.Length;
+        clothIndex = (variant * 5 + 1) % clothes.Length;
+        style = (variant * 2) % 5;
+    }
+    else
+    {
+        skinIndex = (int)(hash & 0xFF) % skins.Length;
+        clothIndex = (int)((hash >> 16) & 0xFF) % clothes.Length;
+        style = (int)((hash >> 5) & 0x1F) % 5;
+    }
+
+    var skin = skins[skinIndex];
+    var cloth = clothes[clothIndex];
+    var hair = hairs[(int)((hash >> 8) & 0xFF) % hairs.Length];
+    var backdrop = backdrops[(int)((hash >> 24) & 0xFF) % backdrops.Length];
+
+    // Offset by 3 so a headwrap never matches the top it sits above, which
+    // otherwise reads as a hood rather than two separate garments.
+    var wrap = clothes[(clothIndex + 3) % clothes.Length];
+}
+
+<svg class="sh-avatar-art" viewBox="0 0 64 64" role="img" aria-hidden="true" focusable="false">
+    <circle cx="32" cy="32" r="32" fill="@backdrop" />
+
+    @if (style == 3)
+    {
+        @* Fuller hair sits behind the head. *@
+        <circle cx="32" cy="23" r="16.5" fill="@hair" />
+    }
+
+    @* Shoulders *@
+    <path d="M8 64c0-13.3 10.7-21 24-21s24 7.7 24 21z" fill="@cloth" />
+
+    @* Neck *@
+    <path d="M27.5 34h9v10h-9z" fill="@skin" />
+
+    @* Head *@
+    <circle cx="32" cy="26" r="13" fill="@skin" />
+
+    @switch (style)
+    {
+        case 0:
+            @* Cropped: the crown segment of the head circle. *@
+            <path d="M19.63 22a13 13 0 0 1 24.74 0z" fill="@hair" />
+            break;
+
+        case 1:
+            @* Shoulder-length, framing both sides. *@
+            <path d="M19.63 22a13 13 0 0 1 24.74 0z" fill="@hair" />
+            <path d="M19 24h4.5v18H19zM40.5 24H45v18h-4.5z" fill="@hair" />
+            break;
+
+        case 2:
+            @* Cropped with a top knot. *@
+            <path d="M19.63 22a13 13 0 0 1 24.74 0z" fill="@hair" />
+            <circle cx="32" cy="9.5" r="5.2" fill="@hair" />
+            break;
+
+        case 3:
+            @* Fuller hair already drawn behind the head. *@
+            break;
+
+        default:
+            @* Headwrap, in a garment colour rather than a hair colour. *@
+            <path d="M19.63 22a13 13 0 0 1 24.74 0z" fill="@wrap" />
+            <path d="M19.2 20.5h25.6v3.6H19.2z" fill="@wrap" />
+            <circle cx="44.6" cy="19.4" r="4.4" fill="@wrap" />
+            break;
+    }
+</svg>
