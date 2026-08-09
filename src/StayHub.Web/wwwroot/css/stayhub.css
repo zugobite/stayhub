@@ -2066,8 +2066,8 @@ textarea.form-control { border-radius: var(--sh-radius); }
         var(--sh-terracotta) 72%,
         var(--sh-sun) 100%);
     color: var(--sh-ink);
-    border: 1.5px solid var(--sh-ink);
-    border-radius: var(--sh-radius);
+    border: 0;
+    border-radius: 0;
     overflow: hidden;
 }
 
