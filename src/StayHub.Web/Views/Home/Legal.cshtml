@@ -1,0 +1,23 @@
+@model LegalPageViewModel
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="sh-legal">
+    <div class="sh-pagehead">
+        <div>
+            <h1>@Model.Title</h1>
+            <p>@Model.Intro</p>
+        </div>
+    </div>
+
+    <div class="sh-legal-body">
+        @foreach (var section in Model.Sections)
+        {
+            <section class="sh-legal-section">
+                <h2>@section.Heading</h2>
+                <p>@section.Body</p>
+            </section>
+        }
+    </div>
+</div>

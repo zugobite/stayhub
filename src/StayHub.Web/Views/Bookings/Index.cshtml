@@ -85,13 +85,14 @@
                             @{
                                 var actions = new List<ActionMenuItem>
                                 {
-                                    new("View listing", Href: Url.Action("View", "Properties", new { id = booking.PropertyId }))
+                                    new("View Listing", Icon: "eye", Href: Url.Action("View", "Properties", new { id = booking.PropertyId }))
                                 };
 
                                 if (!string.IsNullOrEmpty(booking.Property?.HostId))
                                 {
                                     actions.Add(new ActionMenuItem(
-                                        "Message host",
+                                        "Message Host",
+                                        Icon: "mail",
                                         Href: Url.Action("Conversation", "Messages", new { id = booking.Property.HostId })));
                                 }
 
@@ -99,6 +100,7 @@
                                 {
                                     actions.Add(new ActionMenuItem(
                                         "Pay now",
+                                        Icon: "wallet",
                                         Controller: "Bookings",
                                         Action: "Pay",
                                         HiddenFields: new Dictionary<string, string> { ["id"] = booking.Id.ToString() },
@@ -111,6 +113,7 @@
                                 {
                                     actions.Add(new ActionMenuItem(
                                         booking.GuestCheckIn is null ? "Start check-in" : "Continue check-in",
+                                        Icon: "clipboard",
                                         Href: Url.Action("Start", "CheckIn", new { id = booking.Id })));
                                 }
 
@@ -118,6 +121,7 @@
                                 {
                                     actions.Add(new ActionMenuItem(
                                         "Mark stay complete",
+                                        Icon: "check",
                                         Controller: "Bookings",
                                         Action: "Complete",
                                         HiddenFields: new Dictionary<string, string> { ["id"] = booking.Id.ToString() },
@@ -131,19 +135,21 @@
                                 {
                                     actions.Add(new ActionMenuItem(
                                         "Leave a review",
+                                        Icon: "star",
                                         Href: Url.Action("Create", "Reviews", new { bookingId = booking.Id })));
                                 }
 
                                 if (booking.Status is BookingStatus.Pending or BookingStatus.Approved or BookingStatus.Paid)
                                 {
                                     actions.Add(new ActionMenuItem(
-                                        "Cancel booking",
+                                        "Cancel Booking",
+                                        Icon: "x",
                                         Controller: "Bookings",
                                         Action: "Cancel",
                                         HiddenFields: new Dictionary<string, string> { ["id"] = booking.Id.ToString() },
                                         ConfirmMessage: $"Your stay at {booking.Property?.Title} from {booking.CheckInDate:d MMM} to {booking.CheckOutDate:d MMM yyyy} will be cancelled.",
-                                        ConfirmTitle: "Cancel booking",
-                                        ConfirmAction: "Cancel booking",
+                                        ConfirmTitle: "Cancel Booking",
+                                        ConfirmAction: "Cancel Booking",
                                         Danger: true));
                                 }
                             }

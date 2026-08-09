@@ -1,11 +1,11 @@
 @model IEnumerable<HostApplication>
 @{
-    ViewData["Title"] = "Host application status";
+    ViewData["Title"] = "Host Application Status";
 }
 
 <div class="sh-statuspage">
     <header class="sh-statuspage-head">
-        <h1 class="sh-section-title">Host application status</h1>
+        <h1 class="sh-section-title">Host Application Status</h1>
         <p class="text-muted mb-0">Track every listing you have submitted for review.</p>
     </header>
 
@@ -35,7 +35,7 @@
                             var actions = application.PropertyId is > 0
                                 ? new List<ActionMenuItem>
                                 {
-                                    new("View property", Href: Url.Action("View", "Properties", new { id = application.PropertyId }))
+                                    new("View Property", Icon: "eye", Href: Url.Action("View", "Properties", new { id = application.PropertyId }))
                                 }
                                 : new List<ActionMenuItem>();
 

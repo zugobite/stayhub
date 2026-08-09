@@ -10,13 +10,14 @@
     var wishlisted = ViewData["Wishlisted"] as bool? ?? false;
     var actions = new List<ActionMenuItem>
     {
-        new("View details", Href: Url.Action("View", "Properties", new { id = Model.Id }))
+        new("View Details", Icon: "eye", Href: Url.Action("View", "Properties", new { id = Model.Id }))
     };
 
     if (User.Identity?.IsAuthenticated == true)
     {
         actions.Add(new ActionMenuItem(
-            wishlisted ? "Remove from wishlist" : "Save to wishlist",
+            wishlisted ? "Remove from wishlist" : "Save to Wishlist",
+            Icon: "heart",
             Controller: "Wishlist",
             Action: "Toggle",
             HiddenFields: new Dictionary<string, string>
@@ -38,7 +39,7 @@
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="propertyId" value="@Model.Id" />
                 <input type="hidden" name="returnUrl" value="@Context.Request.Path@Context.Request.QueryString" />
-                <button type="submit" title="@(wishlisted ? "Remove from wishlist" : "Save to wishlist")">
+                <button type="submit" title="@(wishlisted ? "Remove from wishlist" : "Save to Wishlist")">
                     @(wishlisted ? "♥" : "♡")
                 </button>
             </form>

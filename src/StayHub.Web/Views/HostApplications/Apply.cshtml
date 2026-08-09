@@ -1,88 +1,120 @@
 @model HostApplicationViewModel
 @{
-    ViewData["Title"] = "Become a Host";
+    var isAdditionalProperty = User.IsInRole(Roles.Host);
+    ViewData["Title"] = isAdditionalProperty ? "Add a new property" : "Become a Host";
 }
 
-<h1 class="sh-section-title">Become a Host</h1>
-<p class="text-muted">
-    Tell us about your place. An application cannot be submitted without at least one photo -
-    an administrator reviews every submission before the listing goes live.
-</p>
+<div class="sh-statuspage">
+    <header class="sh-statuspage-head">
+        <span class="sh-eyebrow">Hosting</span>
+        <h1 class="sh-section-title">@(isAdditionalProperty ? "Add a new property" : "Become a Host")</h1>
+        <p class="text-muted mb-0">
+            @if (isAdditionalProperty)
+            {
+                @:Tell us about your next listing. At least one photo is required — an administrator
+                @:reviews every submission before it goes live beside your other stays.
+            }
+            else
+            {
+                @:Tell us about your place. At least one photo is required — an administrator
+                @:reviews every submission before the listing goes live.
+            }
+        </p>
+    </header>
 
-<form asp-action="Apply" method="post" enctype="multipart/form-data" class="sh-formcard">
-    @Html.AntiForgeryToken()
-    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+    <form asp-action="Apply" method="post" enctype="multipart/form-data" class="sh-formcard sh-formcard-centered">
+        @Html.AntiForgeryToken()
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-    <div class="mb-3">
-        <label asp-for="Title" class="form-label"></label>
-        <input asp-for="Title" class="form-control" placeholder="Lovely City Apartment" />
-        <span asp-validation-for="Title" class="text-danger"></span>
-    </div>
+        <div class="sh-form-section">
+            <h2 class="sh-form-section-title">About the place</h2>
+            <div class="mb-3">
+                <label asp-for="Title" class="form-label"></label>
+                <input asp-for="Title" class="form-control" placeholder="Lovely City Apartment" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
 
-    <div class="mb-3">
-        <label asp-for="Description" class="form-label"></label>
-        <textarea asp-for="Description" class="form-control" rows="5"></textarea>
-        <span asp-validation-for="Description" class="text-danger"></span>
-    </div>
+            <div class="mb-0">
+                <label asp-for="Description" class="form-label"></label>
+                <textarea asp-for="Description" class="form-control" rows="5" placeholder="What makes this stay special?"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+        </div>
 
-    <div class="row g-3">
-        <div class="col-md-6">
-            <label asp-for="Address" class="form-label"></label>
-            <input asp-for="Address" class="form-control" />
-            <span asp-validation-for="Address" class="text-danger"></span>
+        <div class="sh-form-section">
+            <h2 class="sh-form-section-title">Location</h2>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label asp-for="Address" class="form-label"></label>
+                    <input asp-for="Address" class="form-control" />
+                    <span asp-validation-for="Address" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="City" class="form-label"></label>
+                    <input asp-for="City" class="form-control" />
+                    <span asp-validation-for="City" class="text-danger"></span>
+                </div>
+            </div>
         </div>
-        <div class="col-md-6">
-            <label asp-for="City" class="form-label"></label>
-            <input asp-for="City" class="form-control" />
-            <span asp-validation-for="City" class="text-danger"></span>
-        </div>
-    </div>
 
-    <div class="row g-3 mt-1">
-        <div class="col-md-4">
-            <label asp-for="PricePerNight" class="form-label"></label>
-            <input asp-for="PricePerNight" class="form-control" type="number" step="0.01" />
-            <span asp-validation-for="PricePerNight" class="text-danger"></span>
+        <div class="sh-form-section">
+            <h2 class="sh-form-section-title">Pricing &amp; type</h2>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label asp-for="PricePerNight" class="form-label"></label>
+                    <input asp-for="PricePerNight" class="form-control" type="number" step="0.01" />
+                    <span asp-validation-for="PricePerNight" class="text-danger"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="CleaningFee" class="form-label"></label>
+                    <input asp-for="CleaningFee" class="form-control" type="number" step="0.01" />
+                    <span asp-validation-for="CleaningFee" class="text-danger"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="PropertyType" class="form-label"></label>
+                    <select asp-for="PropertyType" class="form-select" asp-items="Html.GetEnumSelectList<PropertyType>()"></select>
+                </div>
+            </div>
         </div>
-        <div class="col-md-4">
-            <label asp-for="CleaningFee" class="form-label"></label>
-            <input asp-for="CleaningFee" class="form-control" type="number" step="0.01" />
-            <span asp-validation-for="CleaningFee" class="text-danger"></span>
-        </div>
-        <div class="col-md-4">
-            <label asp-for="PropertyType" class="form-label"></label>
-            <select asp-for="PropertyType" class="form-select" asp-items="Html.GetEnumSelectList<PropertyType>()"></select>
-        </div>
-    </div>
 
-    <div class="row g-3 mt-1">
-        <div class="col-md-3">
-            <label asp-for="MaxGuests" class="form-label"></label>
-            <input asp-for="MaxGuests" class="form-control" type="number" min="1" />
+        <div class="sh-form-section">
+            <h2 class="sh-form-section-title">Capacity</h2>
+            <div class="row g-3">
+                <div class="col-6 col-md-3">
+                    <label asp-for="MaxGuests" class="form-label"></label>
+                    <input asp-for="MaxGuests" class="form-control" type="number" min="1" />
+                </div>
+                <div class="col-6 col-md-3">
+                    <label asp-for="Bedrooms" class="form-label"></label>
+                    <input asp-for="Bedrooms" class="form-control" type="number" min="0" />
+                </div>
+                <div class="col-6 col-md-3">
+                    <label asp-for="Beds" class="form-label"></label>
+                    <input asp-for="Beds" class="form-control" type="number" min="0" />
+                </div>
+                <div class="col-6 col-md-3">
+                    <label asp-for="Bathrooms" class="form-label"></label>
+                    <input asp-for="Bathrooms" class="form-control" type="number" min="0" />
+                </div>
+            </div>
         </div>
-        <div class="col-md-3">
-            <label asp-for="Bedrooms" class="form-label"></label>
-            <input asp-for="Bedrooms" class="form-control" type="number" min="0" />
-        </div>
-        <div class="col-md-3">
-            <label asp-for="Beds" class="form-label"></label>
-            <input asp-for="Beds" class="form-control" type="number" min="0" />
-        </div>
-        <div class="col-md-3">
-            <label asp-for="Bathrooms" class="form-label"></label>
-            <input asp-for="Bathrooms" class="form-control" type="number" min="0" />
-        </div>
-    </div>
 
-    <div class="mt-4">
-        <label asp-for="Images" class="form-label"></label>
-        <input asp-for="Images" class="form-control" type="file" multiple accept="image/*" />
-        <div class="form-text">At least one photo is required. JPG, PNG, WEBP, or GIF up to 5 MB each.</div>
-        <span asp-validation-for="Images" class="text-danger"></span>
-    </div>
+        <div class="sh-form-section">
+            <h2 class="sh-form-section-title">Photos</h2>
+            <label asp-for="Images" class="form-label"></label>
+            <input asp-for="Images" class="form-control" type="file" multiple accept="image/*" />
+            <div class="form-text">At least one photo is required. JPG, PNG, WEBP, or GIF up to 5 MB each.</div>
+            <span asp-validation-for="Images" class="text-danger"></span>
+        </div>
 
-    <button class="sh-btn sh-btn-primary mt-4" type="submit">Submit application</button>
-</form>
+        <div class="sh-form-actions">
+            <button class="sh-btn sh-btn-primary" type="submit">
+                @(isAdditionalProperty ? "Submit listing" : "Submit application")
+            </button>
+            <a class="sh-btn sh-btn-ghost" asp-action="Status">View status</a>
+        </div>
+    </form>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

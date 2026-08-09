@@ -1,76 +1,123 @@
 @model NotificationCentreViewModel
 @{
     ViewData["Title"] = "Notifications";
+    var hasUnread = Model.UnreadCount > 0;
 }
 
-<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3">
-    <h1 class="sh-section-title mb-0">Notifications</h1>
-
-    <form asp-action="MarkAllAsRead" method="post">
-        @Html.AntiForgeryToken()
-        <input type="hidden" name="filter" value="@Model.Filter" />
-        <button class="sh-btn sh-btn-ghost sh-btn-sm" type="submit">Mark all read</button>
-    </form>
+<div class="sh-pagehead">
+    <div>
+        <h1>
+            Notifications
+            @if (hasUnread)
+            {
+                <span class="sh-badge-inline">@Model.UnreadCount unread</span>
+            }
+        </h1>
+        <p>Stay on top of bookings, messages, and account updates.</p>
+    </div>
+    <div class="sh-pagehead-actions">
+        <form asp-action="MarkAllAsRead" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="filter" value="@Model.Filter" />
+            <button class="sh-btn sh-btn-ghost sh-btn-sm" type="submit" @(hasUnread ? null : "disabled")>
+                Mark all read
+            </button>
+        </form>
+    </div>
 </div>
 
 <div class="sh-filterbar">
-    <a class="sh-filtertab @(Model.Filter == "all" ? "active" : "")" asp-action="Index" asp-route-filter="all">ALL <span>@Model.AllCount</span></a>
-    <a class="sh-filtertab @(Model.Filter == "unread" ? "active" : "")" asp-action="Index" asp-route-filter="unread">UNREAD <span>@Model.UnreadCount</span></a>
-    <a class="sh-filtertab @(Model.Filter == "read" ? "active" : "")" asp-action="Index" asp-route-filter="read">READ <span>@Model.ReadCount</span></a>
-    <a class="sh-filtertab @(Model.Filter == "today" ? "active" : "")" asp-action="Index" asp-route-filter="today">TODAY <span>@Model.TodayCount</span></a>
+    <a class="sh-filtertab @(Model.Filter == "all" ? "active" : "")" asp-action="Index" asp-route-filter="all"><span class="sh-filtertab-label">All</span><span class="sh-filtertab-count">@Model.AllCount</span></a>
+    <a class="sh-filtertab @(Model.Filter == "unread" ? "active" : "")" asp-action="Index" asp-route-filter="unread"><span class="sh-filtertab-label">Unread</span><span class="sh-filtertab-count">@Model.UnreadCount</span></a>
+    <a class="sh-filtertab @(Model.Filter == "read" ? "active" : "")" asp-action="Index" asp-route-filter="read"><span class="sh-filtertab-label">Read</span><span class="sh-filtertab-count">@Model.ReadCount</span></a>
+    <a class="sh-filtertab @(Model.Filter == "today" ? "active" : "")" asp-action="Index" asp-route-filter="today"><span class="sh-filtertab-label">Today</span><span class="sh-filtertab-count">@Model.TodayCount</span></a>
 </div>
 
-<div class="row g-4 mt-1">
-    <div class="col-lg-5">
+<div class="sh-notifcentre">
+    <aside class="sh-notifcentre-list" aria-label="Notification list">
         @if (!Model.Notifications.Any())
         {
-            <partial name="_EmptyState" model='new EmptyState("empty-bookings", "Nothing to show", "No notifications match this filter yet.")' />
+            <partial name="_EmptyState" model='new EmptyState("empty-notifications", "Nothing here", "No notifications match this filter yet.")' />
         }
         else
         {
             foreach (var group in Model.Notifications.GroupBy(n => n.CreatedAt.Date).OrderByDescending(g => g.Key))
             {
-                var heading = group.Key == DateTime.UtcNow.Date ? "TODAY" : group.Key.ToString("dd MMM yyyy").ToUpperInvariant();
+                var heading = group.Key == DateTime.UtcNow.Date
+                    ? "Today"
+                    : group.Key.ToString("d MMM yyyy");
 
-                <h6 class="sh-daygroup">@heading (@group.Count())</h6>
+                <h2 class="sh-daygroup">@heading <span>@group.Count()</span></h2>
 
                 foreach (var notification in group)
                 {
-                    <a class="sh-notification @(notification.IsRead ? "" : "unread") @(Model.Selected?.Id == notification.Id ? "selected" : "")"
-                       asp-action="Index" asp-route-filter="@Model.Filter" asp-route-selectedId="@notification.Id">
-                        <div class="sh-notification-title">@notification.Title</div>
-                        <div class="sh-notification-snippet">@notification.Body</div>
-                        <div class="sh-notification-meta">
-                            <span class="sh-tag">@notification.Type</span>
-                            <span>@notification.CreatedAt.ToString("HH:mm")</span>
-                        </div>
+                    var selected = Model.Selected?.Id == notification.Id;
+                    var unread = !notification.IsRead && !selected;
+
+                    <a class="sh-notification @(unread ? "unread" : "") @(selected ? "selected" : "")"
+                       asp-action="Index"
+                       asp-route-filter="@Model.Filter"
+                       asp-route-selectedId="@notification.Id">
+                        <span class="sh-notification-icon" aria-hidden="true">
+                            <partial name="_Icon" model="NotificationDisplay.Icon(notification.Type)" />
+                        </span>
+                        <span class="sh-notification-body">
+                            <span class="sh-notification-top">
+                                <span class="sh-notification-title">@notification.Title</span>
+                                <span class="sh-notification-time">@NotificationDisplay.FormatWhen(notification.CreatedAt)</span>
+                            </span>
+                            <span class="sh-notification-snippet">@notification.Body</span>
+                            <span class="sh-notification-meta">
+                                <span class="sh-tag">@NotificationDisplay.Label(notification.Type)</span>
+                                @if (unread)
+                                {
+                                    <span class="sh-notification-dot" aria-label="Unread"></span>
+                                }
+                            </span>
+                        </span>
                     </a>
                 }
             }
         }
-    </div>
+    </aside>
 
-    <div class="col-lg-7">
+    <section class="sh-notifcentre-detail" aria-label="Notification detail">
         @if (Model.Selected is null)
         {
-            <div class="sh-detailpane text-muted">Select a notification to read it.</div>
+            <div class="sh-notifcentre-empty">
+                <partial name="_EmptyState" model='new EmptyState("empty-notifications", "Select a notification", "Choose an item from the list to read the full update.")' />
+            </div>
         }
         else
         {
-            <div class="sh-detailpane">
-                <div class="d-flex justify-content-between align-items-start">
-                    <h2 class="sh-subtitle mb-1">@Model.Selected.Title</h2>
-                    <span class="sh-pill @(Model.Selected.IsRead ? "sh-pill-read" : "sh-pill-unread")">
-                        @(Model.Selected.IsRead ? "READ" : "UNREAD")
+            var selected = Model.Selected;
+            <article class="sh-notifdetail">
+                <header class="sh-notifdetail-head">
+                    <span class="sh-notification-icon sh-notification-icon-lg" aria-hidden="true">
+                        <partial name="_Icon" model="NotificationDisplay.Icon(selected.Type)" />
                     </span>
-                </div>
-                <div class="text-muted mb-3">@Model.Selected.CreatedAt.ToString("dddd d MMMM yyyy, HH:mm")</div>
-                <p>@Model.Selected.Body</p>
+                    <div class="sh-notifdetail-copy">
+                        <div class="sh-notifdetail-meta">
+                            <span class="sh-tag">@NotificationDisplay.Label(selected.Type)</span>
+                            <span class="sh-pill @(selected.IsRead ? "sh-pill-read" : "sh-pill-unread")">
+                                @(selected.IsRead ? "Read" : "Unread")
+                            </span>
+                        </div>
+                        <h2 class="sh-notifdetail-title">@selected.Title</h2>
+                        <time class="sh-notifdetail-when" datetime="@selected.CreatedAt.ToString("o")">
+                            @NotificationDisplay.FormatWhen(selected.CreatedAt)
+                        </time>
+                    </div>
+                </header>
 
-                <div class="d-flex gap-2 mt-4">
-                    @if (!string.IsNullOrEmpty(Model.Selected.ActionUrl))
+                <p class="sh-notifdetail-body">@selected.Body</p>
+
+                <footer class="sh-notifdetail-actions">
+                    @if (!string.IsNullOrEmpty(selected.ActionUrl))
                     {
-                        <a class="sh-btn sh-btn-primary sh-btn-sm" href="@Model.Selected.ActionUrl">Take Action</a>
+                        <a class="sh-btn sh-btn-primary sh-btn-sm" href="@selected.ActionUrl">
+                            @NotificationDisplay.ActionLabel(selected.Type)
+                        </a>
                     }
                     <form asp-action="Delete" method="post"
                           data-sh-confirm-title="Delete notification"
@@ -78,12 +125,12 @@
                           data-sh-confirm-action="Delete"
                           data-sh-confirm-danger="true">
                         @Html.AntiForgeryToken()
-                        <input type="hidden" name="id" value="@Model.Selected.Id" />
+                        <input type="hidden" name="id" value="@selected.Id" />
                         <input type="hidden" name="filter" value="@Model.Filter" />
-                        <button class="sh-btn sh-btn-ghost sh-btn-sm" type="submit">Delete</button>
+                        <button class="sh-btn sh-btn-ghost sh-btn-sm text-danger" type="submit">Delete</button>
                     </form>
-                </div>
-            </div>
+                </footer>
+            </article>
         }
-    </div>
+    </section>
 </div>

@@ -370,7 +370,7 @@ Admin reviews in Admin Dashboard
    ↓  approve
 Add "Host" role  +  Remove "Guest" role   →  ActivityLog(RoleChange)
    ↓
-Notification: "Host Application Approved"  →  UI switches to Host dashboard
+Notification: "Host Application Approved"  →  UI switches to Host Dashboard
 ```
 
 ### 6.2 Booking → Check-in

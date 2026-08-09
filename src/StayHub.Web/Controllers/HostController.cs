@@ -12,7 +12,7 @@ using StayHub.Web.ViewModels;
 namespace StayHub.Web.Controllers;
 
 /// <summary>
-/// The Host dashboard. Every route is Host-only, so a Guest who has not been
+/// The Host Dashboard. Every route is Host-only, so a Guest who has not been
 /// approved cannot reach any of it.
 /// </summary>
 [Authorize(Roles = Roles.Host)]
@@ -305,9 +305,9 @@ public class HostController : Controller
             userId,
             "CheckInProcessUpdated",
             ActivityType.PropertyUpdated,
-            $"Check-in process saved for '{property.Title}'.");
+            $"Check-in Process saved for '{property.Title}'.");
 
-        TempData["Success"] = "Check-in process saved.";
+        TempData["Success"] = "Check-in Process saved.";
         return RedirectToAction(nameof(Properties));
     }
 

@@ -6,15 +6,16 @@ using StayHub.Core.Models;
 namespace StayHub.Web.Services;
 
 /// <summary>
-/// Guest-host messaging rules: admins may message anyone; guests and hosts may
-/// message each other when a booking links them or the recipient hosts a listing
-/// (property-page inquiry).
+/// Guest-host messaging rules: staff may message anyone and anyone may reply to
+/// staff; guests and hosts may message each other when a booking links them or
+/// the recipient hosts a listing (property-page inquiry).
 /// </summary>
 public class MessagingPolicyService : IMessagingPolicyService
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly IBookingRepository _bookings;
     private readonly IPropertyRepository _properties;
+    private readonly IMessageRepository _messages;
 
     /// <summary>
     /// Initialises a new instance of the <see cref="MessagingPolicyService"/> class.
@@ -22,11 +23,13 @@ public class MessagingPolicyService : IMessagingPolicyService
     public MessagingPolicyService(
         UserManager<ApplicationUser> userManager,
         IBookingRepository bookings,
-        IPropertyRepository properties)
+        IPropertyRepository properties,
+        IMessageRepository messages)
     {
         _userManager = userManager;
         _bookings = bookings;
         _properties = properties;
+        _messages = messages;
     }
 
     /// <inheritdoc />
@@ -45,17 +48,20 @@ public class MessagingPolicyService : IMessagingPolicyService
         if (sender is null || receiver is null)
             return false;
 
-        if (await _userManager.IsInRoleAsync(sender, Roles.Admin) ||
-            await _userManager.IsInRoleAsync(sender, Roles.SuperAdmin))
-        {
+        // Staff can reach anyone; hosts/guests must be able to open and reply to
+        // those threads (otherwise admin → host messages are invisible in practice).
+        if (await IsStaffAsync(sender) || await IsStaffAsync(receiver))
             return true;
-        }
+
+        // Once a conversation exists (e.g. admin wrote first), either party may continue it.
+        if (await _messages.ConversationExistsAsync(senderId, receiverId))
+            return true;
 
         if (await HasBookingRelationshipAsync(senderId, receiverId))
             return true;
 
-        // Property-page inquiry: any signed-in non-host user may message a host
-        // who currently owns at least one listing.
+        // Property-page inquiry: any signed-in user may message a host who
+        // currently owns at least one listing.
         if (await _userManager.IsInRoleAsync(receiver, Roles.Host))
         {
             var listings = await _properties.GetByHostAsync(receiverId);
@@ -65,6 +71,10 @@ public class MessagingPolicyService : IMessagingPolicyService
 
         return false;
     }
+
+    private async Task<bool> IsStaffAsync(ApplicationUser user) =>
+        await _userManager.IsInRoleAsync(user, Roles.Admin) ||
+        await _userManager.IsInRoleAsync(user, Roles.SuperAdmin);
 
     private async Task<bool> HasBookingRelationshipAsync(string userA, string userB)
     {

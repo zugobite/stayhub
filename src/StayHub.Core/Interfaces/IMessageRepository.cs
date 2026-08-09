@@ -37,6 +37,11 @@ public interface IMessageRepository
     Task<IEnumerable<Message>> GetConversationAsync(string userId, string otherUserId);
 
     /// <summary>
+    /// Returns <c>true</c> when at least one message already exists between the two users.
+    /// </summary>
+    Task<bool> ConversationExistsAsync(string userId, string otherUserId);
+
+    /// <summary>
     /// Counts a user's unread messages for the header badge.
     /// </summary>
     /// <param name="userId">The recipient's user identifier.</param>

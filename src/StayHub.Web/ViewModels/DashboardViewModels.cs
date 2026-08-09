@@ -138,6 +138,7 @@ public record EmptyState(
 /// A single entry in a listing or table-row actions dropdown.
 /// </summary>
 /// <param name="Label">Text shown in the menu.</param>
+/// <param name="Icon">Optional icon key rendered by <c>_Icon</c>.</param>
 /// <param name="Href">Link target. Use for navigation actions.</param>
 /// <param name="Controller">Controller for form posts.</param>
 /// <param name="Action">Action for form posts.</param>
@@ -149,6 +150,7 @@ public record EmptyState(
 /// <param name="OpenInNewTab">Opens link actions in a new tab.</param>
 public record ActionMenuItem(
     string Label,
+    string? Icon = null,
     string? Href = null,
     string? Controller = null,
     string? Action = null,

@@ -14,7 +14,7 @@
         <partial name="_Icon" model='"users"' /> Users
     </a>
     <a class="sh-sidebar-link @(isAdmin && active is "HostRequests" or "ReviewApplication" ? "active" : "")" asp-controller="Admin" asp-action="HostRequests">
-        <partial name="_Icon" model='"document"' /> Host requests
+        <partial name="_Icon" model='"document"' /> Host Requests
     </a>
     <a class="sh-sidebar-link @(isAdmin && active == "Bookings" ? "active" : "")" asp-controller="Admin" asp-action="Bookings">
         <partial name="_Icon" model='"calendar"' /> Bookings
@@ -32,7 +32,7 @@
         <partial name="_Icon" model='"bell"' /> Notifications
     </a>
     <a class="sh-sidebar-link @(isAdmin && active == "ActivityLogs" ? "active" : "")" asp-controller="Admin" asp-action="ActivityLogs">
-        <partial name="_Icon" model='"activity"' /> Activity logs
+        <partial name="_Icon" model='"activity"' /> Activity Logs
     </a>
 
     <div class="sh-sidebar-sep"></div>
@@ -40,7 +40,7 @@
     <form asp-controller="Account" asp-action="Logout" method="post">
         @Html.AntiForgeryToken()
         <button class="sh-sidebar-link sh-sidebar-logout" type="submit">
-            <partial name="_Icon" model='"logout"' /> Log out
+            <partial name="_Icon" model='"logout"' /> Log Out
         </button>
     </form>
 </nav>

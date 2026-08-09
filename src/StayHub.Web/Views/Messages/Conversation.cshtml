@@ -4,38 +4,59 @@
 @{
     ViewData["Title"] = $"Conversation with {Model.OtherUserName}";
     var me = UserManager.GetUserId(User);
+    var initial = string.IsNullOrWhiteSpace(Model.OtherUserName)
+        ? "?"
+        : Model.OtherUserName.Trim()[0].ToString().ToUpperInvariant();
 }
 
-<a class="sh-backlink" asp-action="Index">&larr; Back to inbox</a>
-<h1 class="sh-section-title">@Model.OtherUserName</h1>
+<a class="sh-backlink" asp-action="Index">&larr; Back to Inbox</a>
 
-<div class="sh-thread"
-     id="shThread"
-     data-conversation-user-id="@Model.OtherUserId"
-     data-current-user-id="@me">
-    @if (!Model.Messages.Any())
-    {
-        <partial name="_EmptyState" model='new EmptyState("empty-messages", "No messages yet", "Start the conversation - say hello.")' />
-    }
-    else
-    {
-        foreach (var message in Model.Messages)
-        {
-            <div class="sh-bubble @(message.SenderId == me ? "mine" : "theirs")" data-message-id="@message.Id">
-                <div>@message.Content</div>
-                <div class="sh-bubble-time">@message.Timestamp.ToString("d MMM HH:mm")</div>
-            </div>
-        }
-    }
+<div class="sh-pagehead">
+    <div class="sh-conversation-head">
+        <span class="sh-message-avatar sh-message-avatar-lg" aria-hidden="true">@initial</span>
+        <div>
+            <h1>@Model.OtherUserName</h1>
+            <p>Direct message</p>
+        </div>
+    </div>
 </div>
 
-<form asp-action="Send" method="post" class="sh-replybox mt-3" id="shReplyForm" data-ajax="true">
-    @Html.AntiForgeryToken()
-    <input type="hidden" name="receiverId" value="@Model.OtherUserId" />
-    <input type="hidden" name="ajax" value="true" />
-    <textarea name="content" class="form-control" rows="3" placeholder="Write a reply…" required maxlength="2000"></textarea>
-    <button class="sh-btn sh-btn-primary mt-2" type="submit">Send</button>
-</form>
+<div class="sh-conversation">
+    <div class="sh-thread"
+         id="shThread"
+         data-conversation-user-id="@Model.OtherUserId"
+         data-current-user-id="@me">
+        @if (!Model.Messages.Any())
+        {
+            <partial name="_EmptyState" model='new EmptyState("empty-messages", "No messages yet", "Start the conversation — say hello.")' />
+        }
+        else
+        {
+            foreach (var message in Model.Messages)
+            {
+                <div class="sh-bubble @(message.SenderId == me ? "mine" : "theirs")" data-message-id="@message.Id">
+                    <div>@message.Content</div>
+                    <div class="sh-bubble-time">@TimeDisplay.FormatWhen(message.Timestamp)</div>
+                </div>
+            }
+        }
+    </div>
+
+    <form asp-action="Send" method="post" class="sh-replybox" id="shReplyForm" data-ajax="true">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="receiverId" value="@Model.OtherUserId" />
+        <input type="hidden" name="ajax" value="true" />
+        <label class="visually-hidden" for="reply-content">Write a reply</label>
+        <textarea id="reply-content"
+                  name="content"
+                  class="form-control"
+                  rows="3"
+                  placeholder="Write a reply…"
+                  required
+                  maxlength="2000"></textarea>
+        <button class="sh-btn sh-btn-primary sh-btn-sm" type="submit">Send</button>
+    </form>
+</div>
 
 @section Scripts {
     <script src="~/js/messages.js" asp-append-version="true"></script>

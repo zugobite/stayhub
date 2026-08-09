@@ -27,13 +27,14 @@
                     {
                         var actions = new List<ActionMenuItem>
                         {
-                            new("View property", Href: Url.Action("View", "Properties", new { id = booking.PropertyId }))
+                            new("View Property", Icon: "eye", Href: Url.Action("View", "Properties", new { id = booking.PropertyId }))
                         };
 
                         if (!string.IsNullOrEmpty(booking.GuestId))
                         {
                             actions.Add(new ActionMenuItem(
-                                "Message guest",
+                                "Message Guest",
+                                Icon: "mail",
                                 Href: Url.Action("Conversation", "Messages", new { id = booking.GuestId })));
                         }
 

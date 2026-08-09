@@ -69,10 +69,15 @@ public class MessagesController : Controller
         if (other is null)
             return NotFound();
 
-        if (!await _policy.CanMessageAsync(userId, id))
-            return Forbid();
-
         var thread = (await _messages.GetConversationAsync(userId, id)).ToList();
+
+        // Always allow opening a thread that already has messages (admin → host, etc.).
+        // Policy only blocks starting a brand-new conversation.
+        if (thread.Count == 0 && !await _policy.CanMessageAsync(userId, id))
+        {
+            TempData["Error"] = "You are not allowed to message this user.";
+            return RedirectToAction(nameof(Index));
+        }
 
         foreach (var message in thread.Where(m => m.ReceiverId == userId && !m.IsRead))
             await _messages.MarkAsReadAsync(message.Id, userId);

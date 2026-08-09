@@ -1,6 +1,6 @@
 @model IEnumerable<ActivityLog>
 @{
-    ViewData["Title"] = "Activity logs";
+    ViewData["Title"] = "Activity Logs";
     var selected = ViewBag.SelectedType as ActivityType?;
 }
 
@@ -8,12 +8,12 @@
     <partial name="_AdminSidebar" />
 
     <section class="sh-shell-main">
-        <h1 class="sh-section-title">Activity logs</h1>
+        <h1 class="sh-section-title">Activity Logs</h1>
         <p class="text-muted">Every login, role change, and booking status update is recorded here.</p>
 
         <form method="get" class="d-flex gap-2 mb-3">
             <select name="type" class="form-select sh-filter">
-                <option value="">All types</option>
+                <option value="">All Types</option>
                 @foreach (ActivityType type in Enum.GetValues<ActivityType>())
                 {
                     <option value="@type" selected="@(type == selected)">@type</option>

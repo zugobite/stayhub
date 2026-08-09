@@ -48,7 +48,8 @@
                                         if (!string.IsNullOrEmpty(booking.GuestId))
                                         {
                                             actions.Add(new ActionMenuItem(
-                                                "Message guest",
+                                                "Message Guest",
+                                                Icon: "mail",
                                                 Href: Url.Action("Conversation", "Messages", new { id = booking.GuestId })));
                                         }
 
@@ -56,11 +57,13 @@
                                         {
                                             actions.Add(new ActionMenuItem(
                                                 "Approve",
+                                                Icon: "check",
                                                 Controller: "Host",
                                                 Action: "ApproveBooking",
                                                 HiddenFields: new Dictionary<string, string> { ["id"] = booking.Id.ToString() }));
                                             actions.Add(new ActionMenuItem(
                                                 "Reject",
+                                                Icon: "x",
                                                 Controller: "Host",
                                                 Action: "RejectBooking",
                                                 HiddenFields: new Dictionary<string, string> { ["id"] = booking.Id.ToString() },

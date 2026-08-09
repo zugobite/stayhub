@@ -258,8 +258,8 @@ stayhub/
 │       │   ├── PropertiesController.cs       # Gallery and detail pages
 │       │   ├── BookingsController.cs         # Guest booking engine
 │       │   ├── HostApplicationsController.cs # Become a Host
-│       │   ├── HostController.cs             # Host dashboard
-│       │   ├── AdminController.cs            # Admin dashboard
+│       │   ├── HostController.cs             # Host Dashboard
+│       │   ├── AdminController.cs            # Admin Dashboard
 │       │   ├── CheckInController.cs          # Guest check-in wizard
 │       │   ├── MessagesController.cs         # Inbox
 │       │   ├── NotificationsController.cs    # Notification centre
@@ -324,7 +324,7 @@ stayhub/
 | `RoleTransitionService`      | Service       | Guest→Host and Guest→Admin swaps, with audit logging       |
 | `FileStorageService`         | Service       | Validates and stores uploads under `wwwroot/uploads`       |
 | `AccountController`          | Controller    | Registration, sign-in, sign-out                            |
-| `HostController`             | Controller    | Host dashboard and property management                     |
+| `HostController`             | Controller    | Host Dashboard and property management                     |
 | `AdminController`            | Controller    | Application review, users, audit log                       |
 | `CheckInController`          | Controller    | Multi-step guest check-in                                  |
 | `Program`                    | Entry         | DI wiring, migration, seeding, HTTP pipeline               |

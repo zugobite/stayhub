@@ -10,7 +10,7 @@
         <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
             <h1 class="sh-section-title mb-0">Users</h1>
             <form method="get" class="d-flex gap-2">
-                <input name="search" class="form-control" placeholder="Search name or email" value="@Model.SearchTerm" />
+                <input name="search" class="form-control" placeholder="Search" value="@Model.SearchTerm" />
                 <button class="sh-btn sh-btn-primary" type="submit">Search</button>
             </form>
         </div>
@@ -40,13 +40,14 @@
                                 @{
                                     var actions = new List<ActionMenuItem>
                                     {
-                                        new("Message", Href: Url.Action("Conversation", "Messages", new { id = row.User.Id }))
+                                        new("Message", Icon: "mail", Href: Url.Action("Conversation", "Messages", new { id = row.User.Id }))
                                     };
 
                                     if (Model.CanPromote && row.Roles.Contains(Roles.Guest))
                                     {
                                         actions.Add(new ActionMenuItem(
                                             "Promote to Admin",
+                                            Icon: "userplus",
                                             Controller: "Admin",
                                             Action: "PromoteToAdmin",
                                             HiddenFields: new Dictionary<string, string> { ["id"] = row.User.Id },

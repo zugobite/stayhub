@@ -80,6 +80,67 @@ public class HomeController : Controller
     }
 
     /// <summary>
+    /// Renders the privacy policy.
+    /// </summary>
+    [HttpGet]
+    public IActionResult Privacy() => View("Legal", new LegalPageViewModel
+    {
+        Title = "Privacy Policy",
+        Intro = "How StayHub collects, uses, and protects personal information on the platform.",
+        Sections = new[]
+        {
+            new LegalSection("Information we collect",
+                "We collect account details you provide (name, email, phone), booking and hosting activity, messages you send on StayHub, and basic technical data such as browser type and approximate location needed to run the service."),
+            new LegalSection("How we use information",
+                "We use this information to operate bookings and payments simulation, verify hosts, deliver messages and notifications, improve the marketplace, and meet legal obligations under South African law where applicable."),
+            new LegalSection("Sharing",
+                "We share only what is needed for a stay or application: guests and hosts see each other’s relevant booking details, and administrators may review applications, bookings, and activity logs to keep the platform safe."),
+            new LegalSection("Your choices",
+                "You may update your profile details, unsubscribe from the newsletter, and request account-related corrections by contacting StayHub support through the platform administrators.")
+        }
+    });
+
+    /// <summary>
+    /// Renders the terms of service.
+    /// </summary>
+    [HttpGet]
+    public IActionResult Terms() => View("Legal", new LegalPageViewModel
+    {
+        Title = "Terms of Service",
+        Intro = "The rules for using StayHub as a guest, host, or administrator.",
+        Sections = new[]
+        {
+            new LegalSection("Using StayHub",
+                "StayHub is a marketplace for short stays in South Africa. You must provide accurate information, keep your login secure, and use messaging and bookings only for legitimate stay-related purposes."),
+            new LegalSection("Bookings and listings",
+                "Hosts are responsible for the accuracy of their listings. Guests are responsible for paying agreed amounts in the simulated checkout flow and following house rules. StayHub may cancel listings or bookings that breach these terms."),
+            new LegalSection("Host applications",
+                "Applying to host does not guarantee approval. Administrators may approve or reject applications and additional properties based on the information and documents you submit."),
+            new LegalSection("Acceptable use",
+                "Do not misuse the platform, attempt to bypass role restrictions, upload harmful content, or harass other users. StayHub may suspend accounts that violate these terms.")
+        }
+    });
+
+    /// <summary>
+    /// Renders the cookie policy.
+    /// </summary>
+    [HttpGet]
+    public IActionResult Cookies() => View("Legal", new LegalPageViewModel
+    {
+        Title = "Cookie Policy",
+        Intro = "How StayHub uses cookies and similar technologies in the browser.",
+        Sections = new[]
+        {
+            new LegalSection("Essential cookies",
+                "We use essential cookies and local storage to keep you signed in, protect forms with anti-forgery tokens, and remember session state required for secure browsing."),
+            new LegalSection("Preferences",
+                "Where supported, we may store light preferences such as UI state so the site behaves consistently across pages during your visit."),
+            new LegalSection("Managing cookies",
+                "You can clear or block cookies in your browser settings. Blocking essential cookies may prevent sign-in, messaging, or booking flows from working correctly.")
+        }
+    });
+
+    /// <summary>
     /// Renders the shared error page.
     /// </summary>
     /// <returns>The error page.</returns>

@@ -7,75 +7,91 @@
     <partial name="_AdminSidebar" />
 
     <section class="sh-shell-main">
-        <a class="sh-backlink" asp-action="HostRequests">&larr; Back to host requests</a>
-        <h1 class="sh-section-title">@Model.Property?.Title</h1>
+        <a class="sh-backlink" asp-action="HostRequests">&larr; Back to Host Requests</a>
+        <h1 class="sh-section-title mb-4">@Model.Property?.Title</h1>
 
         <div class="row g-4">
             <div class="col-lg-7">
                 <div class="sh-panel">
-                    <h2 class="sh-subtitle">Applicant</h2>
-                    <p class="mb-1"><strong>@Model.ApplicationUser?.FullName</strong></p>
-                    <p class="text-muted">@Model.ApplicationUser?.Email</p>
-                    <p class="mb-0">
-                        Submitted @Model.AppliedAt.ToString("d MMMM yyyy") &middot;
-                        @(Model.IsAdditionalProperty ? "additional property application" : "initial host application")
-                    </p>
+                    <div class="sh-panel-head">
+                        <h2>Applicant</h2>
+                    </div>
+                    <div class="sh-panel-body">
+                        <p class="mb-1"><strong>@Model.ApplicationUser?.FullName</strong></p>
+                        <p class="text-muted mb-2">@Model.ApplicationUser?.Email</p>
+                        <p class="mb-0">
+                            Submitted @Model.AppliedAt.ToString("d MMMM yyyy") &middot;
+                            @(Model.IsAdditionalProperty ? "additional property application" : "initial host application")
+                        </p>
+                    </div>
                 </div>
 
-                <div class="sh-panel mt-3">
-                    <h2 class="sh-subtitle">Proposed listing</h2>
-                    <p>@Model.Property?.Description</p>
-                    <dl class="sh-deflist">
-                        <div><dt>Address</dt><dd>@Model.Property?.Address, @Model.Property?.City</dd></div>
-                        <div><dt>Type</dt><dd>@Model.Property?.PropertyType</dd></div>
-                        <div><dt>Price per night</dt><dd>R @Model.Property?.PricePerNight.ToString("N2")</dd></div>
-                        <div><dt>Cleaning fee</dt><dd>R @Model.Property?.CleaningFee.ToString("N2")</dd></div>
-                        <div><dt>Capacity</dt><dd>@Model.Property?.MaxGuests guests, @Model.Property?.Bedrooms bedrooms, @Model.Property?.Beds beds, @Model.Property?.Bathrooms baths</dd></div>
-                    </dl>
+                <div class="sh-panel mt-4">
+                    <div class="sh-panel-head">
+                        <h2>Proposed Listing</h2>
+                    </div>
+                    <div class="sh-panel-body">
+                        <p class="mb-3">@Model.Property?.Description</p>
+                        <dl class="sh-deflist">
+                            <div><dt>Address</dt><dd>@Model.Property?.Address, @Model.Property?.City</dd></div>
+                            <div><dt>Type</dt><dd>@Model.Property?.PropertyType</dd></div>
+                            <div><dt>Price per night</dt><dd>R @Model.Property?.PricePerNight.ToString("N2")</dd></div>
+                            <div><dt>Cleaning fee</dt><dd>R @Model.Property?.CleaningFee.ToString("N2")</dd></div>
+                            <div><dt>Capacity</dt><dd>@Model.Property?.MaxGuests guests, @Model.Property?.Bedrooms bedrooms, @Model.Property?.Beds beds, @Model.Property?.Bathrooms baths</dd></div>
+                        </dl>
+                    </div>
                 </div>
 
-                <div class="sh-panel mt-3">
-                    <h2 class="sh-subtitle">Photos (@(Model.Property?.Images.Count ?? 0))</h2>
-                    <div class="sh-thumbrow">
-                        @foreach (var image in Model.Property?.Images ?? new List<PropertyImage>())
-                        {
-                            <img src="@image.ImageUrl" alt="@Model.Property?.Title" />
-                        }
+                <div class="sh-panel mt-4">
+                    <div class="sh-panel-head">
+                        <h2>Photos (@(Model.Property?.Images.Count ?? 0))</h2>
+                    </div>
+                    <div class="sh-panel-body">
+                        <div class="sh-thumbrow">
+                            @foreach (var image in Model.Property?.Images ?? new List<PropertyImage>())
+                            {
+                                <img src="@image.ImageUrl" alt="@Model.Property?.Title" />
+                            }
+                        </div>
                     </div>
                 </div>
             </div>
 
             <div class="col-lg-5">
                 <div class="sh-panel">
-                    <h2 class="sh-subtitle">Decision</h2>
-                    <p>Current status: <span class="sh-pill sh-pill-@Model.Status.ToString().ToLowerInvariant()">@Model.Status</span></p>
+                    <div class="sh-panel-head">
+                        <h2>Decision</h2>
+                    </div>
+                    <div class="sh-panel-body">
+                        <p class="mb-3">Current status: <span class="sh-pill sh-pill-@Model.Status.ToString().ToLowerInvariant()">@Model.Status</span></p>
 
-                    @if (Model.Status == ApplicationStatus.Pending)
-                    {
-                        <p class="text-muted small">
-                            Approving publishes the listing, adds the Host role to the applicant, and removes their Guest role.
-                        </p>
+                        @if (Model.Status == ApplicationStatus.Pending)
+                        {
+                            <p class="text-muted small mb-3">
+                                Approving publishes the listing, adds the Host role to the applicant, and removes their Guest role.
+                            </p>
 
-                        <form asp-action="ApproveApplication" method="post">
-                            @Html.AntiForgeryToken()
-                            <input type="hidden" name="id" value="@Model.Id" />
-                            <textarea name="notes" class="form-control mb-2" rows="3" placeholder="Optional note to the applicant"></textarea>
-                            <button class="sh-btn sh-btn-primary w-100" type="submit">Approve application</button>
-                        </form>
+                            <form asp-action="ApproveApplication" method="post">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@Model.Id" />
+                                <textarea name="notes" class="form-control mb-2" rows="3" placeholder="Optional note to the applicant"></textarea>
+                                <button class="sh-btn sh-btn-primary w-100" type="submit">Approve application</button>
+                            </form>
 
-                        <form asp-action="RejectApplication" method="post" class="mt-2">
-                            @Html.AntiForgeryToken()
-                            <input type="hidden" name="id" value="@Model.Id" />
-                            <textarea name="notes" class="form-control mb-2" rows="2" placeholder="Reason for rejection"></textarea>
-                            <button class="sh-btn sh-btn-ghost w-100" type="submit">Reject application</button>
-                        </form>
-                    }
-                    else
-                    {
-                        <p class="mb-0 text-muted">
-                            Reviewed @Model.ReviewedAt?.ToString("d MMMM yyyy"). @Model.ReviewNotes
-                        </p>
-                    }
+                            <form asp-action="RejectApplication" method="post" class="mt-3">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@Model.Id" />
+                                <textarea name="notes" class="form-control mb-2" rows="2" placeholder="Reason for rejection"></textarea>
+                                <button class="sh-btn sh-btn-ghost w-100" type="submit">Reject application</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <p class="mb-0 text-muted">
+                                Reviewed @Model.ReviewedAt?.ToString("d MMMM yyyy"). @Model.ReviewNotes
+                            </p>
+                        }
+                    </div>
                 </div>
             </div>
         </div>

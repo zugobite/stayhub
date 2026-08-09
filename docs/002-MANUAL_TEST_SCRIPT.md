@@ -90,7 +90,7 @@ Sign in as the promoted user and open **Notifications**.
 
 While signed in as the new Host, browse directly to `/Bookings`.
 
-**Expected:** You are sent to **Access denied** - that route is Guest-only. Likewise `/Host/Dashboard` is refused for a Guest account.
+**Expected:** You are sent to **Access Denied** - that route is Guest-only. Likewise `/Host/Dashboard` is refused for a Guest account.
 
 ---
 
@@ -183,10 +183,10 @@ While signed in as the new Host, browse directly to `/Bookings`.
 
 ## Test Scenario 5b: Host edits a listing
 
-### Step 12c: Edit listing details
+### Step 12c: Edit Listing details
 
 1. Sign in as `host@stayhub.co.za`.
-2. Open **My Properties**, open the actions menu on a listing, click **Edit listing**.
+2. Open **My Properties**, open the actions menu on a listing, click **Edit Listing**.
 3. Change the title (or nightly price), optionally attach another photo, and save.
 
 **Expected:** Redirected to **My Properties** with a success message. The public listing page shows the new title/price.
@@ -210,14 +210,14 @@ While signed in as the new Host, browse directly to `/Bookings`.
 ### Step 13b: Guest ↔ Host live messaging
 
 1. Sign in as `guest@stayhub.co.za` in one browser.
-2. Open a listing and click **Message** under Meet your host (or open **My Trips** → **Message host**).
+2. Open a listing and click **Message** under Meet your host (or open **My Trips** → **Message Host**).
 3. Send a message.
 4. In a second browser, sign in as `host@stayhub.co.za` **without refreshing** once the host is already on the site (or leave the conversation open).
 
 **Expected:**
 - The host's message badge increments live and a toast appears.
 - If the host has the conversation open, the new bubble appears without a page reload.
-- From **Booking Requests** or **Guest check-ins**, the host can click **Message guest** and reply; the guest sees the reply live.
+- From **Booking Requests** or **Guest check-ins**, the host can click **Message Guest** and reply; the guest sees the reply live.
 
 **Expected (AJAX):** Sending from the conversation page appends the bubble immediately; a full page reload is not required.
 
@@ -239,7 +239,7 @@ While signed in as the new Host, browse directly to `/Bookings`.
 
 Sign in as `admin@stayhub.co.za` and open **Users**.
 
-**Expected:** The promote button is absent and the page explains that only the SuperAdmin can promote. Posting to `/Admin/PromoteToAdmin` directly returns Access denied.
+**Expected:** The promote button is absent and the page explains that only the SuperAdmin can promote. Posting to `/Admin/PromoteToAdmin` directly returns Access Denied.
 
 ---
 

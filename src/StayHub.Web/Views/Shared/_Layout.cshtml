@@ -10,6 +10,12 @@
     var unreadMessages = currentUser is null ? 0 : await MessageRepo.GetUnreadCountAsync(currentUser.Id);
     var searchCity = Context.Request.Query["city"].ToString();
     var searchType = Context.Request.Query["type"].ToString();
+    var accountInitial = currentUser?.FirstName.FirstOrDefault().ToString().ToUpperInvariant() ?? "U";
+    var accountRole = User.IsInRole(Roles.SuperAdmin) ? "Super Admin"
+        : User.IsInRole(Roles.Admin) ? "Administrator"
+        : User.IsInRole(Roles.Host) ? "Host"
+        : User.IsInRole(Roles.Guest) ? "Guest"
+        : "Member";
 }
 
 <!DOCTYPE html>
@@ -78,8 +84,17 @@
                     </a>
 
                     <div class="dropdown">
-                        <button class="sh-avatar dropdown-toggle" data-bs-toggle="dropdown" type="button" aria-label="Account menu">
-                            @(currentUser?.FirstName.FirstOrDefault().ToString().ToUpperInvariant() ?? "U")
+                        <button class="sh-account-chip dropdown-toggle"
+                                data-bs-toggle="dropdown"
+                                type="button"
+                                aria-label="Account menu"
+                                aria-expanded="false">
+                            <span class="sh-account-chip-avatar" aria-hidden="true">@accountInitial</span>
+                            <span class="sh-account-chip-meta">
+                                <span class="sh-account-chip-name">@currentUser?.FullName</span>
+                                <span class="sh-account-chip-role">@accountRole</span>
+                            </span>
+                            <span class="sh-account-chip-caret" aria-hidden="true"></span>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end sh-menu">
                             <li class="px-2 py-1">
@@ -89,26 +104,60 @@
                             <li><hr class="dropdown-divider" /></li>
                             @if (User.IsInRole(Roles.Guest))
                             {
-                                <li><a class="dropdown-item" asp-controller="Bookings" asp-action="Index">My Trips</a></li>
-                                <li><a class="dropdown-item" asp-controller="Wishlist" asp-action="Index">Wishlist</a></li>
-                                <li><a class="dropdown-item" asp-controller="HostApplications" asp-action="Apply">Become a Host</a></li>
-                                <li><a class="dropdown-item" asp-controller="HostApplications" asp-action="Status">Application Status</a></li>
+                                <li>
+                                    <a class="dropdown-item" asp-controller="Bookings" asp-action="Index">
+                                        <span class="sh-menu-label"><partial name="_Icon" model='"calendar"' /><span>My Trips</span></span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-controller="Wishlist" asp-action="Index">
+                                        <span class="sh-menu-label"><partial name="_Icon" model='"heart"' /><span>Wishlist</span></span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-controller="HostApplications" asp-action="Apply">
+                                        <span class="sh-menu-label"><partial name="_Icon" model='"home"' /><span>Become a Host</span></span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-controller="HostApplications" asp-action="Status">
+                                        <span class="sh-menu-label"><partial name="_Icon" model='"document"' /><span>Application Status</span></span>
+                                    </a>
+                                </li>
                             }
                             else if (User.IsInRole(Roles.Host))
                             {
-                                <li><a class="dropdown-item" asp-controller="Host" asp-action="Dashboard">Host dashboard</a></li>
+                                <li>
+                                    <a class="dropdown-item" asp-controller="Host" asp-action="Dashboard">
+                                        <span class="sh-menu-label"><partial name="_Icon" model='"dashboard"' /><span>Host Dashboard</span></span>
+                                    </a>
+                                </li>
                             }
                             else if (User.IsInRole(Roles.Admin) || User.IsInRole(Roles.SuperAdmin))
                             {
-                                <li><a class="dropdown-item" asp-controller="Admin" asp-action="Dashboard">Admin dashboard</a></li>
+                                <li>
+                                    <a class="dropdown-item" asp-controller="Admin" asp-action="Dashboard">
+                                        <span class="sh-menu-label"><partial name="_Icon" model='"dashboard"' /><span>Admin Dashboard</span></span>
+                                    </a>
+                                </li>
                             }
-                            <li><a class="dropdown-item" asp-controller="Messages" asp-action="Index">Inbox</a></li>
-                            <li><a class="dropdown-item" asp-controller="Notifications" asp-action="Index">Notifications</a></li>
+                            <li>
+                                <a class="dropdown-item" asp-controller="Messages" asp-action="Index">
+                                    <span class="sh-menu-label"><partial name="_Icon" model='"mail"' /><span>Inbox</span></span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" asp-controller="Notifications" asp-action="Index">
+                                    <span class="sh-menu-label"><partial name="_Icon" model='"bell"' /><span>Notifications</span></span>
+                                </a>
+                            </li>
                             <li><hr class="dropdown-divider" /></li>
                             <li>
                                 <form asp-controller="Account" asp-action="Logout" method="post">
                                     @Html.AntiForgeryToken()
-                                    <button class="dropdown-item" type="submit">Log out</button>
+                                    <button class="dropdown-item text-danger" type="submit">
+                                        <span class="sh-menu-label"><partial name="_Icon" model='"logout"' /><span>Log Out</span></span>
+                                    </button>
                                 </form>
                             </li>
                         </ul>
@@ -137,12 +186,14 @@
     </main>
 
     <footer class="sh-footer">
-        <div class="sh-footer-promo">
-            <div class="container sh-footer-promo-inner">
-                <p class="sh-footer-promo-copy">Find a stay, or open your doors.</p>
-                <div class="sh-footer-promo-actions">
-                    <a class="sh-btn sh-btn-ghost" asp-controller="Properties" asp-action="Index">Browse stays</a>
-                    <a class="sh-btn sh-btn-sun" asp-controller="HostApplications" asp-action="Apply">Become a host</a>
+        <div class="container">
+            <div class="sh-footer-promo">
+                <div class="sh-footer-promo-inner">
+                    <p class="sh-footer-promo-copy">Find a stay, or open your doors.</p>
+                    <div class="sh-footer-promo-actions">
+                        <a class="sh-btn sh-btn-ghost" asp-controller="Properties" asp-action="Index">Browse stays</a>
+                        <a class="sh-btn sh-btn-sun" asp-controller="HostApplications" asp-action="Apply">Become a host</a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -155,20 +206,15 @@
                             <img class="sh-brand-mark" src="~/images/brand/stayhub-mark-light.svg" alt="" aria-hidden="true" />
                             <span class="fuzzy-bubbles-bold">StayHub</span>
                         </a>
-                        <p class="sh-footer-tagline">Coastal stays and city hideaways across South Africa - from the Mother City shoreline to quiet inland weekends.</p>
-                        <p class="sh-footer-meta">
-                            <span>Cape Town · South Africa</span>
-                            <span>Prices in ZAR</span>
-                        </p>
                     </div>
 
                     <nav class="sh-footer-col" aria-label="Explore">
                         <span class="sh-footer-heading">Explore</span>
                         <a asp-controller="Home" asp-action="Index">Home</a>
                         <a asp-controller="Properties" asp-action="Index">Browse Properties</a>
-                        <a asp-controller="Properties" asp-action="Index" asp-route-province="@Province.WesternCape">Western Cape</a>
-                        <a asp-controller="Properties" asp-action="Index" asp-route-province="@Province.KwaZuluNatal">KwaZulu-Natal</a>
-                        <a asp-controller="Properties" asp-action="Index" asp-route-province="@Province.Gauteng">Gauteng</a>
+                        <a asp-controller="Home" asp-action="Privacy">Privacy Policy</a>
+                        <a asp-controller="Home" asp-action="Terms">Terms of Service</a>
+                        <a asp-controller="Home" asp-action="Cookies">Cookie Policy</a>
                     </nav>
 
                     <nav class="sh-footer-col" aria-label="Hosting">

@@ -67,7 +67,16 @@ public class NotificationsController : Controller
 
             // Opening a notification marks it read, which the rubric checks in the database.
             if (model.Selected is not null && !model.Selected.IsRead)
+            {
                 await _notifications.MarkAsReadAsync(model.Selected.Id, userId);
+                model.Selected.IsRead = true;
+                model.UnreadCount = Math.Max(0, model.UnreadCount - 1);
+                model.ReadCount++;
+
+                var listed = model.Notifications.FirstOrDefault(n => n.Id == model.Selected.Id);
+                if (listed is not null)
+                    listed.IsRead = true;
+            }
         }
 
         return View(model);

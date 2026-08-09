@@ -27,7 +27,7 @@
                             @if (!string.IsNullOrEmpty(checkIn.Booking?.GuestId))
                             {
                                 <a class="sh-btn sh-btn-sm sh-btn-ghost" asp-controller="Messages" asp-action="Conversation" asp-route-id="@checkIn.Booking.GuestId">
-                                    Message guest
+                                    Message Guest
                                 </a>
                             }
                             <span class="sh-pill sh-pill-pending">@checkIn.Status</span>
@@ -50,13 +50,14 @@
                                         @{
                                             var actions = new List<ActionMenuItem>
                                             {
-                                                new("View document", Href: document.FileUrl, OpenInNewTab: true)
+                                                new("View document", Icon: "external", Href: document.FileUrl, OpenInNewTab: true)
                                             };
 
                                             if (document.Status == DocumentStatus.Pending)
                                             {
                                                 actions.Add(new ActionMenuItem(
                                                     "Verify",
+                                                    Icon: "shield",
                                                     Controller: "Host",
                                                     Action: "VerifyDocument",
                                                     HiddenFields: new Dictionary<string, string>
@@ -67,6 +68,7 @@
                                                     }));
                                                 actions.Add(new ActionMenuItem(
                                                     "Reject",
+                                                    Icon: "x",
                                                     Controller: "Host",
                                                     Action: "VerifyDocument",
                                                     HiddenFields: new Dictionary<string, string>

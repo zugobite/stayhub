@@ -1,0 +1,8 @@
+@model ActionMenuItem
+<span class="sh-menu-label">
+    @if (!string.IsNullOrEmpty(Model.Icon))
+    {
+        <partial name="_Icon" model="Model.Icon" />
+    }
+    <span>@Model.Label</span>
+</span>

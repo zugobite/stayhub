@@ -7,16 +7,18 @@
 
     var actions = new List<ActionMenuItem>
     {
-        new("View details", Href: Url.Action("View", "Properties", new { id = Model.Id })),
-        new("Edit listing", Href: Url.Action("Edit", "Host", new { id = Model.Id })),
-        new("Check-in process", Href: Url.Action("CheckInProcess", "Host", new { id = Model.Id }))
+        new("View Details", Icon: "eye", Href: Url.Action("View", "Properties", new { id = Model.Id })),
+        new("Edit Listing", Icon: "edit", Href: Url.Action("Edit", "Host", new { id = Model.Id })),
+        new("Check-in Process", Icon: "clipboard", Href: Url.Action("CheckInProcess", "Host", new { id = Model.Id }))
     };
 
     actions.Add(new ActionMenuItem(
         Model.IsActive ? "Deactivate" : "Activate",
+        Icon: Model.IsActive ? "ban" : "power",
         Controller: "Host",
         Action: "ToggleActive",
-        HiddenFields: new Dictionary<string, string> { ["id"] = Model.Id.ToString() }));
+        HiddenFields: new Dictionary<string, string> { ["id"] = Model.Id.ToString() },
+        Danger: Model.IsActive));
 }
 
 <article class="sh-card">

@@ -1,6 +1,6 @@
 @model IEnumerable<HostApplication>
 @{
-    ViewData["Title"] = "Host requests";
+    ViewData["Title"] = "Host Requests";
     var selected = ViewBag.Status as ApplicationStatus?;
 }
 
@@ -8,7 +8,7 @@
     <partial name="_AdminSidebar" />
 
     <section class="sh-shell-main">
-        <h1 class="sh-section-title">Host requests</h1>
+        <h1 class="sh-section-title">Host Requests</h1>
 
         <div class="sh-filterbar">
             <a class="sh-filtertab @(selected == ApplicationStatus.Pending ? "active" : "")" asp-action="HostRequests" asp-route-status="@ApplicationStatus.Pending">PENDING</a>
@@ -41,7 +41,7 @@
                                 <td class="text-end">
                                     <partial name="_ActionMenu" model='new List<ActionMenuItem>
                                     {
-                                        new("Review", Href: Url.Action("ReviewApplication", new { id = application.Id }))
+                                        new("Review", Icon: "document", Href: Url.Action("ReviewApplication", new { id = application.Id }))
                                     }' />
                                 </td>
                             </tr>

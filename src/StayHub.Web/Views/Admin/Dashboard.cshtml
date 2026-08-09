@@ -1,6 +1,6 @@
 @model AdminDashboardViewModel
 @{
-    ViewData["Title"] = "Admin dashboard";
+    ViewData["Title"] = "Admin Dashboard";
     var needsAttention = Model.PendingApplications + Model.PendingBookings;
 }
 
@@ -10,7 +10,7 @@
     <section class="sh-shell-main">
         <div class="sh-welcome">
             <span class="sh-eyebrow">Platform overview</span>
-            <h1>Admin dashboard</h1>
+            <h1>Admin Dashboard</h1>
             <p>
                 @if (needsAttention > 0)
                 {
@@ -24,11 +24,11 @@
             <div class="d-flex flex-wrap gap-2">
                 <a class="sh-btn sh-btn-sun sh-btn-sm" asp-action="HostRequests">Review host requests</a>
                 <a class="sh-btn sh-btn-ghost sh-btn-sm" asp-action="Users">Manage users</a>
-                <a class="sh-btn sh-btn-ghost sh-btn-sm" asp-action="ActivityLogs">Activity logs</a>
+                <a class="sh-btn sh-btn-ghost sh-btn-sm" asp-action="ActivityLogs">Activity Logs</a>
             </div>
         </div>
 
-        <div class="sh-statgrid">
+        <div class="sh-statgrid sh-statgrid-4">
             <partial name="_StatCard" model='new StatCard("Total Users", Model.TotalUsers.ToString(), "Registered accounts", "users")' />
             <partial name="_StatCard" model='new StatCard("Pending Host Apps", Model.PendingApplications.ToString(), "Require review", "document", "sun")' />
             <partial name="_StatCard" model='new StatCard("Active Properties", Model.ActiveProperties.ToString(), "Listings available", "home")' />
@@ -39,7 +39,7 @@
 
         <div class="sh-panel mt-4">
             <div class="sh-panel-head">
-                <h2>Recent host applications</h2>
+                <h2>Recent Host Applications</h2>
                 <a class="sh-linkarrow" asp-action="HostRequests">View all</a>
             </div>
             <div class="sh-panel-body">
@@ -63,7 +63,7 @@
                                         <td>@application.Property?.Title</td>
                                         <td>@application.AppliedAt.ToString("d MMM yyyy")</td>
                                         <td><span class="sh-pill sh-pill-@application.Status.ToString().ToLowerInvariant()">@application.Status</span></td>
-                                        <td class="text-end"><partial name="_ActionMenu" model='new List<ActionMenuItem> { new("Review", Href: Url.Action("ReviewApplication", new { id = application.Id })) }' /></td>
+                                        <td class="text-end"><partial name="_ActionMenu" model='new List<ActionMenuItem> { new("Review", Icon: "document", Href: Url.Action("ReviewApplication", new { id = application.Id })) }' /></td>
                                     </tr>
                                 }
                             </tbody>
@@ -73,91 +73,85 @@
             </div>
         </div>
 
-        <div class="row g-4 mt-0">
-            <div class="col-xl-7">
-                <div class="sh-panel h-100">
-                    <div class="sh-panel-head">
-                        <h2>Recent bookings</h2>
-                        <a class="sh-linkarrow" asp-action="Bookings">View all</a>
-                    </div>
-                    <div class="sh-panel-body">
-                        @if (!Model.RecentBookings.Any())
-                        {
-                            <div class="sh-empty">
-                                <div class="sh-empty-title">No bookings yet</div>
-                                <p>Reservations made by guests will be listed here.</p>
-                            </div>
-                        }
-                        else
-                        {
-                            <div class="table-responsive">
-                                <table class="table sh-table align-middle">
-                                    <thead><tr><th>Guest</th><th>Property</th><th>Dates</th><th>Status</th><th class="text-end">Amount</th><th class="text-end">Actions</th></tr></thead>
-                                    <tbody>
-                                        @foreach (var booking in Model.RecentBookings)
-                                        {
-                                            <tr>
-                                                <td>@booking.Guest?.FullName</td>
-                                                <td>@booking.Property?.Title</td>
-                                                <td>@booking.CheckInDate.ToString("d MMM") – @booking.CheckOutDate.ToString("d MMM yyyy")</td>
-                                                <td><span class="sh-pill sh-pill-@booking.Status.ToString().ToLowerInvariant()">@booking.Status</span></td>
-                                                <td class="text-end fw-semibold">R @booking.TotalPrice.ToString("N2")</td>
-                                                <td class="text-end">
-                                                    <partial name="_ActionMenu" model='new List<ActionMenuItem>
-                                                    {
-                                                        new("View property", Href: Url.Action("View", "Properties", new { id = booking.PropertyId }))
-                                                    }' />
-                                                </td>
-                                            </tr>
-                                        }
-                                    </tbody>
-                                </table>
-                            </div>
-                        }
-                    </div>
-                </div>
+        <div class="sh-panel mt-4">
+            <div class="sh-panel-head">
+                <h2>Recent Bookings</h2>
+                <a class="sh-linkarrow" asp-action="Bookings">View all</a>
             </div>
+            <div class="sh-panel-body">
+                @if (!Model.RecentBookings.Any())
+                {
+                    <div class="sh-empty">
+                        <div class="sh-empty-title">No bookings yet</div>
+                        <p>Reservations made by guests will be listed here.</p>
+                    </div>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table sh-table align-middle">
+                            <thead><tr><th>Guest</th><th>Property</th><th>Dates</th><th>Status</th><th class="text-end">Amount</th><th class="text-end">Actions</th></tr></thead>
+                            <tbody>
+                                @foreach (var booking in Model.RecentBookings)
+                                {
+                                    <tr>
+                                        <td>@booking.Guest?.FullName</td>
+                                        <td>@booking.Property?.Title</td>
+                                        <td>@booking.CheckInDate.ToString("d MMM") – @booking.CheckOutDate.ToString("d MMM yyyy")</td>
+                                        <td><span class="sh-pill sh-pill-@booking.Status.ToString().ToLowerInvariant()">@booking.Status</span></td>
+                                        <td class="text-end fw-semibold">R @booking.TotalPrice.ToString("N2")</td>
+                                        <td class="text-end">
+                                            <partial name="_ActionMenu" model='new List<ActionMenuItem>
+                                            {
+                                                new("View Property", Icon: "eye", Href: Url.Action("View", "Properties", new { id = booking.PropertyId }))
+                                            }' />
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
 
-            <div class="col-xl-5">
-                <div class="sh-panel h-100">
-                    <div class="sh-panel-head">
-                        <h2>Recent activity</h2>
-                        <a class="sh-linkarrow" asp-action="ActivityLogs">View all</a>
+        <div class="sh-panel mt-4">
+            <div class="sh-panel-head">
+                <h2>Recent Activity</h2>
+                <a class="sh-linkarrow" asp-action="ActivityLogs">View all</a>
+            </div>
+            <div class="sh-panel-body">
+                @if (!Model.RecentActivity.Any())
+                {
+                    <div class="sh-empty">
+                        <div class="sh-empty-title">Nothing logged yet</div>
+                        <p>Audit-trail entries are recorded as users act on the platform.</p>
                     </div>
-                    <div class="sh-panel-body">
-                        @if (!Model.RecentActivity.Any())
-                        {
-                            <div class="sh-empty">
-                                <div class="sh-empty-title">Nothing logged yet</div>
-                                <p>Audit-trail entries are recorded as users act on the platform.</p>
-                            </div>
-                        }
-                        else
-                        {
-                            <div class="table-responsive">
-                                <table class="table sh-table align-middle">
-                                    <thead><tr><th>User</th><th>Action</th><th>When</th></tr></thead>
-                                    <tbody>
-                                        @foreach (var entry in Model.RecentActivity)
-                                        {
-                                            <tr>
-                                                <td>
-                                                    @entry.User?.FullName
-                                                    <div class="small text-muted">@entry.User?.Email</div>
-                                                </td>
-                                                <td>
-                                                    @entry.Action
-                                                    <div class="mt-1"><span class="sh-tag">@entry.ActivityType</span></div>
-                                                </td>
-                                                <td class="text-nowrap">@entry.CreatedAt.ToString("d MMM, HH:mm")</td>
-                                            </tr>
-                                        }
-                                    </tbody>
-                                </table>
-                            </div>
-                        }
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table sh-table align-middle">
+                            <thead><tr><th>User</th><th>Action</th><th>When</th></tr></thead>
+                            <tbody>
+                                @foreach (var entry in Model.RecentActivity)
+                                {
+                                    <tr>
+                                        <td>
+                                            @entry.User?.FullName
+                                            <div class="small text-muted">@entry.User?.Email</div>
+                                        </td>
+                                        <td>
+                                            @entry.Action
+                                            <div class="mt-1"><span class="sh-tag">@entry.ActivityType</span></div>
+                                        </td>
+                                        <td class="text-nowrap">@entry.CreatedAt.ToString("d MMM, HH:mm")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
                     </div>
-                </div>
+                }
             </div>
         </div>
     </section>

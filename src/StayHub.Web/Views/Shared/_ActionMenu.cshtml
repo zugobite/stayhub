@@ -6,6 +6,12 @@
     }
 
     var menuId = $"sh-actions-{Guid.NewGuid():N}";
+
+    bool IsDanger(ActionMenuItem item) =>
+        item.Danger
+        || item.Label.Equals("Log Out", StringComparison.OrdinalIgnoreCase)
+        || item.Label.Equals("Logout", StringComparison.OrdinalIgnoreCase)
+        || item.Label.Equals("Deactivate", StringComparison.OrdinalIgnoreCase);
 }
 
 <div class="dropdown sh-actions">
@@ -15,6 +21,7 @@
     <ul class="dropdown-menu dropdown-menu-end sh-menu" aria-labelledby="@menuId">
         @foreach (var item in Model)
         {
+            var dangerClass = IsDanger(item) ? "text-danger" : "";
             <li>
                 @if (!string.IsNullOrEmpty(item.Controller) && !string.IsNullOrEmpty(item.Action))
                 {
@@ -24,7 +31,7 @@
                               data-sh-confirm="@item.ConfirmMessage"
                               data-sh-confirm-title="@(item.ConfirmTitle ?? "Please confirm")"
                               data-sh-confirm-action="@(item.ConfirmAction ?? "Confirm")"
-                              data-sh-confirm-danger="@(item.Danger ? "true" : null)">
+                              data-sh-confirm-danger="@(IsDanger(item) ? "true" : null)">
                             @Html.AntiForgeryToken()
                             @if (item.HiddenFields is not null)
                             {
@@ -33,7 +40,9 @@
                                     <input type="hidden" name="@field.Key" value="@field.Value" />
                                 }
                             }
-                            <button class="dropdown-item @(item.Danger ? "text-danger" : "")" type="submit">@item.Label</button>
+                            <button class="dropdown-item @dangerClass" type="submit">
+                                <partial name="_MenuItemLabel" model="item" />
+                            </button>
                         </form>
                     }
                     else
@@ -47,15 +56,19 @@
                                     <input type="hidden" name="@field.Key" value="@field.Value" />
                                 }
                             }
-                            <button class="dropdown-item @(item.Danger ? "text-danger" : "")" type="submit">@item.Label</button>
+                            <button class="dropdown-item @dangerClass" type="submit">
+                                <partial name="_MenuItemLabel" model="item" />
+                            </button>
                         </form>
                     }
                 }
                 else if (!string.IsNullOrEmpty(item.Href))
                 {
-                    <a class="dropdown-item @(item.Danger ? "text-danger" : "")"
+                    <a class="dropdown-item @dangerClass"
                        href="@item.Href"
-                       @(item.OpenInNewTab ? Html.Raw("target=\"_blank\" rel=\"noopener\"") : null)>@item.Label</a>
+                       @(item.OpenInNewTab ? Html.Raw("target=\"_blank\" rel=\"noopener\"") : null)>
+                        <partial name="_MenuItemLabel" model="item" />
+                    </a>
                 }
             </li>
         }

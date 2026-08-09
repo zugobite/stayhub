@@ -84,6 +84,14 @@ public class MessageRepository : IMessageRepository
     }
 
     /// <inheritdoc />
+    public async Task<bool> ConversationExistsAsync(string userId, string otherUserId)
+    {
+        return await _context.Messages.AnyAsync(m =>
+            (m.SenderId == userId && m.ReceiverId == otherUserId) ||
+            (m.SenderId == otherUserId && m.ReceiverId == userId));
+    }
+
+    /// <inheritdoc />
     public async Task<int> GetUnreadCountAsync(string userId)
     {
         return await _context.Messages.CountAsync(m => m.ReceiverId == userId && !m.IsRead);
