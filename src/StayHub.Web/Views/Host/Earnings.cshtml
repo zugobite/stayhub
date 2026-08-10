@@ -1,8 +1,8 @@
-@model IEnumerable<Booking>
+@model HostEarningsViewModel
 @{
     ViewData["Title"] = "Earnings";
     var earning = new[] { BookingStatus.Paid, BookingStatus.CheckedIn, BookingStatus.Completed };
-    var settled = Model.Where(b => earning.Contains(b.Status)).ToList();
+    var settled = Model.All.Where(b => earning.Contains(b.Status)).ToList();
 }
 
 <div class="sh-shell">
@@ -13,7 +13,7 @@
 
         <div class="sh-statgrid">
             <partial name="_StatCard" model='new StatCard("Settled earnings", $"R {settled.Sum(b => b.TotalPrice):N2}", $"{settled.Count} bookings", "wallet", "leaf")' />
-            <partial name="_StatCard" model='new StatCard("Awaiting settlement", $"R {Model.Where(b => b.Status == BookingStatus.Approved).Sum(b => b.TotalPrice):N2}", "Approved, not yet paid", "calendar", "sun")' />
+            <partial name="_StatCard" model='new StatCard("Awaiting settlement", $"R {Model.All.Where(b => b.Status == BookingStatus.Approved).Sum(b => b.TotalPrice):N2}", "Approved, not yet paid", "calendar", "sun")' />
             <partial name="_StatCard" model='new StatCard("Average booking value", settled.Count == 0 ? "-" : $"R {settled.Average(b => b.TotalPrice):N2}", "Across settled bookings", "activity")' />
         </div>
 
@@ -23,7 +23,7 @@
                     <tr><th>Booking</th><th>Property</th><th>Guest</th><th>Dates</th><th>Status</th><th class="text-end">Amount</th><th class="text-end">Actions</th></tr>
                 </thead>
                 <tbody>
-                    @foreach (var booking in Model)
+                    @foreach (var booking in Model.Page.Items)
                     {
                         var actions = new List<ActionMenuItem>
                         {
@@ -50,6 +50,8 @@
                     }
                 </tbody>
             </table>
+
+            <partial name="_Pagination" model='Model.Page.ToPager("bookings")' />
         </div>
     </section>
 </div>

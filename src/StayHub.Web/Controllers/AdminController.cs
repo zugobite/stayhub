@@ -99,7 +99,7 @@ public class AdminController : Controller
     /// <param name="search">Optional name or email search term.</param>
     /// <returns>The user management page.</returns>
     [HttpGet]
-    public async Task<IActionResult> Users(string? search = null)
+    public async Task<IActionResult> Users(string? search = null, int page = 1)
     {
         var users = string.IsNullOrWhiteSpace(search)
             ? await _users.GetAllAsync()
@@ -112,7 +112,7 @@ public class AdminController : Controller
 
         return View(new UserManagementViewModel
         {
-            Users = rows,
+            Users = PagedList<UserManagementViewModel.UserRow>.Create(rows, page),
             SearchTerm = search,
             CanPromote = User.IsInRole(Roles.SuperAdmin)
         });
@@ -158,10 +158,11 @@ public class AdminController : Controller
     /// <param name="status">Optional status filter.</param>
     /// <returns>The review queue page.</returns>
     [HttpGet]
-    public async Task<IActionResult> HostRequests(ApplicationStatus? status = ApplicationStatus.Pending)
+    public async Task<IActionResult> HostRequests(ApplicationStatus? status = ApplicationStatus.Pending, int page = 1)
     {
         ViewBag.Status = status;
-        return View(await _applications.GetAllAsync(status));
+        var applications = await _applications.GetAllAsync(status);
+        return View(PagedList<HostApplication>.Create(applications, page));
     }
 
     /// <summary>
@@ -204,7 +205,7 @@ public class AdminController : Controller
     /// </summary>
     /// <returns>The bookings page.</returns>
     [HttpGet]
-    public async Task<IActionResult> Bookings()
+    public async Task<IActionResult> Bookings(int page = 1)
     {
         var hosts = await _userManager.GetUsersInRoleAsync(Roles.Host);
         var all = new List<Booking>();
@@ -212,7 +213,8 @@ public class AdminController : Controller
         foreach (var host in hosts)
             all.AddRange(await _bookings.GetByHostAsync(host.Id));
 
-        return View(all.OrderByDescending(b => b.CreatedAt).ToList());
+        var ordered = all.OrderByDescending(b => b.CreatedAt).ToList();
+        return View(PagedList<Booking>.Create(ordered, page));
     }
 
     /// <summary>
@@ -228,10 +230,13 @@ public class AdminController : Controller
     /// <param name="type">Optional activity-type filter.</param>
     /// <returns>The activity log page.</returns>
     [HttpGet]
-    public async Task<IActionResult> ActivityLogs(ActivityType? type = null)
+    public async Task<IActionResult> ActivityLogs(ActivityType? type = null, int page = 1)
     {
         ViewBag.SelectedType = type;
-        return View(await _activityLog.GetRecentAsync(200, type));
+
+        // Paged in SQL rather than in memory: the audit trail grows with every
+        // login and status change, so it must never be loaded whole.
+        return View(await _activityLog.GetPagedAsync(page, PagedList<ActivityLog>.DefaultPageSize, type));
     }
 
     /// <summary>

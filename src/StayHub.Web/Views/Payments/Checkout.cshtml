@@ -35,13 +35,13 @@
 
                 <label class="sh-field">
                     <span>Name on card</span>
-                    <input asp-for="Card.CardHolder" />
+                    <input asp-for="Card.CardHolder" placeholder="Name as shown on card" />
                     <span asp-validation-for="Card.CardHolder" class="sh-fielderror"></span>
                 </label>
 
                 <label class="sh-field">
                     <span>Card number</span>
-                    <input asp-for="Card.CardNumber" inputmode="numeric" />
+                    <input asp-for="Card.CardNumber" inputmode="numeric" placeholder="4111 1111 1111 1111" />
                     <span asp-validation-for="Card.CardNumber" class="sh-fielderror"></span>
                 </label>
 
@@ -53,7 +53,7 @@
                     </label>
                     <label class="sh-field">
                         <span>CVV</span>
-                        <input asp-for="Card.Cvv" inputmode="numeric" />
+                        <input asp-for="Card.Cvv" inputmode="numeric" placeholder="123" />
                         <span asp-validation-for="Card.Cvv" class="sh-fielderror"></span>
                     </label>
                 </div>

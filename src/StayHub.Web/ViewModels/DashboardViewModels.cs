@@ -83,7 +83,7 @@ public class AdminDashboardViewModel
 public class UserManagementViewModel
 {
     /// <summary>Gets or sets the users to render, each with their current roles.</summary>
-    public IEnumerable<UserRow> Users { get; set; } = new List<UserRow>();
+    public PagedList<UserRow> Users { get; set; } = PagedList<UserRow>.Create(Array.Empty<UserRow>(), 1);
 
     /// <summary>Gets or sets the current search term.</summary>
     public string? SearchTerm { get; set; }
@@ -160,3 +160,20 @@ public record ActionMenuItem(
     string? ConfirmAction = null,
     bool Danger = false,
     bool OpenInNewTab = false);
+
+
+/// <summary>
+/// Backs the host earnings report.
+/// </summary>
+/// <remarks>
+/// Carries the full booking set alongside the current page: the stat cards
+/// summarise every booking, so they must not be computed from one page's rows.
+/// </remarks>
+public class HostEarningsViewModel
+{
+    /// <summary>Gets or sets every booking for this host, used for the totals.</summary>
+    public IReadOnlyList<Booking> All { get; set; } = Array.Empty<Booking>();
+
+    /// <summary>Gets or sets the page of bookings rendered in the table.</summary>
+    public PagedList<Booking> Page { get; set; } = PagedList<Booking>.Create(Array.Empty<Booking>(), 1);
+}

@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 140" role="img" aria-label="Checking in and collecting the key">
-  <rect width="200" height="140" rx="14" fill="#e4f4ea"/>
+  <rect width="200" height="140" fill="#e4f4ea"/>
 
   <!-- whitewashed arched doorway, echoing the StayHub mark -->
   <path d="M46 124V72a30 30 0 0 1 60 0v52z" fill="#ffffff" stroke="#16323f" stroke-width="3" stroke-linejoin="round"/>

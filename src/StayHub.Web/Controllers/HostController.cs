@@ -213,10 +213,11 @@ public class HostController : Controller
     /// </summary>
     /// <returns>The booking requests page.</returns>
     [HttpGet]
-    public async Task<IActionResult> BookingRequests()
+    public async Task<IActionResult> BookingRequests(int page = 1)
     {
         var userId = _userManager.GetUserId(User)!;
-        return View(await _bookings.GetByHostAsync(userId));
+        var bookings = await _bookings.GetByHostAsync(userId);
+        return View(PagedList<Booking>.Create(bookings, page));
     }
 
     /// <summary>
@@ -316,10 +317,11 @@ public class HostController : Controller
     /// </summary>
     /// <returns>The verification page.</returns>
     [HttpGet]
-    public async Task<IActionResult> Verifications()
+    public async Task<IActionResult> Verifications(int page = 1)
     {
         var userId = _userManager.GetUserId(User)!;
-        return View(await _checkIns.GetPendingVerificationAsync(userId));
+        var pending = await _checkIns.GetPendingVerificationAsync(userId);
+        return View(PagedList<GuestCheckIn>.Create(pending, page));
     }
 
     /// <summary>
@@ -372,10 +374,19 @@ public class HostController : Controller
     /// </summary>
     /// <returns>The earnings page.</returns>
     [HttpGet]
-    public async Task<IActionResult> Earnings()
+    public async Task<IActionResult> Earnings(int page = 1)
     {
         var userId = _userManager.GetUserId(User)!;
-        return View(await _bookings.GetByHostAsync(userId));
+        var all = (await _bookings.GetByHostAsync(userId)).ToList();
+
+        // The stat cards summarise every booking, so the full set travels with the
+        // page. Paging the model alone would quietly reduce a host's reported
+        // earnings to whatever happened to be on screen.
+        return View(new HostEarningsViewModel
+        {
+            All = all,
+            Page = PagedList<Booking>.Create(all, page)
+        });
     }
 
     /// <summary>

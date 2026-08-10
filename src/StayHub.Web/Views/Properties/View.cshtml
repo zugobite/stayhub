@@ -175,14 +175,12 @@
         }
         else
         {
-            foreach (var review in Model.Property.Reviews.OrderByDescending(r => r.CreatedAt))
-            {
-                <div class="sh-review">
-                    <strong>@review.Reviewer?.FullName</strong>
-                    <span class="text-muted">★ @review.Rating &middot; @review.CreatedAt.ToString("d MMM yyyy")</span>
-                    <p class="mb-0">@review.Comment</p>
-                </div>
-            }
+            <div class="sh-reviewlist">
+                @foreach (var review in Model.Property.Reviews.OrderByDescending(r => r.CreatedAt))
+                {
+                    <partial name="_ReviewListItem" model="review" />
+                }
+            </div>
         }
     </div>
 
@@ -224,7 +222,7 @@
                     <label class="sh-guestrow">
                         <span>GUESTS</span>
                         <input type="number" name="NumberOfGuests" id="guests" min="1"
-                               max="@Model.Property.MaxGuests" value="1" required />
+                               max="@Model.Property.MaxGuests" value="1" placeholder="1" required />
                     </label>
 
                     <button class="sh-btn sh-btn-primary w-100 mt-3" type="submit">Reserve</button>

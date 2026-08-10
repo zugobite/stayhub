@@ -13,13 +13,16 @@
 
         <div class="mb-3">
             <label asp-for="Email" class="form-label"></label>
-            <input asp-for="Email" class="form-control" autocomplete="username" />
+            <input asp-for="Email" class="form-control" autocomplete="username" placeholder="@Html.DisplayNameFor(m => m.Email)" />
             <span asp-validation-for="Email" class="text-danger"></span>
         </div>
 
         <div class="mb-3">
             <label asp-for="Password" class="form-label"></label>
-            <input asp-for="Password" class="form-control" autocomplete="current-password" />
+            <div class="sh-password-field">
+                <input asp-for="Password" class="form-control" autocomplete="current-password" placeholder="@Html.DisplayNameFor(m => m.Password)" />
+                <partial name="_PasswordToggleButton" />
+            </div>
             <span asp-validation-for="Password" class="text-danger"></span>
         </div>
 

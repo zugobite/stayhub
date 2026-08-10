@@ -2,7 +2,7 @@
   <defs>
     <clipPath id="trFace"><circle cx="48" cy="96" r="21"/></clipPath>
   </defs>
-  <rect width="200" height="140" rx="14" fill="#e4f4ea"/>
+  <rect width="200" height="140" fill="#e4f4ea"/>
 
   <!-- review card -->
   <rect x="24" y="24" width="152" height="92" rx="11" fill="#ffffff" stroke="#16323f" stroke-width="2.5"/>

@@ -146,9 +146,10 @@ public class HostApplicationsController : Controller
     /// </summary>
     /// <returns>The status page.</returns>
     [HttpGet]
-    public async Task<IActionResult> Status()
+    public async Task<IActionResult> Status(int page = 1)
     {
         var userId = _userManager.GetUserId(User)!;
-        return View(await _applications.GetByUserAsync(userId));
+        var applications = await _applications.GetByUserAsync(userId);
+        return View(PagedList<HostApplication>.Create(applications, page));
     }
 }

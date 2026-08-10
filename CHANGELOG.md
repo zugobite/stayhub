@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Pagination on all eight data tables at 15 rows per page, via a reusable `PagedList<T>` and `_Pagination` partial. Page links carry the existing query string forward, so filters, search terms and sort order survive paging. The activity log pages in SQL rather than in memory, since it grows without bound
 - Per-person pricing: `PricePerNight` is now charged per guest per night, with `CalculateSubtotal/TotalPrice/ServiceFee` taking a guest count and the live breakdown reacting to the guest field
 - Simulated card gateway (`StayPay Sandbox`) behind `IPaymentGateway`: a checkout page pre-filled with a sandbox card, Luhn and expiry validation, approving and declining test cards, a reference and last-4 on the receipt, and declines recorded as `PaymentStatus.Failed`
 - `Province` enum and `HostProperty.Province`, with an index, so listings can be browsed by region

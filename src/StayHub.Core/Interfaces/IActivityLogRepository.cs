@@ -25,4 +25,18 @@ public interface IActivityLogRepository
     /// <param name="activityType">Optional category filter.</param>
     /// <returns>The matching entries, newest first.</returns>
     Task<IEnumerable<ActivityLog>> GetRecentAsync(int take = 100, ActivityType? activityType = null);
+
+    /// <summary>
+    /// Retrieves one page of the audit trail, newest first.
+    /// </summary>
+    /// <param name="pageNumber">The one-based page to fetch.</param>
+    /// <param name="pageSize">The rows per page.</param>
+    /// <param name="activityType">Optional activity type filter.</param>
+    /// <returns>The requested page, with the total row count.</returns>
+    /// <remarks>
+    /// Paged in the database rather than in memory: this table grows with every
+    /// login and status change, so loading it all to slice one page would get
+    /// slower for the whole lifetime of the deployment.
+    /// </remarks>
+    Task<PagedList<ActivityLog>> GetPagedAsync(int pageNumber, int pageSize, ActivityType? activityType = null);
 }

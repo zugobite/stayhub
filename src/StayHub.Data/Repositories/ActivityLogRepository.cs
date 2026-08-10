@@ -47,6 +47,33 @@ public class ActivityLogRepository : IActivityLogRepository
     }
 
     /// <inheritdoc />
+    public async Task<PagedList<ActivityLog>> GetPagedAsync(
+        int pageNumber,
+        int pageSize,
+        ActivityType? activityType = null)
+    {
+        var query = _context.ActivityLogs
+            .AsNoTracking()
+            .Include(l => l.User)
+            .AsQueryable();
+
+        if (activityType.HasValue)
+            query = query.Where(l => l.ActivityType == activityType.Value);
+
+        var total = await query.CountAsync();
+        var page = PagedList<ActivityLog>.Clamp(pageNumber, total, pageSize);
+
+        var items = await query
+            .OrderByDescending(l => l.CreatedAt)
+            .ThenByDescending(l => l.Id)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return PagedList<ActivityLog>.From(items, page, pageSize, total);
+    }
+
+    /// <inheritdoc />
     public async Task<IEnumerable<ActivityLog>> GetRecentAsync(int take = 100, ActivityType? activityType = null)
     {
         var query = _context.ActivityLogs

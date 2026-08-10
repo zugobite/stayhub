@@ -1,0 +1,84 @@
+@model PagerInfo
+@*
+    Renders the pager for any table. Links are built by carrying the current query
+    string forward and replacing only `page`, so filters, search terms and sort
+    order survive paging — rebuilding from route values alone would drop them.
+
+    Note: the loop variable below must not be called `page`. Razor parses a
+    leading `@page` as the Razor Pages directive and the view fails to compile.
+*@
+@{
+    var request = ViewContext.HttpContext.Request;
+    var basePath = request.Path.ToString();
+
+    var carried = request.Query
+        .Where(entry => !string.Equals(entry.Key, "page", StringComparison.OrdinalIgnoreCase))
+        .SelectMany(entry => entry.Value
+            .Where(value => !string.IsNullOrEmpty(value))
+            .Select(value => $"{Uri.EscapeDataString(entry.Key)}={Uri.EscapeDataString(value!)}"))
+        .ToList();
+
+    // A lambda over captured locals, rather than a local function: view
+    // properties such as Context are not in scope inside a local function.
+    Func<int, string> pageUrl = number =>
+        $"{basePath}?{string.Join("&", carried.Append($"page={number}"))}";
+}
+
+@if (Model.TotalCount > 0)
+{
+    <nav class="sh-pager" aria-label="Pagination">
+        <p class="sh-pager-summary">
+            Showing <strong>@Model.FirstItemNumber</strong>&ndash;<strong>@Model.LastItemNumber</strong>
+            of <strong>@Model.TotalCount</strong> @Model.ItemLabel
+        </p>
+
+        @if (Model.HasMultiplePages)
+        {
+            <ul class="sh-pager-list">
+                <li>
+                    @if (Model.HasPrevious)
+                    {
+                        <a class="sh-pager-link" href="@pageUrl(Model.PageNumber - 1)" rel="prev" aria-label="Previous page">
+                            <partial name="_Icon" model='"chevron-left"' />
+                        </a>
+                    }
+                    else
+                    {
+                        <span class="sh-pager-link disabled" aria-hidden="true">
+                            <partial name="_Icon" model='"chevron-left"' />
+                        </span>
+                    }
+                </li>
+
+                @foreach (var number in Model.PageWindow())
+                {
+                    <li>
+                        @if (number == Model.PageNumber)
+                        {
+                            <span class="sh-pager-link active" aria-current="page">@number</span>
+                        }
+                        else
+                        {
+                            <a class="sh-pager-link" href="@pageUrl(number)" aria-label="Page @number">@number</a>
+                        }
+                    </li>
+                }
+
+                <li>
+                    @if (Model.HasNext)
+                    {
+                        <a class="sh-pager-link" href="@pageUrl(Model.PageNumber + 1)" rel="next" aria-label="Next page">
+                            <partial name="_Icon" model='"chevron-right"' />
+                        </a>
+                    }
+                    else
+                    {
+                        <span class="sh-pager-link disabled" aria-hidden="true">
+                            <partial name="_Icon" model='"chevron-right"' />
+                        </span>
+                    }
+                </li>
+            </ul>
+        }
+    </nav>
+}

@@ -3,7 +3,7 @@
     <clipPath id="tmA"><circle cx="34" cy="104" r="24"/></clipPath>
     <clipPath id="tmB"><circle cx="166" cy="104" r="24"/></clipPath>
   </defs>
-  <rect width="200" height="140" rx="14" fill="#f8e7e1"/>
+  <rect width="200" height="140" fill="#f8e7e1"/>
 
   <!-- guest -->
   <g clip-path="url(#tmA)">

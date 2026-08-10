@@ -1,4 +1,4 @@
-@model IEnumerable<Booking>
+@model PagedList<Booking>
 @{
     ViewData["Title"] = "Booking Requests";
 }
@@ -9,7 +9,7 @@
     <section class="sh-shell-main">
         <h1 class="sh-section-title">Booking Requests</h1>
 
-        @if (!Model.Any())
+        @if (!Model.Items.Any())
         {
             <partial name="_EmptyState" model='new EmptyState("empty-bookings", "No booking requests", "When a guest requests one of your listings, it lands here for approval.")' />
         }
@@ -29,7 +29,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var booking in Model)
+                        @foreach (var booking in Model.Items)
                         {
                             <tr>
                                 <td>
@@ -76,6 +76,8 @@
                         }
                     </tbody>
                 </table>
+
+            <partial name="_Pagination" model='Model.ToPager("booking requests")' />
             </div>
         }
     </section>

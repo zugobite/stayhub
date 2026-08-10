@@ -2,6 +2,43 @@
 // Progressive enhancement only: every interaction below has a working
 // server-side fallback so the app still functions with scripting disabled.
 
+// --- Password show / hide toggle --------------------------------------------
+(function () {
+    'use strict';
+
+    document.querySelectorAll('[data-sh-password-toggle]').forEach(function (button) {
+        var field = button.closest('.sh-password-field');
+
+        if (!field) {
+            return;
+        }
+
+        var input = field.querySelector('input');
+
+        if (!input) {
+            return;
+        }
+
+        var showIcon = button.querySelector('[data-sh-password-icon="show"]');
+        var hideIcon = button.querySelector('[data-sh-password-icon="hide"]');
+
+        button.addEventListener('click', function () {
+            var visible = input.type === 'text';
+            input.type = visible ? 'password' : 'text';
+            button.setAttribute('aria-pressed', visible ? 'false' : 'true');
+            button.setAttribute('aria-label', visible ? 'Show password' : 'Hide password');
+
+            if (showIcon) {
+                showIcon.hidden = !visible;
+            }
+
+            if (hideIcon) {
+                hideIcon.hidden = visible;
+            }
+        });
+    });
+})();
+
 // --- Live price breakdown on the property booking widget ---------------------
 (function () {
     'use strict';

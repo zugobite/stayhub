@@ -1,4 +1,4 @@
-@model IEnumerable<HostApplication>
+@model PagedList<HostApplication>
 @{
     ViewData["Title"] = "Host Application Status";
 }
@@ -9,7 +9,7 @@
         <p class="text-muted mb-0">Track every listing you have submitted for review.</p>
     </header>
 
-    @if (!Model.Any())
+    @if (!Model.Items.Any())
     {
         <partial name="_EmptyState" model='new EmptyState("empty-listings", "No applications yet", "Submit a host application and it will show up here once an administrator can review it.", "Become a Host", "HostApplications", "Apply")' />
     }
@@ -30,7 +30,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var application in Model)
+                        @foreach (var application in Model.Items)
                         {
                             var actions = application.PropertyId is > 0
                                 ? new List<ActionMenuItem>
@@ -51,6 +51,8 @@
                         }
                     </tbody>
                 </table>
+
+            <partial name="_Pagination" model='Model.ToPager("applications")' />
             </div>
         </div>
     }

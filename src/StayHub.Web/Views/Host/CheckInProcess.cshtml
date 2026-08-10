@@ -18,7 +18,7 @@
 
             <div class="mb-3">
                 <label asp-for="Title" class="form-label"></label>
-                <input asp-for="Title" class="form-control" />
+                <input asp-for="Title" class="form-control" placeholder="Arrival instructions" />
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
 
@@ -32,7 +32,7 @@
 
             <div class="mb-3">
                 <label asp-for="RequiredDocument" class="form-label"></label>
-                <input asp-for="RequiredDocument" class="form-control" />
+                <input asp-for="RequiredDocument" class="form-control" placeholder="ID or Passport" />
             </div>
 
             <button class="sh-btn sh-btn-primary" type="submit">Save process</button>

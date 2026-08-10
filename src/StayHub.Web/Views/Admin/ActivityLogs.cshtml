@@ -1,4 +1,4 @@
-@model IEnumerable<ActivityLog>
+@model PagedList<ActivityLog>
 @{
     ViewData["Title"] = "Activity Logs";
     var selected = ViewBag.SelectedType as ActivityType?;
@@ -27,7 +27,7 @@
             <table class="table sh-table align-middle">
                 <thead><tr><th>User</th><th>Action</th><th>Type</th><th>Details</th><th>Date</th></tr></thead>
                 <tbody>
-                    @foreach (var entry in Model)
+                    @foreach (var entry in Model.Items)
                     {
                         <tr>
                             <td>
@@ -42,6 +42,8 @@
                     }
                 </tbody>
             </table>
+
+            <partial name="_Pagination" model='Model.ToPager("log entries")' />
         </div>
     </section>
 </div>

@@ -2,7 +2,7 @@
   <defs>
     <clipPath id="taFace"><circle cx="46" cy="82" r="27"/></clipPath>
   </defs>
-  <rect width="200" height="140" rx="14" fill="#e7f1f8"/>
+  <rect width="200" height="140" fill="#e7f1f8"/>
 
   <!-- applicant -->
   <g clip-path="url(#taFace)">

@@ -8,11 +8,11 @@ namespace StayHub.Web.ViewModels;
 public class RegisterViewModel
 {
     /// <summary>Gets or sets the registrant's first name.</summary>
-    [Required, StringLength(100), Display(Name = "First name")]
+    [Required, StringLength(100), Display(Name = "First Name")]
     public string FirstName { get; set; } = string.Empty;
 
     /// <summary>Gets or sets the registrant's surname.</summary>
-    [Required, StringLength(100), Display(Name = "Last name")]
+    [Required, StringLength(100), Display(Name = "Last Name")]
     public string LastName { get; set; } = string.Empty;
 
     /// <summary>Gets or sets the email address, which doubles as the username.</summary>

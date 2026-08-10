@@ -1,4 +1,4 @@
-@model IEnumerable<HostApplication>
+@model PagedList<HostApplication>
 @{
     ViewData["Title"] = "Host Requests";
     var selected = ViewBag.Status as ApplicationStatus?;
@@ -17,7 +17,7 @@
             <a class="sh-filtertab @(selected is null ? "active" : "")" asp-action="HostRequests">ALL</a>
         </div>
 
-        @if (!Model.Any())
+        @if (!Model.Items.Any())
         {
             <p class="text-muted mt-3">No applications match this filter.</p>
         }
@@ -27,7 +27,7 @@
                 <table class="table sh-table align-middle">
                     <thead><tr><th>Applicant</th><th>Property</th><th>Type</th><th>Submitted</th><th>Status</th><th class="text-end">Actions</th></tr></thead>
                     <tbody>
-                        @foreach (var application in Model)
+                        @foreach (var application in Model.Items)
                         {
                             <tr>
                                 <td>
@@ -48,6 +48,8 @@
                         }
                     </tbody>
                 </table>
+
+            <partial name="_Pagination" model='Model.ToPager("applications")' />
             </div>
         }
     </section>

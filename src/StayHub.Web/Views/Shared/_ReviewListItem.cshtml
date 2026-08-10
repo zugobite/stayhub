@@ -1,0 +1,28 @@
+@model Review
+@{
+    var name = Model.Reviewer?.FullName;
+    var initial = string.IsNullOrWhiteSpace(name)
+        ? "?"
+        : name.Trim()[0].ToString().ToUpperInvariant();
+}
+
+<article class="sh-review-item">
+    <span class="sh-review-avatar" aria-hidden="true">@initial</span>
+    <div class="sh-review-body">
+        <div class="sh-review-top">
+            <span class="sh-review-name">@(name ?? "Guest")</span>
+            <time class="sh-review-time" datetime="@Model.CreatedAt.ToString("yyyy-MM-dd")">@Model.CreatedAt.ToString("d MMM yyyy")</time>
+        </div>
+        <div class="sh-review-meta" aria-label="@Model.Rating out of 5">
+            @for (var i = 0; i < Model.Rating; i++)
+            {
+                <partial name="_Icon" model='"star"' />
+            }
+        </div>
+        @if (!string.IsNullOrWhiteSpace(Model.Property?.Title))
+        {
+            <span class="sh-review-property">@Model.Property.Title</span>
+        }
+        <p class="sh-review-text">@Model.Comment</p>
+    </div>
+</article>

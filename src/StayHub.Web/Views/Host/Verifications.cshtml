@@ -1,4 +1,4 @@
-@model IEnumerable<GuestCheckIn>
+@model PagedList<GuestCheckIn>
 @{
     ViewData["Title"] = "Guest check-ins";
 }
@@ -9,13 +9,13 @@
     <section class="sh-shell-main">
         <h1 class="sh-section-title">Guest check-ins awaiting verification</h1>
 
-        @if (!Model.Any())
+        @if (!Model.Items.Any())
         {
             <partial name="_EmptyState" model='new EmptyState("empty-documents", "Nothing to verify", "Identity documents uploaded by guests during check-in appear here.")' />
         }
         else
         {
-            foreach (var checkIn in Model)
+            foreach (var checkIn in Model.Items)
             {
                 <div class="sh-panel">
                     <div class="d-flex justify-content-between flex-wrap gap-2">
@@ -86,6 +86,8 @@
                             }
                         </tbody>
                     </table>
+
+            <partial name="_Pagination" model='Model.ToPager("check-ins")' />
                 </div>
             }
         }

@@ -46,12 +46,12 @@
             <div class="row g-3">
                 <div class="col-md-6">
                     <label asp-for="Address" class="form-label"></label>
-                    <input asp-for="Address" class="form-control" />
+                    <input asp-for="Address" class="form-control" placeholder="12 Long Street" />
                     <span asp-validation-for="Address" class="text-danger"></span>
                 </div>
                 <div class="col-md-6">
                     <label asp-for="City" class="form-label"></label>
-                    <input asp-for="City" class="form-control" />
+                    <input asp-for="City" class="form-control" placeholder="Cape Town" />
                     <span asp-validation-for="City" class="text-danger"></span>
                 </div>
             </div>
@@ -62,12 +62,12 @@
             <div class="row g-3">
                 <div class="col-md-4">
                     <label asp-for="PricePerNight" class="form-label"></label>
-                    <input asp-for="PricePerNight" class="form-control" type="number" step="0.01" />
+                    <input asp-for="PricePerNight" class="form-control" type="number" step="0.01" placeholder="850" />
                     <span asp-validation-for="PricePerNight" class="text-danger"></span>
                 </div>
                 <div class="col-md-4">
                     <label asp-for="CleaningFee" class="form-label"></label>
-                    <input asp-for="CleaningFee" class="form-control" type="number" step="0.01" />
+                    <input asp-for="CleaningFee" class="form-control" type="number" step="0.01" placeholder="250" />
                     <span asp-validation-for="CleaningFee" class="text-danger"></span>
                 </div>
                 <div class="col-md-4">
@@ -82,19 +82,19 @@
             <div class="row g-3">
                 <div class="col-6 col-md-3">
                     <label asp-for="MaxGuests" class="form-label"></label>
-                    <input asp-for="MaxGuests" class="form-control" type="number" min="1" />
+                    <input asp-for="MaxGuests" class="form-control" type="number" min="1" placeholder="4" />
                 </div>
                 <div class="col-6 col-md-3">
                     <label asp-for="Bedrooms" class="form-label"></label>
-                    <input asp-for="Bedrooms" class="form-control" type="number" min="0" />
+                    <input asp-for="Bedrooms" class="form-control" type="number" min="0" placeholder="2" />
                 </div>
                 <div class="col-6 col-md-3">
                     <label asp-for="Beds" class="form-label"></label>
-                    <input asp-for="Beds" class="form-control" type="number" min="0" />
+                    <input asp-for="Beds" class="form-control" type="number" min="0" placeholder="2" />
                 </div>
                 <div class="col-6 col-md-3">
                     <label asp-for="Bathrooms" class="form-label"></label>
-                    <input asp-for="Bathrooms" class="form-control" type="number" min="0" />
+                    <input asp-for="Bathrooms" class="form-control" type="number" min="0" placeholder="1" />
                 </div>
             </div>
         </div>

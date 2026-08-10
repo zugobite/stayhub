@@ -139,21 +139,27 @@
     <ol class="sh-steps">
         <li class="sh-step-card">
             <span class="sh-step-num">1</span>
-            <img class="sh-step-art" src="~/images/steps/step-search.svg" alt="" aria-hidden="true" loading="lazy" />
-            <h3>Find your place</h3>
-            <p>Filter by province, price, guests, and the amenities you actually need. Every listing is reviewed before it goes live.</p>
+            <img class="sh-step-art" src="~/images/steps/step-search.svg" alt="" aria-hidden="true" loading="lazy" asp-append-version="true" />
+            <div class="sh-step-body">
+                <h3>Find your place</h3>
+                <p>Filter by province, price, guests, and the amenities you actually need. Every listing is reviewed before it goes live.</p>
+            </div>
         </li>
         <li class="sh-step-card">
             <span class="sh-step-num">2</span>
-            <img class="sh-step-art" src="~/images/steps/step-dates.svg" alt="" aria-hidden="true" loading="lazy" />
-            <h3>Request your dates</h3>
-            <p>See the full price before you commit - nightly rate, cleaning, and service fee, with no surprises at checkout.</p>
+            <img class="sh-step-art" src="~/images/steps/step-dates.svg" alt="" aria-hidden="true" loading="lazy" asp-append-version="true" />
+            <div class="sh-step-body">
+                <h3>Request your dates</h3>
+                <p>See the full price before you commit - nightly rate, cleaning, and service fee, with no surprises at checkout.</p>
+            </div>
         </li>
         <li class="sh-step-card">
             <span class="sh-step-num">3</span>
-            <img class="sh-step-art" src="~/images/steps/step-checkin.svg" alt="" aria-hidden="true" loading="lazy" />
-            <h3>Check in with confidence</h3>
-            <p>Your host sets out the arrival steps in advance, and identity documents are verified before the keys change hands.</p>
+            <img class="sh-step-art" src="~/images/steps/step-checkin.svg" alt="" aria-hidden="true" loading="lazy" asp-append-version="true" />
+            <div class="sh-step-body">
+                <h3>Check in with confidence</h3>
+                <p>Your host sets out the arrival steps in advance, and identity documents are verified before the keys change hands.</p>
+            </div>
         </li>
     </ol>
 </section>
@@ -170,24 +176,32 @@
 
     <div class="sh-featuregrid">
         <div class="sh-feature">
-            <img class="sh-feature-art" src="~/images/trust/trust-approved.svg" alt="" aria-hidden="true" loading="lazy" />
-            <h3>Every host is approved</h3>
-            <p>Listings do not go public automatically. An administrator reviews the property, its photographs, and the applicant before it appears in search.</p>
+            <img class="sh-feature-art" src="~/images/trust/trust-approved.svg" alt="" aria-hidden="true" loading="lazy" asp-append-version="true" />
+            <div class="sh-feature-body">
+                <h3>Every host is approved</h3>
+                <p>Listings do not go public automatically. An administrator reviews the property, its photographs, and the applicant before it appears in search.</p>
+            </div>
         </div>
         <div class="sh-feature">
-            <img class="sh-feature-art" src="~/images/trust/trust-verified.svg" alt="" aria-hidden="true" loading="lazy" />
-            <h3>Verified check-in</h3>
-            <p>Guests upload an ID or passport during check-in, and the host verifies it before the stay begins. Both sides know who they are dealing with.</p>
+            <img class="sh-feature-art" src="~/images/trust/trust-verified.svg" alt="" aria-hidden="true" loading="lazy" asp-append-version="true" />
+            <div class="sh-feature-body">
+                <h3>Verified check-in</h3>
+                <p>Guests upload an ID or passport during check-in, and the host verifies it before the stay begins. Both sides know who they are dealing with.</p>
+            </div>
         </div>
         <div class="sh-feature">
-            <img class="sh-feature-art" src="~/images/trust/trust-messaging.svg" alt="" aria-hidden="true" loading="lazy" />
-            <h3>Messaging that stays on record</h3>
-            <p>Arrange arrival times, directions, and house rules in one thread. Nothing important gets lost in a personal inbox.</p>
+            <img class="sh-feature-art" src="~/images/trust/trust-messaging.svg" alt="" aria-hidden="true" loading="lazy" asp-append-version="true" />
+            <div class="sh-feature-body">
+                <h3>Messaging that stays on record</h3>
+                <p>Arrange arrival times, directions, and house rules in one thread. Nothing important gets lost in a personal inbox.</p>
+            </div>
         </div>
         <div class="sh-feature">
-            <img class="sh-feature-art" src="~/images/trust/trust-reviews.svg" alt="" aria-hidden="true" loading="lazy" />
-            <h3>Reviews from real stays</h3>
-            <p>Only guests who completed a booking can review it, so the ratings reflect stays that actually happened.</p>
+            <img class="sh-feature-art" src="~/images/trust/trust-reviews.svg" alt="" aria-hidden="true" loading="lazy" asp-append-version="true" />
+            <div class="sh-feature-body">
+                <h3>Reviews from real stays</h3>
+                <p>Only guests who completed a booking can review it, so the ratings reflect stays that actually happened.</p>
+            </div>
         </div>
     </div>
 </section>
@@ -259,36 +273,27 @@
     </div>
 </section>
 
-@* Repeated call to action, per the research on mid/late-page conversion points. *@
+@* Guest-side closing CTA — centered, not a host-band twin. *@
 <section class="sh-section">
     <div class="sh-closer">
         <div class="sh-closer-glow" aria-hidden="true"></div>
+
         <div class="sh-closer-copy">
-            <span class="sh-eyebrow">StayHub</span>
+            <span class="sh-eyebrow">Your next stay</span>
             <h2>Ready when <em>you are</em>!</h2>
             <p class="sh-closer-lead">
-                Pick a weekend away, a longer work trip, or a quiet stretch by the coast.
-                Browse places that have already been reviewed by our team, see the full price
-                before you request dates, and message your host in one thread from enquiry to check-in.
+                Browse verified places across South Africa, see the full price before you request
+                dates, and message your host in one thread from enquiry to check-in.
             </p>
             <p class="sh-closer-meta">
-                Right now there @(Model.ListingCount == 1 ? "is" : "are")
-                <strong>@Model.ListingCount</strong> verified @(Model.ListingCount == 1 ? "stay" : "stays")
-                across <strong>@Model.ProvinceCount</strong> @(Model.ProvinceCount == 1 ? "province" : "provinces"),
-                with nights from <strong>R @Model.LowestPrice.ToString("N0")</strong>@if (Model.HostCount > 0)
+                <strong>@Model.ListingCount</strong> @(Model.ListingCount == 1 ? "stay" : "stays")
+                · <strong>@Model.ProvinceCount</strong> @(Model.ProvinceCount == 1 ? "province" : "provinces")
+                · from <strong>R @Model.LowestPrice.ToString("N0")</strong> a night
+                @if (Model.HostCount > 0)
                 {
-                    <text>, and <strong>@Model.HostCount</strong> approved @(Model.HostCount == 1 ? "host" : "hosts") ready to welcome guests.</text>
-                }
-                else
-                {
-                    <text>.</text>
+                    <text>· <strong>@Model.HostCount</strong> @(Model.HostCount == 1 ? "host" : "hosts")</text>
                 }
             </p>
-            <ul class="sh-closer-points">
-                <li>Hosts approved before they go live</li>
-                <li>Clear pricing with no checkout surprises</li>
-                <li>Verified check-in for every stay</li>
-            </ul>
             <div class="sh-closer-actions">
                 <a class="sh-btn sh-btn-lg sh-btn-sun" asp-controller="Properties" asp-action="Index">Find a stay</a>
                 @if (User.Identity?.IsAuthenticated != true)
@@ -298,7 +303,8 @@
             </div>
         </div>
 
-        @* Dusk counterpart to the daytime hero village, bookending the page. *@
-        <img class="sh-closer-art" src="~/images/brand/closer-dusk.svg" alt="" aria-hidden="true" loading="lazy" />
+        <div class="sh-closer-scene" aria-hidden="true">
+            <img class="sh-closer-art" src="~/images/brand/closer-dusk.svg" alt="" loading="lazy" />
+        </div>
     </div>
 </section>

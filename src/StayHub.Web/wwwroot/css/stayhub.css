@@ -130,7 +130,6 @@ body > .sh-footer {
     paint-order: stroke fill;
 }
 
-
 /* --- Header --------------------------------------------------------------- */
 
 .sh-header {
@@ -1084,8 +1083,88 @@ body.sh-lightbox-open { overflow: hidden; }
 
 .sh-amenity svg { width: 18px; height: 18px; flex: 0 0 auto; color: var(--sh-primary); }
 
-.sh-review { border-top: 1px solid var(--sh-line); padding: .95rem 0; }
-.sh-review span { margin-left: .5rem; font-size: .85rem; }
+/* --- Review list (listing page + host dashboard) -------------------------- */
+
+.sh-reviewlist {
+    display: flex;
+    flex-direction: column;
+    padding: .35rem 0;
+}
+
+.sh-review-item {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: .85rem;
+    align-items: start;
+    border-radius: var(--sh-radius-sm);
+    padding: .85rem .9rem;
+}
+
+.sh-review-item + .sh-review-item { margin-top: .2rem; }
+
+.sh-review-avatar {
+    display: grid;
+    place-items: center;
+    width: 2.6rem;
+    height: 2.6rem;
+    border-radius: 50%;
+    background: var(--sh-primary-soft);
+    color: var(--sh-primary-dark);
+    font-size: .95rem;
+    font-weight: 800;
+    flex: 0 0 auto;
+}
+
+.sh-review-body {
+    display: flex;
+    flex-direction: column;
+    gap: .25rem;
+    min-width: 0;
+}
+
+.sh-review-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: .75rem;
+}
+
+.sh-review-name {
+    font-weight: 700;
+    font-size: .95rem;
+    color: var(--sh-ink);
+}
+
+.sh-review-time {
+    flex: 0 0 auto;
+    font-size: .72rem;
+    color: var(--sh-muted);
+    white-space: nowrap;
+}
+
+.sh-review-meta {
+    display: flex;
+    gap: .15rem;
+    color: var(--sh-sun);
+}
+
+.sh-review-meta svg {
+    width: 15px;
+    height: 15px;
+    fill: var(--sh-sun);
+}
+
+.sh-review-property {
+    font-size: .82rem;
+    color: var(--sh-muted);
+}
+
+.sh-review-text {
+    margin: 0;
+    color: var(--sh-muted);
+    font-size: .9rem;
+    line-height: 1.5;
+}
 
 /* --- Booking widget ------------------------------------------------------- */
 
@@ -1541,6 +1620,45 @@ textarea.form-control { border-radius: var(--sh-radius); }
 }
 
 .form-control::placeholder { color: var(--sh-muted); }
+
+.sh-password-field {
+    position: relative;
+}
+
+.sh-password-field .form-control {
+    padding-right: 2.75rem;
+}
+
+.sh-password-toggle {
+    position: absolute;
+    right: .45rem;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: transparent;
+    color: var(--sh-muted);
+    padding: .35rem;
+    line-height: 0;
+    border-radius: var(--sh-radius-sm);
+    cursor: pointer;
+}
+
+.sh-password-toggle:hover { color: var(--sh-ink); }
+
+.sh-password-toggle:focus-visible {
+    outline: 2px solid var(--sh-primary);
+    outline-offset: 2px;
+}
+
+.sh-password-toggle svg {
+    width: 1.15rem;
+    height: 1.15rem;
+}
+
+.sh-password-toggle [hidden] { display: none; }
 .form-check-input:checked { background-color: var(--sh-primary); border-color: var(--sh-primary); }
 .form-check-input:focus { border-color: var(--sh-primary); box-shadow: 0 0 0 3px var(--sh-primary-soft); }
 .form-check-label { font-size: .9rem; }
@@ -2913,17 +3031,21 @@ textarea.form-control { border-radius: var(--sh-radius); }
 
 .sh-step-card {
     position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
     background: var(--sh-surface);
     border: 1.5px solid var(--sh-ink);
     border-radius: var(--sh-radius);
-    padding: 1.6rem 1.25rem 1.25rem;
+    padding: 0;
     box-shadow: var(--sh-press-sm);
 }
 
 .sh-step-num {
     position: absolute;
-    top: -14px;
-    left: 1.25rem;
+    top: .75rem;
+    left: 1rem;
+    z-index: 1;
     display: grid;
     place-items: center;
     width: 30px;
@@ -2937,6 +3059,7 @@ textarea.form-control { border-radius: var(--sh-radius); }
 
 .sh-step-icon { display: block; color: var(--sh-primary); margin-bottom: .6rem; }
 .sh-step-icon svg { width: 26px; height: 26px; }
+.sh-step-body { padding: 1rem 1.25rem 1.25rem; }
 .sh-step-card h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: .35rem; }
 .sh-step-card p { font-size: .9rem; color: var(--sh-muted); margin: 0; line-height: 1.6; }
 
@@ -2948,9 +3071,12 @@ textarea.form-control { border-radius: var(--sh-radius); }
 }
 
 .sh-feature {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
     border: 1px solid var(--sh-line);
     border-radius: var(--sh-radius);
-    padding: 1.4rem;
+    padding: 0;
     background: var(--sh-surface);
     transition: border-color .15s ease, box-shadow .15s ease;
 }
@@ -2972,6 +3098,7 @@ textarea.form-control { border-radius: var(--sh-radius); }
 .sh-feature-icon.sun { background: var(--sh-sun-soft); color: #9a6c00; }
 .sh-feature-icon.clay { background: #f8e7e1; color: var(--sh-terracotta); }
 .sh-feature-icon.leaf { background: var(--sh-ok-bg); color: var(--sh-ok-fg); }
+.sh-feature-body { padding: 1rem 1.25rem 1.25rem; }
 .sh-feature h3 { font-size: 1.02rem; font-weight: 700; margin-bottom: .35rem; }
 .sh-feature p { font-size: .9rem; color: var(--sh-muted); margin: 0; line-height: 1.6; }
 
@@ -3027,75 +3154,76 @@ textarea.form-control { border-radius: var(--sh-radius); }
 .sh-ticklist li { display: flex; align-items: center; gap: .6rem; font-size: .92rem; font-weight: 600; }
 .sh-ticklist svg { width: 18px; height: 18px; flex: 0 0 auto; color: var(--sh-ok-fg); }
 
-/* Closing call to action — harbour-depth band before the footer */
+/* Closing CTA — centered guest close, deliberately unlike the host split above */
 .sh-closer {
     position: relative;
     overflow: hidden;
-    display: grid;
-    grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr);
-    gap: 2.5rem;
-    align-items: center;
-    text-align: left;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
     border: 1.5px solid var(--sh-ink);
     border-radius: 24px;
     background:
-        radial-gradient(ellipse 80% 70% at 12% 100%, rgba(246, 179, 27, .18) 0%, transparent 55%),
-        radial-gradient(ellipse 60% 80% at 92% 8%, rgba(231, 241, 248, .14) 0%, transparent 50%),
-        linear-gradient(125deg, var(--sh-primary) 0%, #12507c 48%, var(--sh-ink) 100%);
+        radial-gradient(ellipse 70% 60% at 50% 0%, rgba(246, 179, 27, .22) 0%, transparent 55%),
+        linear-gradient(160deg, var(--sh-ink) 0%, #12507c 55%, var(--sh-primary) 100%);
     color: #fff;
-    padding: 3.75rem 2.25rem;
+    padding: 3.5rem 0 0;
     box-shadow: var(--sh-press);
+    min-height: 22rem;
 }
 
-.sh-closer::before,
-.sh-closer::after {
-    content: "";
-    position: absolute;
-    border-radius: 50%;
-    pointer-events: none;
-}
-
-/* Sun disc — logo echo, top-right */
 .sh-closer::before {
-    top: -110px;
-    right: -70px;
-    width: 280px;
-    height: 280px;
-    background: radial-gradient(circle, rgba(246, 179, 27, .42) 0%, rgba(246, 179, 27, 0) 68%);
-    animation: sh-closer-drift 10s ease-in-out infinite alternate;
-}
-
-/* Soft harbour glow — bottom-left */
-.sh-closer::after {
-    bottom: -120px;
-    left: -80px;
-    width: 300px;
-    height: 300px;
-    background: radial-gradient(circle, rgba(14, 107, 168, .55) 0%, transparent 70%);
-    animation: sh-closer-drift 12s ease-in-out infinite alternate-reverse;
-}
-
-.sh-closer-glow {
+    content: "";
     position: absolute;
     inset: 0;
     pointer-events: none;
     background:
         repeating-linear-gradient(
-            -12deg,
+            -18deg,
             transparent 0,
-            transparent 18px,
-            rgba(255, 255, 255, .025) 18px,
-            rgba(255, 255, 255, .025) 19px
+            transparent 22px,
+            rgba(255, 255, 255, .03) 22px,
+            rgba(255, 255, 255, .03) 23px
         );
-    opacity: .9;
-    mask-image: linear-gradient(180deg, rgba(0, 0, 0, .55), transparent 85%);
+    mask-image: linear-gradient(180deg, rgba(0, 0, 0, .7), transparent 72%);
+}
+
+.sh-closer-glow {
+    position: absolute;
+    width: 320px;
+    height: 320px;
+    top: -140px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    pointer-events: none;
+    background: radial-gradient(circle, rgba(246, 179, 27, .35) 0%, transparent 68%);
+    animation: sh-closer-drift 10s ease-in-out infinite alternate;
 }
 
 .sh-closer-copy {
     position: relative;
-    z-index: 1;
-    max-width: 34rem;
+    z-index: 2;
+    max-width: 36rem;
+    margin: 0 auto;
+    padding: 0 2rem 2rem;
     animation: sh-closer-rise .7s ease-out both;
+}
+
+.sh-closer-scene {
+    position: relative;
+    z-index: 1;
+    flex-shrink: 0;
+    width: 100%;
+    line-height: 0;
+    margin-top: auto;
+}
+
+.sh-closer-art {
+    width: 100%;
+    height: auto;
+    display: block;
+    animation: sh-closer-rise .9s ease-out both;
 }
 
 .sh-closer .sh-eyebrow {
@@ -3104,10 +3232,10 @@ textarea.form-control { border-radius: var(--sh-radius); }
 }
 
 .sh-closer h2 {
-    font-size: clamp(1.85rem, 4vw, 2.55rem);
+    font-size: clamp(2rem, 4.5vw, 2.85rem);
     font-weight: 800;
     letter-spacing: -.035em;
-    line-height: 1.1;
+    line-height: 1.08;
     margin: 0 0 1rem;
 }
 
@@ -3119,18 +3247,18 @@ textarea.form-control { border-radius: var(--sh-radius); }
 
 .sh-closer-lead {
     color: rgba(255, 255, 255, .88);
-    margin: 0 0 1rem;
+    margin: 0 auto 1.15rem;
     font-size: 1.08rem;
     line-height: 1.6;
-    max-width: 46ch;
+    max-width: 40ch;
 }
 
 .sh-closer-meta {
-    color: rgba(255, 255, 255, .72);
-    margin: 0 0 1.35rem;
-    font-size: .95rem;
-    line-height: 1.55;
-    max-width: 44ch;
+    color: rgba(255, 255, 255, .7);
+    margin: 0 auto 1.85rem;
+    font-size: .92rem;
+    letter-spacing: .01em;
+    line-height: 1.5;
 }
 
 .sh-closer-meta strong {
@@ -3138,62 +3266,42 @@ textarea.form-control { border-radius: var(--sh-radius); }
     font-weight: 700;
 }
 
-.sh-closer-points {
-    list-style: none;
-    margin: 0 0 1.85rem;
-    padding: 0;
-    display: grid;
-    gap: .5rem;
-    max-width: 40rem;
-}
-
-.sh-closer-points li {
-    position: relative;
-    padding-left: 1.15rem;
-    font-size: .88rem;
-    font-weight: 600;
-    letter-spacing: -.01em;
-    color: rgba(255, 255, 255, .9);
-}
-
-.sh-closer-points li::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: .45em;
-    width: .55rem;
-    height: .55rem;
-    border-radius: 50%;
-    background: var(--sh-sun);
-    box-shadow: 0 0 0 1.5px rgba(22, 50, 63, .35);
-}
-
 .sh-closer-actions {
     display: flex;
     gap: .9rem;
     justify-content: center;
     flex-wrap: wrap;
+    margin-top: .25rem;
+}
+
+.sh-closer .sh-btn-lg.sh-btn-sun {
+    box-shadow: 4px 4px 0 rgba(0, 0, 0, .35);
+}
+
+.sh-closer .sh-btn-lg.sh-btn-sun:hover {
+    box-shadow: 6px 6px 0 rgba(0, 0, 0, .35);
 }
 
 .sh-closer .sh-btn-ghost {
-    background: transparent;
+    background: rgba(8, 32, 50, .72);
     color: #fff;
-    border-color: rgba(255, 255, 255, .65);
+    border-color: rgba(255, 255, 255, .78);
+    box-shadow: none;
 }
 
 .sh-closer .sh-btn-ghost:hover {
-    background: rgba(255, 255, 255, .12);
+    background: rgba(8, 32, 50, .9);
     color: #fff;
-    box-shadow: 3px 3px 0 rgba(0, 0, 0, .35);
+    box-shadow: 2px 2px 0 rgba(0, 0, 0, .28);
 }
 
 .sh-closer .sh-btn-sun:hover {
-    box-shadow: 3px 3px 0 rgba(0, 0, 0, .35);
+    box-shadow: 6px 6px 0 rgba(0, 0, 0, .35);
 }
 
 @keyframes sh-closer-drift {
-    from { transform: translate(0, 0) scale(1); }
-    to   { transform: translate(-18px, 12px) scale(1.06); }
+    from { transform: translateX(-50%) translateY(0) scale(1); }
+    to   { transform: translateX(-50%) translateY(10px) scale(1.08); }
 }
 
 @keyframes sh-closer-rise {
@@ -3202,9 +3310,9 @@ textarea.form-control { border-radius: var(--sh-radius); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .sh-closer::before,
-    .sh-closer::after,
-    .sh-closer-copy {
+    .sh-closer-glow,
+    .sh-closer-copy,
+    .sh-closer-art {
         animation: none;
     }
 }
@@ -3218,7 +3326,8 @@ textarea.form-control { border-radius: var(--sh-radius); }
     .sh-section { margin-top: 2.75rem; }
     .sh-section-title { font-size: 1.5rem; }
     .sh-band { padding: 1.75rem 1.25rem; }
-    .sh-closer { padding: 2.5rem 1.35rem; }
+    .sh-closer { padding: 2.75rem 0 0; min-height: 0; }
+    .sh-closer-copy { padding: 0 1.35rem 1.75rem; }
 }
 
 /* --- Generated guest portraits --------------------------------------------- */
@@ -3460,52 +3569,81 @@ textarea.form-control { border-radius: var(--sh-radius); }
    can Trust Each Other". The illustrations carry the same flat shapes and
    palette as the listing artwork, and reuse the portrait figures so the page
    reads as one set rather than stock parts. */
-.sh-step-art {
-    display: block;
-    width: 100%;
-    max-width: 220px;
-    height: auto;
-    margin-bottom: 1rem;
-    border-radius: var(--sh-radius-sm);
-}
-
+.sh-step-art,
 .sh-feature-art {
     display: block;
     width: 100%;
-    max-width: 190px;
     height: auto;
-    margin-bottom: .9rem;
+    /* Match the card's top corners; keep the join with the copy square. */
+    border-radius: var(--sh-radius) var(--sh-radius) 0 0;
+}
+
+
+
+/* --- Table pagination ------------------------------------------------------ */
+
+.sh-pager {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+    padding-top: .9rem;
+    border-top: 1px solid var(--sh-line);
+}
+
+.sh-pager-summary {
+    margin: 0;
+    font-size: .78rem;
+    font-weight: 600;
+    color: var(--sh-muted);
+}
+
+.sh-pager-summary strong { color: var(--sh-ink); font-weight: 700; }
+
+.sh-pager-list {
+    display: flex;
+    align-items: center;
+    gap: .3rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.sh-pager-link {
+    display: grid;
+    place-items: center;
+    min-width: 34px;
+    height: 34px;
+    padding: 0 .5rem;
+    border: 1px solid var(--sh-line);
     border-radius: var(--sh-radius-sm);
+    background: var(--sh-surface);
+    color: var(--sh-ink);
+    font-size: .84rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background-color .15s ease, border-color .15s ease, color .15s ease;
 }
 
-/* The step number badge previously sat above an icon chip; with wider artwork
-   beneath it, keep it clear of the illustration's top edge. */
-.sh-step-card { padding-top: 1.9rem; }
+.sh-pager-link:hover { border-color: var(--sh-primary); background: var(--sh-primary-soft); color: var(--sh-primary-dark); }
 
-
-/* --- Closing band artwork -------------------------------------------------- */
-
-.sh-closer-art {
-    position: relative;
-    z-index: 1;
-    width: 100%;
-    height: auto;
-    display: block;
+.sh-pager-link.active {
+    background: var(--sh-primary);
+    border-color: var(--sh-ink);
+    color: #fff;
 }
 
-.sh-closer-actions { justify-content: flex-start; }
+.sh-pager-link.disabled {
+    color: var(--sh-line);
+    background: var(--sh-shade);
+    cursor: default;
+}
 
-@media (max-width: 900px) {
-    .sh-closer {
-        grid-template-columns: 1fr;
-        gap: 1.75rem;
-        text-align: center;
-    }
+.sh-pager-link svg { width: 16px; height: 16px; }
 
-    .sh-closer-copy { max-width: none; margin: 0 auto; }
-    .sh-closer-lead,
-    .sh-closer-meta { margin-inline: auto; }
-    .sh-closer-points { justify-items: center; }
-    .sh-closer-actions { justify-content: center; }
-    .sh-closer-art { max-width: 380px; margin: 0 auto; }
+@media (max-width: 640px) {
+    .sh-pager { justify-content: center; }
+    .sh-pager-summary { width: 100%; text-align: center; }
 }

@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 140" role="img" aria-label="Choosing dates and seeing the price">
-  <rect width="200" height="140" rx="14" fill="#fdf3dc"/>
+  <rect width="200" height="140" fill="#fdf3dc"/>
 
   <!-- calendar -->
   <rect x="24" y="30" width="112" height="94" rx="10" fill="#ffffff" stroke="#16323f" stroke-width="2.5"/>
