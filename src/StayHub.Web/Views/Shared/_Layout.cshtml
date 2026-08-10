@@ -37,7 +37,7 @@
         <div class="container sh-header-inner py-3">
             <div class="sh-header-start">
                 <a class="sh-brand" asp-controller="Home" asp-action="Index">
-                    <img class="sh-brand-mark" src="~/images/brand/stayhub-mark.svg" alt="" aria-hidden="true" />
+                    <img class="sh-brand-mark" src="~/images/brand/stayhub-mark.svg" alt="" aria-hidden="true" asp-append-version="true" />
                     <span class="fuzzy-bubbles-bold">StayHub</span>
                 </a>
             </div>
@@ -93,7 +93,16 @@
                                 type="button"
                                 aria-label="Account menu"
                                 aria-expanded="false">
-                            <span class="sh-account-chip-avatar" aria-hidden="true">@accountInitial</span>
+                            <span class="sh-account-chip-avatar" aria-hidden="true">
+                                @if (!string.IsNullOrWhiteSpace(currentUser?.ProfilePictureUrl))
+                                {
+                                    <img src="@currentUser.ProfilePictureUrl" alt="" />
+                                }
+                                else
+                                {
+                                    @accountInitial
+                                }
+                            </span>
                             <span class="sh-account-chip-meta">
                                 <span class="sh-account-chip-name">@currentUser?.FullName</span>
                                 <span class="sh-account-chip-role">@accountRole</span>
@@ -145,6 +154,11 @@
                                     </a>
                                 </li>
                             }
+                            <li>
+                                <a class="dropdown-item" asp-controller="Profile" asp-action="Index">
+                                    <span class="sh-menu-label"><partial name="_Icon" model='"users"' /><span>My Profile</span></span>
+                                </a>
+                            </li>
                             <li>
                                 <a class="dropdown-item" asp-controller="Messages" asp-action="Index">
                                     <span class="sh-menu-label"><partial name="_Icon" model='"mail"' /><span>Inbox</span></span>
@@ -205,7 +219,7 @@
                 <div class="sh-footer-grid">
                     <div class="sh-footer-brand-block">
                         <a class="sh-footer-brand" asp-controller="Home" asp-action="Index">
-                            <img class="sh-brand-mark" src="~/images/brand/stayhub-mark-light.svg" alt="" aria-hidden="true" />
+                            <img class="sh-brand-mark" src="~/images/brand/stayhub-mark-light.svg" alt="" aria-hidden="true" asp-append-version="true" />
                             <span class="fuzzy-bubbles-bold">StayHub</span>
                         </a>
                         <div class="sh-footer-social" aria-label="StayHub on social media">

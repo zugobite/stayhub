@@ -102,8 +102,8 @@
             <h2 class="sh-subtitle mt-4">Meet your host</h2>
             <section class="sh-hostcard">
                 <div class="sh-hostcard-head">
-                    <span class="sh-hostcard-avatar" aria-hidden="true">
-                        @(string.IsNullOrEmpty(host.FirstName) ? "H" : host.FirstName[..1].ToUpperInvariant())
+                    <span class="sh-hostcard-avatar">
+                        <partial name="_Avatar" model="@(new AvatarSpec(host.Id + host.FullName, ImageUrl: host.ProfilePictureUrl))" />
                     </span>
                     <div>
                         <div class="sh-hostcard-name">@host.FullName</div>

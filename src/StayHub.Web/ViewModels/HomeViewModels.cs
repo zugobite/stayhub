@@ -70,4 +70,8 @@ public class HomeViewModel
 /// varied — hashing alone leaves roughly a 45% chance of two of three sharing a
 /// tone. Callers drawing a single portrait omit it and get the stable hash.
 /// </param>
-public record AvatarSpec(string Seed, int? Variant = null);
+/// <param name="ImageUrl">
+/// A photograph the user has uploaded. When present it replaces the generated
+/// portrait entirely — a real face always beats a generated stand-in.
+/// </param>
+public record AvatarSpec(string Seed, int? Variant = null, string? ImageUrl = null);

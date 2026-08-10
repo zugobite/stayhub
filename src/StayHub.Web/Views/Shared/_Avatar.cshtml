@@ -38,6 +38,12 @@
         }
     }
 }
+@if (!string.IsNullOrWhiteSpace(Model?.ImageUrl))
+{
+    <img class="sh-avatar-art" src="@Model.ImageUrl" alt="" aria-hidden="true" loading="lazy" />
+    return;
+}
+
 @{
     var seed = string.IsNullOrWhiteSpace(Model?.Seed) ? "stayhub" : Model!.Seed;
     var hash = StableHash(seed);

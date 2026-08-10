@@ -24,5 +24,8 @@ public enum ActivityType
     ApplicationReviewed,
 
     /// <summary>A property listing was created, edited, or toggled.</summary>
-    PropertyUpdated
+    PropertyUpdated,
+
+    /// <summary>A user changed their own profile details or photograph.</summary>
+    ProfileUpdated
 }

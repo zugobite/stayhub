@@ -1,7 +1,21 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="StayHub">
   <title>StayHub</title>
-  <!-- A sunlit Cycladic doorway: open arch with the sun showing through. -->
-  <circle cx="16" cy="15.5" r="5.2" fill="#f6b31b"/>
-  <path d="M5.6 29.2V15.4a10.4 10.4 0 0 1 20.8 0v13.8"
-        fill="none" stroke="#0e6ba8" stroke-width="3.6" stroke-linecap="round"/>
+  <!--
+    A sunlit Cycladic doorway, drawn to sit beside the Fuzzy Bubbles wordmark.
+
+    The previous version was a perfect circular arc at 3.6 stroke, which read as a
+    technical icon next to a handwritten word. Three changes bring it into line:
+      - a much heavier stroke (5.4), matching the bold weight of the letters
+      - cubic curves rather than a true arc, so the dome is slightly irregular
+      - deliberately mismatched leg lengths and shoulder controls, giving the
+        same gentle bounce the typeface has
+  -->
+  <circle cx="16.2" cy="17.8" r="4.5" fill="#f6b31b"/>
+  <path d="M6.1 28.9
+           C5.6 21.5 5.5 17.1 8.0 13.5
+           C10.2 10.2 13.2 8.5 16.2 8.5
+           C19.4 8.5 22.4 10.4 24.6 13.9
+           C26.9 17.4 26.8 21.6 26.3 28.4"
+        fill="none" stroke="#0e6ba8" stroke-width="5.4"
+        stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

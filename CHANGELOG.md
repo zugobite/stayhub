@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Profile management: any signed-in user can edit their name, location and introduction, and upload or remove a profile photo. Uploads surface on the listing host card, in testimonials, and in the header, replacing the generated portrait
+- `ActivityType.ProfileUpdated`, so profile changes join the audit trail
 - Pagination on all eight data tables at 15 rows per page, via a reusable `PagedList<T>` and `_Pagination` partial. Page links carry the existing query string forward, so filters, search terms and sort order survive paging. The activity log pages in SQL rather than in memory, since it grows without bound
 - Per-person pricing: `PricePerNight` is now charged per guest per night, with `CalculateSubtotal/TotalPrice/ServiceFee` taking a guest count and the live breakdown reacting to the guest field
 - Simulated card gateway (`StayPay Sandbox`) behind `IPaymentGateway`: a checkout page pre-filled with a sandbox card, Luhn and expiry validation, approving and declining test cards, a reference and last-4 on the receipt, and declines recorded as `PaymentStatus.Failed`
@@ -22,9 +24,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- `ProfilePictureUrl` is now actually used; previously the column existed but nothing read or wrote it
+- Manual test script corrected (it still quoted the pre-rescale R 3 100 stay) and extended with scenarios for the payment gateway, advanced search, pagination and profiles; README gained the Payments and Profile routes
 - Seed nightly rates rescaled to per-person figures so totals stay realistic (a R 8 900 villa is now R 1 150 per person)
 - "Pay Now" opens the gateway checkout instead of charging inline
 - Seeded host tenure is now fixed rather than random, so a rebuilt database reproduces the same "hosting since" dates
+
+### Removed
+
+- `BookingsController.Pay`, an orphaned endpoint that charged a booking inline and bypassed the gateway entirely. No view referenced it, but it remained a reachable POST
 
 ### Fixed
 

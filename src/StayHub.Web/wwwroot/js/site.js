@@ -412,3 +412,196 @@
         sync();
     });
 })();
+
+// --- File drop-zone with preview thumbnails ---------------------------------
+(function () {
+    'use strict';
+
+    var removeIcon =
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true">' +
+            '<path d="M18 6 6 18M6 6l12 12"/>' +
+        '</svg>';
+
+    function acceptsFile(input, file) {
+        var accept = (input.getAttribute('accept') || '').trim();
+
+        if (!accept) {
+            return true;
+        }
+
+        return accept.split(',').some(function (token) {
+            token = token.trim().toLowerCase();
+
+            if (!token) {
+                return false;
+            }
+
+            if (token === 'image/*') {
+                return (file.type || '').indexOf('image/') === 0;
+            }
+
+            if (token.charAt(0) === '.') {
+                var name = (file.name || '').toLowerCase();
+                return name.slice(-token.length) === token;
+            }
+
+            return (file.type || '').toLowerCase() === token;
+        });
+    }
+
+    function syncInput(input, files) {
+        var transfer = new DataTransfer();
+
+        files.forEach(function (file) {
+            transfer.items.add(file);
+        });
+
+        input.files = transfer.files;
+    }
+
+    function initDropzone(root) {
+        var input = root.querySelector('[data-sh-dropzone-input]');
+        var surface = root.querySelector('[data-sh-dropzone-surface]');
+        var trigger = root.querySelector('[data-sh-dropzone-trigger]');
+        var list = root.querySelector('[data-sh-dropzone-previews]');
+
+        if (!input || !surface || !list) {
+            return;
+        }
+
+        var selected = [];
+        var objectUrls = [];
+        var dragDepth = 0;
+        var multiple = input.hasAttribute('multiple');
+
+        function clearObjectUrls() {
+            objectUrls.forEach(function (url) {
+                URL.revokeObjectURL(url);
+            });
+            objectUrls = [];
+        }
+
+        function render() {
+            clearObjectUrls();
+            list.innerHTML = '';
+
+            if (!selected.length) {
+                list.hidden = true;
+                return;
+            }
+
+            list.hidden = false;
+
+            selected.forEach(function (file, index) {
+                var item = document.createElement('li');
+                var isImage = (file.type || '').indexOf('image/') === 0;
+                var remove = document.createElement('button');
+
+                remove.type = 'button';
+                remove.className = 'sh-dropzone-remove';
+                remove.setAttribute('aria-label', 'Remove ' + (file.name || 'file'));
+                remove.innerHTML = removeIcon;
+                remove.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    selected.splice(index, 1);
+                    syncInput(input, selected);
+                    render();
+                });
+
+                if (isImage) {
+                    var img = document.createElement('img');
+                    var url = URL.createObjectURL(file);
+                    objectUrls.push(url);
+                    img.src = url;
+                    img.alt = '';
+                    item.className = 'sh-dropzone-preview';
+                    item.appendChild(img);
+                } else {
+                    var name = document.createElement('span');
+                    name.className = 'sh-dropzone-docname';
+                    name.textContent = file.name || 'Document';
+                    item.className = 'sh-dropzone-preview is-document';
+                    item.appendChild(name);
+                }
+
+                item.appendChild(remove);
+                list.appendChild(item);
+            });
+        }
+
+        function applyFiles(fileList) {
+            var incoming = Array.prototype.slice.call(fileList || []).filter(function (file) {
+                return acceptsFile(input, file);
+            });
+
+            if (!incoming.length) {
+                return;
+            }
+
+            selected = multiple ? selected.concat(incoming) : incoming.slice(0, 1);
+            syncInput(input, selected);
+            render();
+        }
+
+        function openPicker(event) {
+            if (event) {
+                event.preventDefault();
+            }
+
+            input.click();
+        }
+
+        if (trigger) {
+            trigger.addEventListener('click', function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+                openPicker();
+            });
+        }
+
+        surface.addEventListener('click', function (event) {
+            if (event.target.closest('[data-sh-dropzone-trigger]')) {
+                return;
+            }
+
+            openPicker(event);
+        });
+
+        surface.addEventListener('dragenter', function (event) {
+            event.preventDefault();
+            dragDepth += 1;
+            root.classList.add('is-dragging');
+        });
+
+        surface.addEventListener('dragover', function (event) {
+            event.preventDefault();
+            if (event.dataTransfer) {
+                event.dataTransfer.dropEffect = 'copy';
+            }
+        });
+
+        surface.addEventListener('dragleave', function (event) {
+            event.preventDefault();
+            dragDepth = Math.max(0, dragDepth - 1);
+
+            if (dragDepth === 0) {
+                root.classList.remove('is-dragging');
+            }
+        });
+
+        surface.addEventListener('drop', function (event) {
+            event.preventDefault();
+            dragDepth = 0;
+            root.classList.remove('is-dragging');
+            applyFiles(event.dataTransfer && event.dataTransfer.files);
+        });
+
+        input.addEventListener('change', function () {
+            applyFiles(input.files);
+            syncInput(input, selected);
+        });
+    }
+
+    Array.prototype.forEach.call(document.querySelectorAll('[data-sh-dropzone]'), initDropzone);
+})();

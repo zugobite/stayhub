@@ -99,10 +99,25 @@ While signed in as the new Host, browse directly to `/Bookings`.
 ### Step 8: Book a stay
 
 1. Sign in as `guest@stayhub.co.za`.
-2. Open **Properties**, filter by city, then open a listing.
-3. Set check-in and checkout dates.
+2. Open **Properties**, filter by city, then open **Lovely City Apartment** (R 780 per person / night, R 350 cleaning, 12% service fee).
+3. Set check-in and checkout dates, then change the **Guests** field.
 
-**Expected:** The price breakdown updates live and matches `(PricePerNight × Nights) + CleaningFee + ServiceFee`. For a one-night stay at R 3 100 with a 12% service fee, the service fee reads R 372.
+**Expected:** Rates are quoted **per person, per night**, and the breakdown updates live as either the dates or the guest count changes, matching:
+
+```
+TotalPrice = (PricePerNight × Nights × Guests) + CleaningFee + ServiceFee
+```
+
+Worked example for 2 nights and 3 guests:
+
+| Line | Amount |
+| ---- | ------ |
+| R 780 × 2 nights × 3 guests | R 4 680,00 |
+| Cleaning fee | R 350,00 |
+| Service fee (12% of R 4 680) | R 561,60 |
+| **Total** | **R 5 591,60** |
+
+The cleaning fee is flat per stay; the service fee scales with the subtotal, so it grows with party size.
 
 4. Click **Reserve**.
 
@@ -123,14 +138,28 @@ While signed in as the new Host, browse directly to `/Bookings`.
 
 1. Sign in as the Guest.
 2. Open **My trips**.
-3. On the approved booking, open the actions menu and click **Pay Now**. Confirm.
+3. On the approved booking, open the actions menu and click **Pay Now**.
 
-**Expected:** Status becomes `Paid`.
+**Expected:** You leave the StayHub pages for the **StayPay Sandbox** checkout — a dark header with a `SANDBOX` badge, an order summary repeating the per-person breakdown, and the card form already filled in with `4242 4242 4242 4242`, expiry `12/30`, CVV `123`.
+
+#### 9b-i: A declined card
+
+4. Replace the card number with `4000 0000 0000 0002` and submit.
+
+**Expected:** The page returns with *"Charge declined: declined by issuer."* The booking stays `Approved` so you can try again.
+
+**Verify in SQL:** `SELECT Status, CardLast4, FailureReason FROM Payments WHERE BookingId = <id>;` shows `Failed`, `0002`, and the reason.
+
+#### 9b-ii: An approved card
+
+5. Restore `4242 4242 4242 4242` and submit.
+
+**Expected:** A receipt page showing *Payment successful*, a reference such as `SP-QDDV4S2S`, and the card masked to its last four digits. No money moves — the page says so.
 
 **Verify in SQL:**
 - The booking's `Status` is `Paid`.
-- `SELECT * FROM Payments WHERE BookingId = <id>;` shows `Amount` matching the booking total and `Status = 'Paid'`.
-- `ActivityLogs` contains `BookingPaid`.
+- `SELECT * FROM Payments WHERE BookingId = <id>;` shows one row (the declined attempt was updated, not duplicated), `Status = 'Paid'`, and a populated `Reference`.
+- `ActivityLogs` contains both `PaymentDeclined` and `BookingPaid`.
 
 ---
 
@@ -255,6 +284,98 @@ As an Admin, open **Activity Logs** and filter by type.
 
 ---
 
+---
+
+## Test Scenario 9: Advanced search and regional discovery
+
+### Step 17: Browse by province from the landing page
+
+1. Sign out (or stay signed in — the gallery is public).
+2. On the home page, scroll to **Browse by Province** and click a region card.
+
+**Expected:** The gallery opens filtered to that province, and the heading reads "N stays in <Province>". The seed spans all nine provinces, so every card leads somewhere.
+
+### Step 18: Compose several filters at once
+
+1. Open **Properties**.
+2. Type `lagoon` in the search box.
+
+**Expected:** Two results — Knysna Lagoon House by title, and Umhlanga Beach House because its address is *3 Lagoon Drive*. The keyword matches title, description, city and address.
+
+3. Clear the search. Open **More filters** and set **Max price** to 1500.
+
+**Expected:** Only the listings at or below R 1 500 per person remain.
+
+4. Tick **Pool**, then also tick **Air Conditioning**.
+
+**Expected:** The count *narrows* with the second tick. Amenities are AND-matched — a listing must offer every ticked amenity, not merely one.
+
+5. Change **Sort by** to *Price: low to high*, then *Top rated*.
+
+**Expected:** Jeffreys Bay Surf Room (R 450) leads on price; Camps Bay Villa leads on rating. Listings with no reviews sort last rather than being treated as zero-rated.
+
+6. Click **Clear all**.
+
+**Expected:** All 15 listings return and the "Filters applied" strip disappears.
+
+---
+
+## Test Scenario 10: Table pagination
+
+### Step 19: Page through the audit trail
+
+1. Sign in as `admin@stayhub.co.za` and open **Activity Logs**.
+
+**Expected:** At most **15 rows**, with a pager reading "Showing 1–15 of N log entries".
+
+2. Click page **2**.
+
+**Expected:** Rows 16–30, and the previous-page arrow becomes active.
+
+3. Filter by an activity type, then page again.
+
+**Expected:** The filter *survives* paging — the address bar keeps `?type=...&page=2`, and the total in the pager reflects the filtered count, not the whole table.
+
+4. Hand-edit the address to `?page=99`.
+
+**Expected:** You land on the last page, not an empty table. Page numbers are clamped into range.
+
+> The same 15-row pager appears on Users, Host Requests, Bookings, Booking Requests, Guest Check-ins, Earnings, and Application Status. The activity log is paged in SQL rather than in memory, because it is the one table that grows without bound.
+
+---
+
+## Test Scenario 11: Profile management
+
+### Step 20: Edit your own profile
+
+1. Sign in as `host@stayhub.co.za`.
+2. Open the account menu and choose **My Profile**.
+3. Change your name, add a **location** and an **about you** introduction, and upload a **profile photo**.
+4. Save.
+
+**Expected:** A confirmation appears, and the "HOW OTHERS SEE YOU" panel updates to show the photo, name, location and introduction.
+
+**Verify in SQL:** `SELECT FirstName, LastName, Location, Bio, ProfilePictureUrl FROM AspNetUsers WHERE Email = 'host@stayhub.co.za';` — all five columns reflect what you typed, and the picture URL points into `/uploads/avatars/`.
+
+### Step 21: Confirm the photo travels
+
+1. Open one of that host's listings.
+
+**Expected:** The **Meet your host** card shows the uploaded photo, the new name, the location, and the introduction. The header avatar shows it too.
+
+### Step 22: Reject a bad upload, then remove the photo
+
+1. Return to **My Profile** and try to upload a `.txt` file.
+
+**Expected:** *"That photo could not be used. Use a JPG, PNG, WEBP or GIF under 5 MB."* — and the rest of the form is not silently saved around it.
+
+2. Tick **Remove my current photo** and save.
+
+**Expected:** The generated portrait returns in place of the photo.
+
+**Verify in SQL:** `ProfilePictureUrl` is `NULL`, and `ActivityLogs` contains `ProfileUpdated` entries with `ActivityType = 'ProfileUpdated'`.
+
+
 ## Verification Checklist
 
 - [ ] Registration assigns the Guest role automatically
@@ -262,9 +383,12 @@ As an Admin, open **Activity Logs** and filter by type.
 - [ ] Approval adds Host and removes Guest atomically
 - [ ] Approval publishes the listing (`IsActive = 1`)
 - [ ] Guest-only and Host-only routes each refuse the other role
-- [ ] Booking total matches `(PricePerNight × Nights) + CleaningFee + ServiceFee`
+- [ ] Rates are quoted per person per night, and the total matches `(PricePerNight × Nights × Guests) + CleaningFee + ServiceFee`
+- [ ] Changing the guest count updates the live breakdown as well as the dates
 - [ ] Booking moves Pending → Approved → Paid → CheckedIn → Completed
-- [ ] Simulated Pay creates a `Payments` row and sets booking status to `Paid`
+- [ ] Pay Now opens the StayPay Sandbox checkout, pre-filled with a test card
+- [ ] The declining test card records `PaymentStatus.Failed` with a reason and leaves the booking `Approved`
+- [ ] The approving test card creates one `Payments` row with a reference and last-4, and sets the booking to `Paid`
 - [ ] Guest can leave a review after completing a stay
 - [ ] Host can edit an owned listing (title/price/photos) and the change persists
 - [ ] Check-in steps persist as JSON, document uploads persist as files plus rows
@@ -273,4 +397,9 @@ As an Admin, open **Activity Logs** and filter by type.
 - [ ] New messages update the recipient's badge (and open conversation) live via SignalR
 - [ ] Only the SuperAdmin can promote a Guest to Admin
 - [ ] ActivityLogs cover login, role change, and booking status update
+- [ ] Province cards on the home page deep-link into the filtered gallery
+- [ ] Keyword, price, guest, amenity and sort filters compose, and amenities are AND-matched
+- [ ] Every data table shows at most 15 rows, with filters surviving paging and out-of-range pages clamped
+- [ ] A user can edit their own name, location, bio and photo, and the photo appears on listings and in the header
+- [ ] A non-image profile upload is rejected with a message rather than failing silently
 - [ ] The database can be dropped and rebuilt from migrations alone

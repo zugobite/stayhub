@@ -139,54 +139,6 @@ public class BookingsController : Controller
     }
 
     /// <summary>
-    /// Records a simulated payment for an approved booking.
-    /// </summary>
-    /// <param name="id">The booking identifier.</param>
-    /// <returns>A redirect to the trips page.</returns>
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Pay(int id)
-    {
-        var userId = _userManager.GetUserId(User)!;
-        var booking = await _bookings.GetByIdAsync(id);
-
-        if (booking is null || booking.GuestId != userId || booking.Property is null)
-            return NotFound();
-
-        if (!booking.MarkPaid())
-        {
-            TempData["Error"] = "Only an approved booking can be paid.";
-            return RedirectToAction(nameof(Index));
-        }
-
-        booking.Payment = new Payment
-        {
-            BookingId = booking.Id,
-            Amount = booking.TotalPrice,
-            Status = PaymentStatus.Paid,
-            CreatedAt = DateTime.UtcNow
-        };
-
-        await _bookings.UpdateAsync(booking);
-
-        await _activityLog.LogAsync(
-            userId,
-            "BookingPaid",
-            ActivityType.BookingStatusUpdate,
-            $"Booking #{booking.Id} marked Paid (R {booking.TotalPrice:N2}).");
-
-        await _notifications.CreateAsync(
-            booking.Property.HostId,
-            "Booking paid",
-            $"A guest paid R {booking.TotalPrice:N2} for '{booking.Property.Title}'.",
-            NotificationType.System,
-            "/Host/Earnings");
-
-        TempData["Success"] = "Payment recorded. You can continue with check-in when you are ready.";
-        return RedirectToAction(nameof(Index));
-    }
-
-    /// <summary>
     /// Marks a checked-in stay as completed.
     /// </summary>
     /// <param name="id">The booking identifier.</param>

@@ -233,7 +233,7 @@
                         @* Seeded on the reviewer id so a guest keeps the same portrait
                            across pages and restarts. *@
                         <span class="sh-avatar-fig">
-                            <partial name="_Avatar" model="@(new AvatarSpec(review.ReviewerId + review.Reviewer?.FullName, quoteIndex++))" />
+                            <partial name="_Avatar" model="@(new AvatarSpec(review.ReviewerId + review.Reviewer?.FullName, quoteIndex++, review.Reviewer?.ProfilePictureUrl))" />
                         </span>
                         <span>
                             <strong>@review.Reviewer?.FullName</strong>

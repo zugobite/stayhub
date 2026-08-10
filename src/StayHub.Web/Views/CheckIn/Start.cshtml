@@ -48,8 +48,15 @@
 
             <div class="mb-3">
                 <label class="form-label" for="document">Upload file</label>
-                <input class="form-control" id="document" type="file" name="document" accept="image/*,.pdf" required />
-                <div class="form-text">JPG, PNG, or PDF up to 5 MB.</div>
+                <div class="sh-dropzone" data-sh-dropzone>
+                    <input class="sh-dropzone-input" id="document" type="file" name="document" accept="image/*,.pdf" required data-sh-dropzone-input />
+                    <div class="sh-dropzone-surface" data-sh-dropzone-surface>
+                        <p class="sh-dropzone-copy">Drag a file here, or</p>
+                        <button type="button" class="sh-btn sh-btn-ghost" data-sh-dropzone-trigger>Choose file</button>
+                        <p class="sh-dropzone-hint">JPG, PNG, or PDF up to 5 MB.</p>
+                    </div>
+                    <ul class="sh-dropzone-previews" data-sh-dropzone-previews hidden></ul>
+                </div>
             </div>
 
             <button class="sh-btn sh-btn-primary" type="submit">Submit for verification</button>

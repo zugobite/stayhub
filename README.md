@@ -13,6 +13,8 @@ A managed property rental ecosystem built with C# and ASP.NET Core MVC, demonstr
 - **Property Discovery** - Gallery of active listings across all nine provinces, with wishlist hearts and a photo carousel
 - **Advanced Search** - Keyword, province, city, stay type, price range, guests, bedrooms, bathrooms, required amenities, and five sort orders, all composable in one query string
 - **Host Profiles** - Every listing shows who you would be staying with: bio, home town, hosting-since date, listing and review counts, and their other stays
+- **Profile Management** - Any user can edit their name, location and introduction, and upload or remove a profile photo, which then appears on listings, reviews and in the header
+- **Paginated Tables** - Every data table shows 15 rows per page, with filters preserved across pages; the audit trail pages in SQL rather than in memory
 - **Booking Engine** - Date and traveller selection with a live price breakdown matching `(PricePerNight × Nights × Guests) + CleaningFee + ServiceFee`, priced per person per night
 - **Simulated Payment Gateway** - "Pay Now" hands off to a sandbox checkout with pre-filled test cards, Luhn and expiry validation, approving and declining cards, and a referenced receipt. No money moves and only the last four digits are stored
 - **Multi-Step Guest Check-in** - Host-defined steps stored as JSON, ending in an ID or passport upload the host verifies
@@ -127,6 +129,8 @@ Developer documentation lives in the [`docs/`](docs/) folder:
 | `/Wishlist`                    | Saved listings                                |
 | `/HostApplications/Apply`      | Become a Host                                 |
 | `/HostApplications/Status`     | Application review status                     |
+| `/Payments/Checkout/{id}`      | StayPay Sandbox checkout for an approved booking |
+| `/Payments/Receipt/{id}`       | Receipt for a paid booking                    |
 
 ### Host
 
@@ -156,6 +160,7 @@ Developer documentation lives in the [`docs/`](docs/) folder:
 | Route                                | Description                                            |
 | ------------------------------------ | ------------------------------------------------------ |
 | `/Notifications?filter=&selectedId=` | Notification centre with ALL / UNREAD / READ / TODAY   |
+| `/Profile`                           | Edit your name, location, introduction and photo       |
 | `/Messages`                          | Inbox and sent folders                                 |
 | `/Messages/Conversation/{userId}`    | Threaded conversation with a reply box                 |
 

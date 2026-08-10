@@ -102,8 +102,15 @@
         <div class="sh-form-section">
             <h2 class="sh-form-section-title">Photos</h2>
             <label asp-for="Images" class="form-label"></label>
-            <input asp-for="Images" class="form-control" type="file" multiple accept="image/*" />
-            <div class="form-text">At least one photo is required. JPG, PNG, WEBP, or GIF up to 5 MB each.</div>
+            <div class="sh-dropzone" data-sh-dropzone>
+                <input asp-for="Images" class="sh-dropzone-input" type="file" multiple accept="image/*" data-sh-dropzone-input />
+                <div class="sh-dropzone-surface" data-sh-dropzone-surface>
+                    <p class="sh-dropzone-copy">Drag photos here, or</p>
+                    <button type="button" class="sh-btn sh-btn-ghost" data-sh-dropzone-trigger>Choose photos</button>
+                    <p class="sh-dropzone-hint">At least one photo is required. JPG, PNG, WEBP, or GIF up to 5 MB each.</p>
+                </div>
+                <ul class="sh-dropzone-previews" data-sh-dropzone-previews hidden></ul>
+            </div>
             <span asp-validation-for="Images" class="text-danger"></span>
         </div>
 

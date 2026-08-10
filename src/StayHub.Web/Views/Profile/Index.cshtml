@@ -1,0 +1,131 @@
+@model ProfileViewModel
+@{
+    ViewData["Title"] = "My profile";
+}
+
+<div class="sh-pagehead">
+    <div>
+        <span class="sh-eyebrow">Account</span>
+        <h1>My Profile</h1>
+        <p class="text-muted mb-0">These details appear on your listings, reviews, and message threads.</p>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-7">
+        <form asp-action="Index" method="post" enctype="multipart/form-data" class="sh-panel">
+            @Html.AntiForgeryToken()
+            <div class="sh-panel-body">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                <div class="sh-fieldrow">
+                    <label class="sh-field">
+                        <span>First name</span>
+                        <input asp-for="FirstName" />
+                        <span asp-validation-for="FirstName" class="sh-fielderror"></span>
+                    </label>
+                    <label class="sh-field">
+                        <span>Surname</span>
+                        <input asp-for="LastName" />
+                        <span asp-validation-for="LastName" class="sh-fielderror"></span>
+                    </label>
+                </div>
+
+                <label class="sh-field">
+                    <span>Where you are based</span>
+                    <input asp-for="Location" placeholder="Cape Town, Western Cape" />
+                    <span asp-validation-for="Location" class="sh-fielderror"></span>
+                </label>
+
+                <label class="sh-field">
+                    <span>About you</span>
+                    <textarea asp-for="Bio" rows="5"
+                              placeholder="Tell guests a little about yourself and the area you know best."></textarea>
+                    <span asp-validation-for="Bio" class="sh-fielderror"></span>
+                </label>
+
+                <div class="sh-field">
+                    <span>Profile photo</span>
+                    <div class="sh-dropzone" data-sh-dropzone>
+                        <input asp-for="Photo" class="sh-dropzone-input" type="file" accept="image/*" data-sh-dropzone-input />
+                        <div class="sh-dropzone-surface" data-sh-dropzone-surface>
+                            <p class="sh-dropzone-copy">Drag a photo here, or</p>
+                            <button type="button" class="sh-btn sh-btn-ghost" data-sh-dropzone-trigger>Choose photo</button>
+                            <p class="sh-dropzone-hint">JPG, PNG, WEBP, or GIF up to 5 MB.</p>
+                        </div>
+                        <ul class="sh-dropzone-previews" data-sh-dropzone-previews hidden></ul>
+                    </div>
+                    <span asp-validation-for="Photo" class="sh-fielderror"></span>
+                </div>
+
+                @if (!string.IsNullOrWhiteSpace(Model.ProfilePictureUrl))
+                {
+                    <label class="sh-checkline">
+                        <input asp-for="RemovePhoto" type="checkbox" />
+                        <span>Remove my current photo</span>
+                    </label>
+                }
+
+                <button class="sh-btn sh-btn-primary mt-3" type="submit">Save changes</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="col-lg-5">
+        <aside class="sh-panel">
+            <div class="sh-panel-head">
+                <h2>HOW OTHERS SEE YOU</h2>
+            </div>
+            <div class="sh-panel-body">
+                <div class="sh-profilepreview">
+                    <span class="sh-profilepreview-avatar">
+                        <partial name="_Avatar" model="@(new AvatarSpec(Model.Email + Model.FullName, ImageUrl: Model.ProfilePictureUrl))" />
+                    </span>
+                    <div>
+                        <div class="sh-profilepreview-name">@Model.FullName</div>
+                        <div class="sh-profilepreview-meta">
+                            @if (!string.IsNullOrWhiteSpace(Model.Location))
+                            {
+                                <span>@Model.Location</span>
+                                <span>&middot;</span>
+                            }
+                            <span>Member since @Model.MemberSince.ToString("MMMM yyyy")</span>
+                        </div>
+                    </div>
+                </div>
+
+                @if (!string.IsNullOrWhiteSpace(Model.Bio))
+                {
+                    <p class="sh-profilepreview-bio">@Model.Bio</p>
+                }
+                else
+                {
+                    <p class="text-muted mb-0">
+                        You have not written an introduction yet. Guests are more likely to book
+                        with a host they know something about.
+                    </p>
+                }
+
+                <dl class="sh-profilefacts">
+                    <div>
+                        <dt>Email</dt>
+                        <dd>@Model.Email</dd>
+                    </div>
+                    <div>
+                        <dt>@(Model.Roles.Count == 1 ? "Role" : "Roles")</dt>
+                        <dd>
+                            @foreach (var role in Model.Roles)
+                            {
+                                <span class="sh-badge-inline">@role</span>
+                            }
+                        </dd>
+                    </div>
+                </dl>
+            </div>
+        </aside>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
